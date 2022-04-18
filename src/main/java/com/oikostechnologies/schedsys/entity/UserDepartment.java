@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,11 +28,14 @@ public class UserDepartment {
 	private long id;
 	
 	@ManyToOne
+	@JsonBackReference
 	private User user;
 	
 	@ManyToOne
+	@JsonBackReference
 	private Department department;
 	
+	private String deptrole;
 	
 	@Transient
 	public String username() {

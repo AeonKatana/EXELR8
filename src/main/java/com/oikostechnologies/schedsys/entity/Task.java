@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,9 +35,11 @@ public class Task {
 	private LocalDate edate;
 	
 	@ManyToOne
+	@JsonBackReference
 	private Department department;
 	
 	@OneToMany(mappedBy = "task")
+	@JsonManagedReference
 	private Set<TaskDetail> taskdetails;
 	
 

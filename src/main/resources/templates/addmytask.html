@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="hihi">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,38 +11,67 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/jquery.mentionsInput.css}">
+    
     <title>ConnectereHub</title>
 
 </head>
-<body>
+<body class="hehe">
 
 
-<input type="email" class="form-control" id="inputEmail" placeholder="Task title">
 
-<form class="frm">
 
+<form class="frm" id="addform">
+	
     <div class="inside">
-       
-        <input type="email" class="form-control" id="inputEmail" placeholder="Describe Task">  
+    <input type="text" class="form-control" id="title" placeholder="Task title" required>  
         <br>
-
-    <div class="form-group row">
-        <label for="" class="col-sm-1 col-form-label">Timeline</label>
+  <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">For Who?</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Select Date">
+        <textarea id="who" placeholder="Type @ to mention(Leave empty if you will assign it to yourself)">
+        </textarea>
+        </div>
+    </div>
+  <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">Verb</label>
+        <div class="grp col-sm-10">
+        <input type="text" class="form-control" id="verb" placeholder="What will you do?" required>
+        </div>
+    </div>
+
+ <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">Number</label>
+        <div class="grp col-sm-10">
+        <input type="number" class="form-control" id="number" placeholder="How many times?">
+        </div>
+    </div>
+ <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">What</label>
+        <div class="grp col-sm-10">
+        <input type="text" class="form-control" id="what" placeholder="Action Target">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">Deadline</label>
+        <div class="grp col-sm-10">
+        <input type="date" class="form-control" id="date" placeholder="Until when?" required>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="" class="col-sm-1 col-form-label">Note</label>
+        <label for="" class="col-sm-2 col-form-label">Once Done notify:</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Add extra details (optional)">
+        <textarea class="mention" id="mention" placeholder="Type @ name(s) to notify"></textarea>
         </div>
     </div>
+	<div class="justify-content-center text-center">
+		 <button type="submit" class="addtask text-center"> Add this task</button>
+    	 <button type="button" class="btncancel text-center" >  Cancel</button>
+	</div>
+   
 
-    <button type="button" class="addtask"> Add this task</button>
-    <button type="button" class="btncancel" href="mytask.php">  Cancel</button>
-
+</div>
 </form>
 
  
@@ -52,7 +81,7 @@
 
 
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     var el = document.getElementById("wrapper");
@@ -61,8 +90,17 @@
     toggleButton.onclick = function () {
         el.classList.toggle("toggled");
     };
+  
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script th:src="@{/js/jquery.mentionsInput.js}"></script>
+<script th:src="@{/js/jquery.elastic.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.events.input.js}"></script>
+<script th:src="@{/js/task.js}"></script>
+<script>
 
-    
+
+
 </script>
 
 </body>

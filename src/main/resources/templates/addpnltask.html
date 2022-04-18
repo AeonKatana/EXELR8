@@ -17,63 +17,57 @@
 <body>
 
 
-<input type="email" class="form-control" id="inputEmail" placeholder="Task title">
 
-<form class="frm">
+
+<form class="frm" id="myform">
 
     <div class="inside">
-       
-        <input type="email" class="form-control" id="inputEmail" placeholder="Describe Task">  
+       <input type="text" class="form-control" id="title" placeholder="Task title" required>
+        <input type="text" class="form-control" id="detail" placeholder="Describe Task" required>  
         <br>
 
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Verb</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Lorem ispum">
+        <input type="text" class="form-control" id="" placeholder="Lorem ispum" required>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Number</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Lorem ispum">
+        <input type="text" class="form-control" id="" placeholder="Lorem ispum" required>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Timeline</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Select Date">
+        <input type="text" class="form-control" id="" placeholder="Select Date" required>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Assigned to</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Type names(s) to assign">
+        <input type="text" class="form-control" id="" placeholder="Type names(s) to assign" required>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Once Done notify</label>
         <div class="grp col-sm-10">
-        <input type="text" class="form-control" id="" placeholder="Type names(s) to notify">
+        <input type="text" class="form-control" id="" placeholder="Type names(s) to notify" required>
         </div>
     </div>
 
-    <button type="button" class="addtask"> Add this task</button>
-    <button type="button" class="btncancel" href="mytask.php">  Cancel</button>
-
+    <button type="submit" class="addtask"> Add this task</button>
+    <button type="button" class="btncancel">  Cancel</button>
+</div>
 </form>
 
- 
 
-
-
-
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     var el = document.getElementById("wrapper");
@@ -85,6 +79,6 @@
 
     
 </script>
-
+<script th:src="@{/js/pnltask.js}"></script>
 </body>
 </html>

@@ -1,50 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <title>ConnectereHub</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+	integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
+	rel="stylesheet">
 
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script th:src="@{/js/jquery.spring-friendly.js}"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<link rel='stylesheet' href='https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css'>
+<title>EXELR8</title>
+<style type="text/css">
+
+table.dataTable thead {
+  background-color: #292b2c;
+  color : #f7f7f7;
+}
+
+</style>
 </head>
 <body>
 
-  <!-- Add Company Modal -->
-  <div class="modal fade" id="addcompany" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form>
-                <div class="mb-3">
-                  <label for="exampleInputFistName" class="form-label fw-bold">Company name</label>
-                  <input type="text" class="form-control" id="" placeholder="Enter Company Name">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Master admin</label>
-                    <input type="text" class="form-control" id="" placeholder="Enter Master Admin">
-                  </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success">Add</button>
-        </div>
-      </div>
-    </div>
-  </div>
- <!-- End Modal -->
-
-<!-- View DNA Modal -->
 <div class="modal" id="companyDNA">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -102,131 +91,223 @@
     </div>
   </div>
 </div>
-<!-- View DNA Modal -->
+<!--End View DNA Modal -->
 
 
+<!-- Company Profile Edit -->
+<div class="modal" id="addDNA">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
 
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-    <div class="d-flex" id="wrapper">
-
-        <!----Sidebar STARTS here---->  
-
-        <div class="bg-white" id="sidebar-wrapper">
-                    <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-regular text-center border-bottom">ConnectereHub</div>
-                <div class="list-group list-group-flush my-3">
-                     <a th:href="@{/}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
-                            class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a th:href="@{/dashboard/companies}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-user me-2" ></i>Company</a>
-                    <a th:href="@{/dashboard/personnel}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-user-group me-2"></i>Personnel</a>
-                                   <a th:href="@{/dashboard/task/mytask}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-list-check me-2"></i>Task</a>
-                    <a th:href="@{/dashboard/activitylog}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-box me-2"></i>Activity log</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-bell me-2"></i>Notification</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-gear me-2"></i>Settings</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
-                            class="fas fa-power-off me-2"></i>Logout</a>
+      <!-- Modal body -->
+      <div class="modal-body">
+      
+            <div class="input-group">
+                
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">HISTORY</h4>
+                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
                 </div>
-        </div>
-
-  
-          <!----Sidebar END here---->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-        <nav class="navbar navbar-expand-lg navbar-light bg-transparent py-4 px-4">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-align-left primary-text fs-4 me-3" id="menu-toggle"></i>
-                <h2 class="fs-2 m-0">Company Profile</h2>
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">VISION</h4>
+                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                </div>
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">MISSION</h4>
+                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                </div>
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">CORE VALUES</h4>
+                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                </div>
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">PHILOSOPHY</h4>
+                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                </div>
             </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      <button type="button" class="btn btn-success">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-2"></i>Juan Dela Cruz
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="container">
-            <button type="button" class="btn btn-success btn-md"  data-bs-toggle="modal" data-bs-target="#addcompany" style="float: right;">Add company</button>    
-          </div>
-        
-          
-        <div class="container-fluid px-3 p-5">
-                    <div class="p-3 shadow-sm d-flex justify-content-around align-items-center rounded">
-            <div class="col" th:if="${not #lists.isEmpty(masteradmincomp)}">
-                <table class="table bg-white rounded shadow-sm  table-hover">
-                    <thead>
-                        <tr>
-                            
-                            <th scope="col">Company Name</th>
-                            <th scope="col">Master Admin</th>
-                            <th scope="col">No of Users</th>
-                            <th scope="col">View Details</th>
-                           
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="comp : ${masteradmincomp}">
-                           
-                            <td th:text="${comp.companyname}">Liam Payne</td>
-                            <td th:text="${comp.fullname}"></td>
-                            <td th:text="${comp.companysize}"></td>
-                            <td><button type="button" class="btn btn-primary btn-md ;">View Details</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col" th:unless="${not #lists.isEmpty(masteradmincomp)}">
-            	<h5 class="text-center m-5">There are no currently companies on this system</h5>
-            </div>
-        </div>
     </div>
-    
-    
+  </div>
+</div>
+ <div class="modal fade" id="addcompany" tabindex="-1" aria-labelledby="addcompanyModal" aria-hidden="true">
+    <div class="modal-dialog">
+     <form id="addcomp" th:action="@{/companies/addcompany}" method="POST">
+      <div class="modal-content">
+        <div class="modal-header">
+        	<h5 class="modal-title">Add details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    
+        <div class="modal-body">
+           
+                <div class="mb-3">
+                  <label for="companyname" class="form-label fw-bold">Company name</label>
+                  <input type="text" class="form-control" id="company" name="companyname" placeholder="Enter Company Name" required>
+                </div>
+                <div class="mb-3">
+                  <label for="companycolor" class="form-label fw-bold">Company Color</label>
+                  <input type="color" class="form-control" id="color" name="companycolor" placeholder="Enter Company Name" required>
+                </div>
+                <div class="mb-3">
+                	<hr>
+                	<p>Master Admin Details</p>
+                    <label for="firstname" class="form-label fw-bold">Firstname :</label>
+                    <input type="text" class="form-control" id="firstname" name="fname" placeholder="Enter Firstname" required>
+                  </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label fw-bold">Lastname</label>
+                    <input type="text" class="form-control" id="lastname" name="lname" placeholder="Enter Lastname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="contact" class="form-label fw-bold">Contact No:</label>
+                    <input type="tel" class="form-control" id="contact" name="contact" placeholder="639123456789" pattern="[63]{2}[0-9]{10}" required>
+                </div>
+                 <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">Email Address:</label>
+                    <input type="email" class="form-control" id="email" name="useremail" placeholder="sample@gmail.com" required>
+                </div>
+           
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
+      </div>
+       </form>
     </div>
+  </div>
+	<div class="d-flex" id="wrapper">
+
+		<!----Sidebar STARTS here---->
+
+		<div class="bg-dark text-dark" id="sidebar-wrapper">
+			<div
+				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom"><img th:src="@{/favicon.ico}" width="30px;" style=""><br>EXELR8</div>
+			<div class="list-group list-group-flush my-3">
+				<a th:href="@{/}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a
+					th:href="@{/dashboard/companies}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
+					class="fas fa-building me-2"></i>Company</a> <a th:href="@{/dashboard/department}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-building me-2"></i>Department</a> <a
+					th:href="@{/dashboard/personnel}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					th:href="@{/dashboard/task/mytask}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-list-check me-2"></i>Task</a> <a
+					th:href="@{/dashboard/activitylog}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-bell me-2"></i>Notification</a>  <a
+					th:href="@{/perform-logout}"
+					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
+					class="fas fa-power-off me-2"></i>Logout</a>
+			</div>
+		</div>
 
 
-</div>
+		<!----Sidebar END here---->
 
-</div>
+		<!-- Page Content -->
+		<div class="abc" id="page-content-wrapper">
+			<nav
+				class="navbar navbar-expand-lg navbar-light bg-transparent py-4 px-4">
+				<div class="d-flex align-items-center">
+					<i class="fas fa-align-left primary-text fs-4 me-3"
+						id="menu-toggle"></i>
+					<h2 class="fs-2 m-0">Company</h2>
+				</div>
 
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    var el = document.getElementById("wrapper");
-    var toggleButton = document.getElementById("menu-toggle");
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle second-text fw-bold" href="#"
+							id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false"> <i class="fas fa-user me-2"></i><span
+								sec:authentication="principal.Fullname"></span>
+						</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
+								<li><a class="dropdown-item" th:href="@{/profile}">Settings</a></li>
+								<li><a class="dropdown-item" th:href="@{/perform-logout}">Logout</a></li>
+							</ul></li>
+					</ul>
+				</div>
+			</nav>
 
-    toggleButton.onclick = function () {
-        el.classList.toggle("toggled");
-    };
+			<div class="container-fluid px-3 p-2" sec:authorize="hasAuthority('SUPERADMIN')">
+				
+				<button type="button" class="btn btn-success btn"
+						data-bs-toggle="modal" data-bs-target="#addcompany">Add
+						company</button>
+				<div
+					class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+					<div class="col" th:if="${totalpage != 0}">
+						<table class="table bg-white rounded shadow-sm  table-hover" id="mytable">
+							<thead>
+								<tr>
 
-    
+									<th scope="col">Company Name</th>
+									<th scope="col">Master Admin</th>
+									<th scope="col">No of Users</th>
+									<th scope="col">View Details</th>
 
-  
-</script>
+								</tr>
+							</thead>
+							<tbody>
+								
+							</tbody>
+						</table>
+					</div>
+					<div class="col" th:unless="${totalpage != 0}">
+						<h5 class="text-center m-5">No companies found</h5>
+					</div>
+				</div>
+			</div>
+			<div sec:authorize="hasAuthority('MASTERADMIN')" class="container-fluid text-center px-3 p-2" sech:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','RANKANDFILE')">
+				
+			 <a class="text-center" href="#">
+                <button type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
+            </a>
+			
+			</div>
 
+		</div>
+
+	</div>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		var el = document.getElementById("wrapper");
+		var toggleButton = document.getElementById("menu-toggle");
+
+		toggleButton.onclick = function() {
+			el.classList.toggle("toggled");
+		};
+	</script>
+	<script th:src="@{/js/company.js}"></script>
+		
 </body>
 </html>

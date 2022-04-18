@@ -1,5 +1,6 @@
 package com.oikostechnologies.schedsys.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -9,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,12 +35,17 @@ public class TaskDetail {
 	private LocalDateTime sdate;
 	private LocalDateTime edate;
 	private String status;
+	private boolean recurring;
+	private LocalDate until;
+	private String recurringday;
 	private boolean done;
 	
 	@OneToMany(mappedBy = "taskdetail")
+	@JsonManagedReference
 	private Set<UserTask> taskdetail;
 	
 	
 	@ManyToOne
+	@JsonBackReference
 	private Task task;
 }

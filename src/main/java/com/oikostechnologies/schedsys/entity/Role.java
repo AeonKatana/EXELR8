@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +31,7 @@ public class Role {
 	private String rolename;
 	
 	@OneToMany(mappedBy = "role")
+	@JsonIgnoreProperties("role")
 	private Set<UserRole> userrole;
 	
 		

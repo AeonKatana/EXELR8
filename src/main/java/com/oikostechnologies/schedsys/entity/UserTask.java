@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,9 +27,11 @@ public class UserTask {
 	private long id;
 	
 	@ManyToOne
+	@JsonBackReference
 	private User user;
 	
 	@ManyToOne
+	@JsonBackReference
 	private TaskDetail taskdetail;
 	
 	

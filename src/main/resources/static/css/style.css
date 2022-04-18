@@ -48,17 +48,18 @@
     -o-transition: margin 0.25s ease-out;
     transition: margin 0.25s ease-out;
     background-color: white;
+    
   }
-  
+
   #sidebar-wrapper .sidebar-heading {
     padding: 0.875rem 1.25rem;
     font-size: 1.2rem;
   }
-  
+ 
   #sidebar-wrapper .list-group {
     width: 15rem;
   }
-  
+
   #page-content-wrapper {
     min-width: 100vw;
   }
@@ -77,6 +78,7 @@
   h2 {
     font-weight: bold;
     font-family: 'Poppins ', sans-serif;
+    color: rgb(55, 105, 49);
   }
   
 .list-group-item {
@@ -111,11 +113,15 @@
 
 
 
-  .btntask{
+.btntask{
     background-color: #FFF;
     display: inline-block;
     padding: 10px 40px 12px 40px;
-    border-radius: 10px;
+    border-radius: 4rem;
+    border-top-left-radius: 4rem;
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 4rem;
     border: 2px solid #FFF;
     color: black;
     font-size: 14px;
@@ -123,18 +129,23 @@
     font-family: "Poppins",sans-serif;
     font-weight: 600;
   }
-  .btntask:hover{
-    transform: translateY(-2px);
-    border-color: #FFF;
-    box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5 px 10px 0 rgba(0,0,0,0.19);;
+.btntask:hover{
+  transform: none;
+    background-color: rgb(240, 239, 239);
+    border-color: rgb(240, 239, 239);
+    box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5px 10px 0 rgba(0,0,0,0.19);;
   } 
 
 
 .btnmytask{
-  background-color: #FFF;
+  background-color: rgb(86, 201, 130);
   display: inline-block;
   padding: 10px 40px 12px 40px;
-  border-radius: 10px;
+  border-radius: 4rem;
+    border-top-left-radius: 4rem;
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 4rem;
   border: 2px solid #FFF;
   color: black;
   font-size: 14px;
@@ -142,16 +153,19 @@
   font-family:"Poppins",sans-serif;
   font-weight: 600;
   transform: translateY(-2px);
-  border-color: #FFF;
   box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5px 10px 0 rgba(0,0,0,0.19);;
 }
 
 
 .btnpnl{
-  background-color: #FFF;
+  background-color: rgb(86, 201, 130);
   display: inline-block;
   padding: 10px 40px 12px 40px;
-  border-radius: 10px;
+  border-radius: 4rem;
+    border-top-left-radius: 4rem;
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 4rem;
   border: 2px solid #FFF;
   color: black;
   font-size: 14px;
@@ -159,7 +173,6 @@
   font-family: "Poppins",sans-serif;
   font-weight: 600;
   transform: translateY(-2px);
-  border-color: #FFF;
   box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5px 10px 0 rgba(0,0,0,0.19);;
 }
 
@@ -218,8 +231,9 @@
 }
 
 .addtask:hover{
-    background-color: #FFF;
-    color: black;
+    background-color: #037a4f;
+    font-size: 14px;;
+    color: rgb(255, 255, 255);
 }
 
 .btncancel{
@@ -246,4 +260,83 @@
 }
 .inside{
   margin-left: 50px;
+}
+
+
+.btnactlog{
+  background-color: #FFF;
+  display: inline-block;
+  padding: 10px 40px 12px 40px;
+  border-radius: 4rem;
+    border-top-left-radius: 4rem;
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 4rem;
+  border: 2px solid #FFF;
+  color: black;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Poppins",sans-serif;
+  font-weight: 600;
+  border: 0;
+  padding:6px 15px;
+  background-color: transparent;
+  color: rgb(14, 13, 13);
+    
+}
+.btnactlog:hover{
+    transform: translateY(-2px);
+    border-color: rgb(255, 255, 255);
+    color: #f8f8f8;
+    background-color: rgb(6, 64, 170);
+    box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5px 10px 0 rgba(0,0,0,0.19);;
+}
+
+  
+.btnpnllog{
+  background-color: #FFF;
+  display: inline-block;
+  padding: 10px 40px 12px 40px;
+  border-radius: 4rem;
+    border-top-left-radius: 4rem;
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 4rem;
+  border: 2px solid #FFF;
+  color: black;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Poppins",sans-serif;
+  font-weight: 600;
+  border: 0;
+  padding:6px 15px;
+  background-color: transparent;
+  color: rgb(14, 13, 13);
+    
+  }
+
+.btnpnllog:hover{
+  transform: translateY(-2px);
+  border-color: rgb(255, 255, 255);
+  color: #f8f8f8;
+  background-color: rgb(211, 45, 33);
+  box-shadow: 0 0 0 0 rgba(156, 154, 154, 0.788), 0 5px 10px 0 rgba(0,0,0,0.19);;
+}
+
+.scard{
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+  background-color: white;
+  border: 0;
+}
+    .scard:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+      }
+
+    .no-outline:focus {
+  outline: none;
 }

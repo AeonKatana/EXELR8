@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <title>ConnectereHub</title>
+    <title>EXELR8</title>
 
 </head>
 
@@ -19,26 +19,33 @@
 
         <!----Sidebar STARTS here---->
 
-        <div class="bg-white" id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-regular text-center border-bottom">ConnectereHub</div>
-            <div class="list-group list-group-flush my-3">
-                 <a th:href="@{/}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold "><i
-                            class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a th:href="@{/dashboard/companies}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-user me-2" ></i>Company</a>
-                    <a th:href="@{/dashboard/personnel}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-user-group me-2"></i>Personnel</a>
-                                  <a th:href="@{/dashboard/task/mytask}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
-                            class="fas fa-list-check me-2"></i>Task</a>
-                    <a th:href="@{/dashboard/activitylog}" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-box me-2"></i>Activity log</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-bell me-2"></i>Notification</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-                            class="fas fa-gear me-2"></i>Settings</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
-                            class="fas fa-power-off me-2"></i>Logout</a>
-            </div>
+        <div class="bg-dark text-dark" id="sidebar-wrapper">
+<div
+				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom"><img th:src="@{/favicon.ico}" width="30px;" style=""><br>EXELR8</div>
+		           <div class="list-group list-group-flush my-3">
+				<a th:href="@{/}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a
+					th:href="@{/dashboard/companies}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-building me-2"></i>Company</a> <a th:href="@{/dashboard/department}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-building me-2"></i>Department</a> <a
+					th:href="@{/dashboard/personnel}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					th:href="@{/dashboard/task/mytask}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
+					class="fas fa-list-check me-2"></i>Task</a> <a
+					th:href="@{/dashboard/activitylog}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-bell me-2"></i>Notification</a>  <a
+					th:href="@{/perform-logout}"
+					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
+					class="fas fa-power-off me-2"></i>Logout</a>
+			</div>
         </div>
 
 
@@ -60,12 +67,12 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user me-2"></i>Juan Dela Cruz
+                                <i class="fas fa-user me-2"></i><span sec:authentication="principal.Fullname"></span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
                                 <li><a class="dropdown-item" href="#">Settings</a></li>
-                                <li><a class="dropdown-item" href="#">Logout</a></li>
+                               <li><a class="dropdown-item" th:href="@{/perform-logout}">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -76,28 +83,45 @@
 
                 <div class="pt-2 bg-white d-flex justify-content-around align-items-center rounded">
 
+                    <div class="d-flex">
                     <a class="atask" th:href="@{/dashboard/task/mytask}">
                         <div class="btn-wrap">
-                            <button type="button" class="btntask"><i class="fa fa-list-alt" style="color:#f2c85b"></i> My Task</button>
+                            <button type="button" class="btntask"> My Task</button>
                         </div>
                     </a>
-
+                     &nbsp;&nbsp;
                     <a class="atask" th:href="@{/dashboard/task/assignedtask}">
                         <div class="btn-wrap">
-                            <button type="button" class="btnpnl"><i class="fa fa-list-alt" style="color:#0077b6"></i> Personnel's Task</button>
+                            <button type="button" class="btnpnl"> Personnel's Task</button>
                         </div>
                     </a>
+				</div>
 
 
                 </div>
-                <div class="px-0 text-center border my-4 mx-5 h-100" style="overflow-y: auto;">
+                <div class="px-0 text-center border my-4 mx-5" style="height: 440px; overflow-y: auto;">
 
                             <button id="framebtn" type="button" class="btnadd border m-3"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add Task</button>
                                     
                  <div class="p-1">
-                    <iframe name="iframe_a" id="myframe" height="450px" width="85%" title="Iframe Example" class="justify-content-center" style="display: block;margin-left: auto;margin-right:auto;"></iframe>
+                    <iframe name="iframe_a" id="myframe" height="450px" width="85%" title="Iframe Example" class="justify-content-center" style="display: none;margin-left: auto;margin-right:auto;"></iframe>
                 </div>
-               
+            <!-- <div id="tasks" style="display : none;">
+					<div class="row m-2" th:each="task : ${mytask}">
+						<div class="col card">
+							<span>
+								<i class="fa-solid fa-ellipsis text-end p-2" style="float: right"></i>
+							</span>
+							<div class="card-body m-0">
+							<h4 class="card-text" th:text="${task.title}">Title Task</h4>
+							<input type="checkbox" id="done" th:checked="${task.done}">
+							<label for="done" th:text="${task.description}">This is where the task description will be</label>
+							<p class="card-text "><i class="fa-regular fa-calendar text-primary"></i><b id="mydate" class="m-2" th:text="${#temporals.monthName(task.starteddate) + ' ' + #temporals.day(task.starteddate)}">Mar 26 - 30</b></p>
+							</div>
+						</div>
+						
+					</div> -->
+				</div>
 
 
                 </div>
@@ -107,12 +131,7 @@
             </div>
         </div>
 
-    </div>
-
-
-    </div>
-
-    </div>
+   
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
@@ -130,8 +149,11 @@
 		$(document).ready(function(){
 			
 			var url = "/task/assignedtask/addtask";
-			$("#framebtn").click(function(){				
+			$("#framebtn").click(function(){		
+				$("#framebtn").prop("disabled",true);
 				$("#myframe").attr("src", url);
+				$("#myframe").css("display", "block");	
+				$("#myframe").prop("height", 450);
 			});
 			
 		});
