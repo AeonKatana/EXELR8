@@ -40,6 +40,7 @@ public class RegistrationController {
 		user.setPassword(passwordEncoder.encode(password).toCharArray());
 		user.setEnabled(true);
 		userrepo.save(user);
+		tokenrepo.delete(rtoken);
 		return "regsuccess";
 	}
 	

@@ -77,11 +77,11 @@ public class User {
 	@JsonManagedReference
 	private Set<DailyTask> dailies;
 	
-	@OneToOne(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToOne(mappedBy = "user")
 	@JsonIgnore
 	private RegistrationToken token;
 	
-	@OneToOne(mappedBy ="user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToOne(mappedBy ="user")
 	@JsonIgnore
 	private PasswordToken passtoken;
 	

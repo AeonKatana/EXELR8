@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.entity.Department;
-import com.oikostechnologies.schedsys.entity.NotifyUser;
+import com.oikostechnologies.schedsys.entity.PasswordToken;
 import com.oikostechnologies.schedsys.entity.Role;
 import com.oikostechnologies.schedsys.entity.Task;
 import com.oikostechnologies.schedsys.entity.TaskDetail;
@@ -32,6 +31,7 @@ import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.DailyTaskRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.NotifyUserRepo;
+import com.oikostechnologies.schedsys.repo.PasswordTokenRepo;
 import com.oikostechnologies.schedsys.repo.QuickViewRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.TaskDetailRepo;
@@ -43,6 +43,8 @@ import com.oikostechnologies.schedsys.repo.UserTaskRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
 import com.oikostechnologies.schedsys.service.UserService;
+
+import antlr.StringUtils;
 
 @SpringBootTest
 class SchedSysApplicationTests {
@@ -91,6 +93,9 @@ class SchedSysApplicationTests {
 	
 	@Autowired
 	private NotifyUserRepo notifrepo;
+	
+	@Autowired
+	private PasswordTokenRepo tokenrepo;
 	
 	void contextLoads() {
 		
@@ -340,7 +345,23 @@ class SchedSysApplicationTests {
 		System.out.println("Master Admin :" + company.masteradmin());
 		
 	}
-	
-	
+
+	void deletePassToken() {
+		
+    	User user = userrepo.findByEmail("aeonkatana@gmail.com");
+    	user.setPassword(passwordEncoder.encode("abcde").toCharArray());
+    	userrepo.save(user);
+	}
+	@Test
+	void checkPassword() {
+		
+		User user = userrepo.findByEmail("aeonkatana@gmail.com");
+		if(passwordEncoder.matches("12345",String.valueOf(user.getPassword()))) {
+			System.out.println("Matched!");
+		}
+		else {
+			System.out.println("Not matched!");
+		}
+	}
 	
 }

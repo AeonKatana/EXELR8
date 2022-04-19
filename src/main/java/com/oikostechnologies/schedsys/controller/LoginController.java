@@ -19,6 +19,7 @@ import com.oikostechnologies.schedsys.entity.PasswordToken;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.model.EmailModel;
 import com.oikostechnologies.schedsys.repo.PasswordTokenRepo;
+import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.service.UserService;
 
 @Controller
@@ -32,6 +33,9 @@ public class LoginController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private UserRepo userrepo;
 	
 	@RequestMapping("/login-page")
 	public String loginPage() {
@@ -84,6 +88,7 @@ public class LoginController {
         	PasswordToken ptoken = prepo.findByToken(token);
         	User user = ptoken.getUser();
         	user.setPassword(passwordEncoder.encode(password).toCharArray());
+        	userrepo.save(user);
         	prepo.delete(ptoken);
             return "resetresult";
         }
