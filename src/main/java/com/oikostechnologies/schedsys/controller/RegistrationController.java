@@ -26,11 +26,16 @@ public class RegistrationController {
 	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/verifyUser")
-	public String verifyUserPage(Model model, @RequestParam("token") String token) {
-		
-		RegistrationToken rtoken = tokenrepo.findByToken(token);
-		model.addAttribute("token", rtoken);
-		return "verifyuser";
+	public String verifyUserPage(Model model, @RequestParam(required = false) String token) {
+		if(token != null) {
+			RegistrationToken rtoken = tokenrepo.findByToken(token);
+			model.addAttribute("token", rtoken);
+			return "verifyuser";
+		}
+		else {
+			model.addAttribute("token", null);
+			return "verifyuser";
+		}
 	}
 	
 	@PostMapping("/newUser")
@@ -41,6 +46,11 @@ public class RegistrationController {
 		user.setEnabled(true);
 		userrepo.save(user);
 		tokenrepo.delete(rtoken);
+		return "redirect:/successRegistration";
+	}
+	
+	@GetMapping("/successRegistration")
+	public String success() {
 		return "regsuccess";
 	}
 	
