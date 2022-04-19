@@ -10,6 +10,8 @@ $(document).ready(function(){
 	masteradmin['contact'] = $("#contact").val();
 	
 	$("#addcomp").submit(function(){
+		$("#submit").prop('disabled',true);
+		$("#submit").val("Please wait...");
 		$.post($(this).attr("action"), $(this).serialize(),function(result){
 			alert("Company and Master Admin successfully added!");
 			window.location.reload();
