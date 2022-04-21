@@ -1,25 +1,45 @@
 $(document).ready(function(){
 	
-	let newcompany = {};
-	newcompany['companyname'] = $("#company").val();
-	
-	let masteradmin = {};
-	masteradmin['fname'] = $("#firstname").val();
-	masteradmin['lname'] = $("#lastname").val();
-	masteradmin['useremail'] = $("#useremail").val();
-	masteradmin['contact'] = $("#contact").val();
+	// Add Company and Master Admin
 	
 	$("#addcomp").submit(function(){
 		$("#submit").prop('disabled',true);
-		$("#submit").val("Please wait...");
+		$("#submit").text("Please wait...");
 		$.post($(this).attr("action"), $(this).serialize(),function(result){
-			alert("Company and Master Admin successfully added!");
-			window.location.reload();
+			if(result){
+				alert("Company and Master Admin successfully added!");
+				window.location.reload();
+			}
+			else{
+				alert("That email already exists");
+				$("#submit").prop('disabled',false);
+				$("#submit").text("Add");
+			}
+			
 		});
 		return false;
 	});
 	
+	$("#addna").click(function(){
+		$("#history").val($("#histval").text());
+		$("#vision").val($("#visval").text());
+		$("#mission").val($("#misval").text());
+		$("#philosophy").val($("#philval").text());
+		$("#corevalue").val($("#coreval").text());
+	})
+	
+	// Add Company DNA
+	
+	$("#dnaform").submit(function(){
+		$.post($(this).attr('action'),$(this).serialize(),function(result){
+			alert(result);
+			window.location.reload();
+		});
+		return false;
+	})
 
+
+	// Show Companies in the Table
 			
 	var table = $('#mytable').DataTable({
 				

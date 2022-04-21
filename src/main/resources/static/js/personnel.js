@@ -2,8 +2,9 @@
 $(document).ready(function() {
 
 	
-		$("#viewscore :input").prop("disabled",true); 
+		$("#viewscore :input").prop("disabled",true); // Disables Edit on View Scorecard
 
+	// Show Personnel of My Companies (MASTERADMIN and others)
 
 	var cptable = $("#cptable").DataTable({
 	
@@ -54,10 +55,10 @@ $(document).ready(function() {
 			data: 'id',
 			render: function(data, type, row) {
 				if (row.enabled) {
-					return "<button class='btn btn-primary viewercp' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'> View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
+					return "<button class='btn btn-primary viewercp' > View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
 				}
 				else {
-					return "<button class='btn btn-primary'  disabled> View Details </button> <button class='btn btn-primary' disabled> View Scorecard </button>";
+					return "<button class='btn btn-primary'  disabled> View Details </button> <button class='btn btn-secondary' disabled> View Scorecard </button>";
 				}
 
 			}
@@ -67,6 +68,8 @@ $(document).ready(function() {
 		var data = cptable.row($(this).parents('tr')).data();
 	});
 
+
+	// Show all personnels (SUPERADMIN)
 
 	var table = $('#mytable').DataTable({
 		
@@ -130,17 +133,24 @@ $(document).ready(function() {
 	let id = 0;
 	let ids = 0;
 	
+	// Check Profile of Personnel
+	
 	$("#mytable tbody").on('click', '.viewermy', function() {
 		var data = table.row($(this).parents('tr')).data();
 		ids = data.id;
 		window.location.href="/profile/" + ids;
 		
 	});
+	
+	// Check Profile of Personnel
+	
 	$("#cptable tbody").on('click', '.viewercp', function() {
 		var data = cptable.row($(this).parents('tr')).data();
 		id = data.id;
 		window.location.href="/profile/" + id;
 	});
+	
+	// For Saving Scorecard (testing only not working)
 	
 	$("#save").click(function(){
 		$.ajax({
@@ -152,4 +162,23 @@ $(document).ready(function() {
 			}
 		})
 	});
+	
+	
+	$("#addPersonnel").submit(function(){
+		$("#submit").prop('disabled',true);
+		$('#submit').text('Please wait...');
+		$.post($(this).attr('action'), $(this).serialize(),function(result){
+			if(result){
+				alert("Personnel Successfully Added!");
+				window.location.reload();
+			}
+			else{
+				alert("User with that email already exist");
+				$('#submit').text('Add');
+				$('#submit').prop('disabled',false);
+			}
+		});
+		return false;
+	})
+	
 });

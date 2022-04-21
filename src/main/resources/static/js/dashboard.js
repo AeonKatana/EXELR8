@@ -1,4 +1,8 @@
 $(document).ready(function() {
+	
+	
+	// Table view for SuperAdmin
+	
 	const superview = $("#view").DataTable({
 		"scrollY": "350px",
 		"scrollCollapse": true,
@@ -32,6 +36,8 @@ $(document).ready(function() {
 			}
 		}]
 	});
+	
+	// Table view for MASTERADMIN and others
 	
 	const compqview = $("#compqview").DataTable({
 		"scrollY": "350px",

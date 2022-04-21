@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.oikostechnologies.schedsys.entity.Company;
+import com.oikostechnologies.schedsys.entity.CompanyDna;
 import com.oikostechnologies.schedsys.model.CompanyModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
@@ -22,4 +23,5 @@ public interface CompanyService {
 	public DataTablesOutput<Company> findAll(DataTablesInput input);
 	public DataTablesOutput<Company> findAll(DataTablesInput input ,Specification<Company> spec);
 	public Company getCompany(String name);
+	public String addDna(CompanyDna dna, long id);
 }

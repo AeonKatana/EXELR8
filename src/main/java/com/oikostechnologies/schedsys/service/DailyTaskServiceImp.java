@@ -225,7 +225,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 
 	@Override
 	public List<DailyTask> getAllTask() {
-		return dailyrepo.findAllByDoneFalseOrderByStarteddateDesc();
+		return dailyrepo.findAllByDoneFalseOrderByIdDesc();
 	}
 
 	@Override

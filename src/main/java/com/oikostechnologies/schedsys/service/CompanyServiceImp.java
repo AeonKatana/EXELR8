@@ -19,12 +19,14 @@ import org.springframework.stereotype.Service;
 import com.oikostechnologies.schedsys.datatable.repo.CompanyDataTable;
 import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.Company;
+import com.oikostechnologies.schedsys.entity.CompanyDna;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.UserRole;
 import com.oikostechnologies.schedsys.event.CompanyEvent;
 import com.oikostechnologies.schedsys.model.CompanyModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
+import com.oikostechnologies.schedsys.repo.CompanyDnaRepo;
 import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
@@ -36,25 +38,28 @@ public class CompanyServiceImp implements CompanyService {
 
 	@Autowired
 	private CompanyRepo companyrepo;
-	
+
 	@Autowired
 	private UserRepo userrepo;
-	
+
 	@Autowired
 	private UserRoleRepo userrolerepo;
-	
+
 	@Autowired
 	private RoleRepo rolerepo;
-	
+
 	@Autowired
 	private CompanyDataTable companytable;
-	
+
 	@Autowired
 	private ApplicationEventPublisher publisher;
-	
+
 	@Autowired
 	private ActlogRepo actrepo;
 	
+	@Autowired
+	private CompanyDnaRepo dnarepo;
+
 	@Override
 	public long companycount() {
 		return companyrepo.count();
@@ -66,53 +71,44 @@ public class CompanyServiceImp implements CompanyService {
 	}
 
 	@Override
-	public boolean addCompany(@AuthenticationPrincipal MyUserDetails detail,CompanyModel company, UserModel user, HttpServletRequest request) {
-		
-		Company comp = Company.builder()
-						.color(company.getCompanycolor())
-						.compname(company.getCompanyname())
-						.build();
-		User master = User.builder()
-					  .firstname(user.getFname())
-					  .lastname(user.getLname())
-					  .contactno(user.getContact())
-					  .email(user.getUseremail())
-					  .company(comp)
-					  .build();
-		
-		UserRole ur = UserRole.builder()
-						.role(rolerepo.findById(2L).orElse(null))
-						.user(master)
-						.build();
-		
-		
-		
-		companyrepo.save(comp);
-		userrepo.save(master);
-		
-		userrolerepo.save(ur);
-		publisher.publishEvent(new CompanyEvent(detail,master, applicationUrl(request)));
-		
-		ActivityLog compcreate = new ActivityLog();
-		compcreate.setAction("has created a company");
-		compcreate.setTarget(comp.getCompname());
-		compcreate.setTargetlink("#");
-		compcreate.setUser(detail.getUser());
-		compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
-		
-		
-		ActivityLog createuser = new ActivityLog();
-		createuser.setAction("has created a user");
-		createuser.setTarget(user.getFname() + " " + user.getLname());
-		createuser.setTargetlink("#");
-		createuser.setUser(master);
-		createuser.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
-		
-		actrepo.save(compcreate);
-		actrepo.save(createuser);
-		
-		
-		return true;
+	public boolean addCompany(@AuthenticationPrincipal MyUserDetails detail, CompanyModel company, UserModel user,
+			HttpServletRequest request) {
+		User useremail = userrepo.findByEmail(user.getUseremail());
+		if (useremail == null) {
+			Company comp = Company.builder().color(company.getCompanycolor()).compname(company.getCompanyname())
+					.build();
+			User master = User.builder().firstname(user.getFname()).lastname(user.getLname())
+					.contactno(user.getContact()).email(user.getUseremail()).company(comp).build();
+
+			UserRole ur = UserRole.builder().role(rolerepo.findById(2L).orElse(null)).user(master).build();
+
+			companyrepo.save(comp);
+			userrepo.save(master);
+
+			userrolerepo.save(ur);
+			publisher.publishEvent(new CompanyEvent(detail, master, applicationUrl(request)));
+
+			ActivityLog compcreate = new ActivityLog();
+			compcreate.setAction("has created a company");
+			compcreate.setTarget(comp.getCompname());
+			compcreate.setTargetlink("#");
+			compcreate.setUser(detail.getUser());
+			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
+
+			ActivityLog createuser = new ActivityLog();
+			createuser.setAction("has created a user");
+			createuser.setTarget(user.getFname() + " " + user.getLname());
+			createuser.setTargetlink("#");
+			createuser.setUser(master);
+			createuser.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
+
+			actrepo.save(compcreate);
+			actrepo.save(createuser);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	private String applicationUrl(HttpServletRequest request) {
@@ -138,6 +134,27 @@ public class CompanyServiceImp implements CompanyService {
 	public Company getCompany(String name) {
 		// TODO Auto-generated method stub
 		return companyrepo.findByCompname(name);
+	}
+
+	@Override
+	public String addDna(CompanyDna dna, long id) {
+		Company company = companyrepo.findById(id).orElse(null);
+		CompanyDna newdna = dnarepo.findByCompany(company);
+		
+		if(newdna == null) {
+			dna.setCompany(company);
+			dnarepo.save(dna);
+		}
+		else {
+			newdna.setHistory(dna.getHistory());
+			newdna.setCorevalue(dna.getCorevalue());
+			newdna.setMission(dna.getMission());
+			newdna.setPhilosophy(dna.getPhilosophy());
+			newdna.setVision(dna.getVision());
+			dnarepo.save(newdna);
+		}
+		
+		return "DNA Successfully Updated!";
 	}
 
 }

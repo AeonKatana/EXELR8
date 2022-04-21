@@ -17,11 +17,18 @@ import com.oikostechnologies.schedsys.datatable.repo.UserDataTable;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.PasswordToken;
 import com.oikostechnologies.schedsys.entity.RegistrationToken;
+import com.oikostechnologies.schedsys.entity.Role;
 import com.oikostechnologies.schedsys.entity.User;
+import com.oikostechnologies.schedsys.entity.UserRole;
+import com.oikostechnologies.schedsys.event.CompanyEvent;
 import com.oikostechnologies.schedsys.event.PasswordEvent;
+import com.oikostechnologies.schedsys.model.PersonnelModel;
+import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.PasswordTokenRepo;
 import com.oikostechnologies.schedsys.repo.RegistrationTokenRepo;
+import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
+import com.oikostechnologies.schedsys.repo.UserRoleRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 
 @Service
@@ -41,6 +48,16 @@ public class UserServiceImp implements UserService {
 	
 	@Autowired
 	private PasswordTokenRepo ptokenrepo;
+	
+	@Autowired
+	private RoleRepo rolerepo;
+	
+	@Autowired
+	private UserRoleRepo userrolerepo;
+	
+	@Autowired
+	private CompanyRepo comprepo;
+	
 	
 	@Override
 	public long usercount() {
@@ -135,6 +152,42 @@ public class UserServiceImp implements UserService {
 	@Override
 	public List<User> getAllByCompany(String name) {
 		return userrepo.getAllByCompanyname(name);
+	}
+
+	@Override
+	public boolean addPersonnel(MyUserDetails master,PersonnelModel model, HttpServletRequest request) {
+		
+		User useremail = userrepo.findByEmail(model.getEmail());
+		
+	if(useremail == null) {
+		
+		Company company = master.getUser().getCompany();
+		
+		User user = User.builder()
+				.firstname(model.getFirstname())
+				.lastname(model.getLastname())
+				.email(model.getEmail())
+				.contactno(model.getContactno())
+				.company(company)
+				.build();
+	
+	Role role = rolerepo.findByRolename(model.getRole());
+	
+	UserRole userRole = UserRole.builder()
+						.user(user)
+						.role(role)
+						.build();
+	
+	
+	
+	userrepo.save(user);
+	userrolerepo.save(userRole);
+	publisher.publishEvent(new CompanyEvent(master, user, applicationUrl(request)));
+	
+		return true;
+	}
+	System.out.println(useremail.getFirstname());
+		return false;
 	}
 
 	

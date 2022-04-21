@@ -1,5 +1,7 @@
 $(document).ready(function(){
 	
+	
+	// Submit new password
 	$("#submit").prop("disabled",true);
 		
 		$("#newPassword").keyup(function(){

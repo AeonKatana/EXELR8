@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.oikostechnologies.schedsys.entity.User;
+import com.oikostechnologies.schedsys.entity.UserDepartment;
 import com.oikostechnologies.schedsys.projection.UserDeptDTO;
 
 public interface UserRepo extends JpaRepository<User, Long> {
@@ -40,6 +41,9 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	List<User> getAllByOrderBy(@Param("param") String param);
 	
 	User findByEmail(String email);
+	
+	
+	
 	
 	Page<User> findByFirstnameContainingOrLastnameContaining(String firstname, String lastname , Pageable page);
 	

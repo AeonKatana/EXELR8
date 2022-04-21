@@ -1,6 +1,8 @@
 package com.oikostechnologies.schedsys.entity;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,5 +59,22 @@ public class Department {
 	public long usercount()
 	{
 		return userdepartment.size();
+	}
+	@Transient
+	public int numoftask() {
+		// Get the current department this
+		// Get all users of this department
+		// Get all user task of each users
+		int total = 0;
+		for(Task k : tasks) {
+			total += k.getTaskdetails().size();
+		}
+		return total;
+	}
+	@Transient
+	public List<UserDepartment> supervisor() {
+		
+		return userdepartment.stream().filter(x -> x.getDeptrole().equals("SUPERVISOR")).collect(Collectors.toList());
+		
 	}
 }

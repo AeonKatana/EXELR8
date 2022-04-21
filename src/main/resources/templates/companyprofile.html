@@ -34,63 +34,7 @@ table.dataTable thead {
 </head>
 <body>
 
-<div class="modal" id="companyDNA">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 style="margin-left: auto; margin-right: 0px auto;" class="modal-title">Sunflower Inc.</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <h5 style="text-align:center;">History</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Mission</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Vision</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Philosophy</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p>
-      
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
 <!--End View DNA Modal -->
 
 
@@ -103,7 +47,7 @@ table.dataTable thead {
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
+		<form th:action="@{/companies/addDNA}" id="dnaform" method="POST">
       <!-- Modal body -->
       <div class="modal-body">
       
@@ -111,32 +55,32 @@ table.dataTable thead {
                 
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
                    <h4 style="text-align: center">HISTORY</h4>
-                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                   <textarea name="history" class="px-5 form-control"id="history" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
                 </div>
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
                    <h4 style="text-align: center">VISION</h4>
-                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                   <textarea name="vision" class="px-5 form-control"id="vision" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
                 </div>
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
                    <h4 style="text-align: center">MISSION</h4>
-                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                   <textarea name="mission" class="px-5 form-control"id="mission" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
                 </div>
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
                    <h4 style="text-align: center">CORE VALUES</h4>
-                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                   <textarea name="corevalue" class="px-5 form-control"id="corevalue" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
                 </div>
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
                    <h4 style="text-align: center">PHILOSOPHY</h4>
-                   <textarea class="px-5"id="entertext" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here"></textarea>
+                   <textarea name="philosophy" class="px-5 form-control"id="philosophy" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
                 </div>
             </div>
       </div>
       <!-- Modal footer -->
       <div class="modal-footer">
-      <button type="button" class="btn btn-success">Save</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="submit" id="dnasubmit" class="btn btn-success">Save</button>
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
-
+	</form>
     </div>
   </div>
 </div>
@@ -262,8 +206,8 @@ table.dataTable thead {
 						data-bs-toggle="modal" data-bs-target="#addcompany">Add
 						company</button>
 				<div
-					class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
-					<div class="col" th:if="${totalpage != 0}">
+					class="p-3 bg-white shadow-sm justify-content-around align-items-center rounded">
+					<div class="" th:if="${totalpage != 0}">
 						<table class="table bg-white rounded shadow-sm  table-hover" id="mytable">
 							<thead>
 								<tr>
@@ -280,16 +224,91 @@ table.dataTable thead {
 							</tbody>
 						</table>
 					</div>
-					<div class="col" th:unless="${totalpage != 0}">
+					<div class="" th:unless="${totalpage != 0}">
 						<h5 class="text-center m-5">No companies found</h5>
 					</div>
 				</div>
 			</div>
-			<div sec:authorize="hasAuthority('MASTERADMIN')" class="container-fluid text-center px-3 p-2" sech:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','RANKANDFILE')">
+			<div class="container-fluid text-center px-3 p-2" sec:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','RANKANDFILE')">
 				
-			 <a class="text-center" href="#">
-                <button type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
+			 <a class="text-center" href="#" sec:authorize="hasAuthority('MASTERADMIN')">
+                <button th:if="${company.dna == null}" id="addna"type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
+            	 <button th:unless="${company.dna == null}" id="addna" type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Edit DNA</button>
+            	
             </a>
+<div>			
+<div class="accordion mx-5" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
+      <button  class="accordion-button collapsed" th:classappend="${company.dna != null ? '' : 'disabled'}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        <h3><span class="text-center justify-content-center">History</span></h3>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body ">
+			<p class="m-2 bg-success text-white rounded p-4" id="histval" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
+			<h3 class="m-2 text-danger text-center" th:unless="${company.dna != null}">This company has no history</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="accordion mx-5" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
+      <button  class="accordion-button collapsed" th:classappend="${company.dna != null ? '' : 'disabled'}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        <h3><span class="text-center justify-content-center">Mission And Vision</span></h3>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body text-center">
+      		<div>
+      		<h4>Mission</h4>
+      			<p class="m-2 bg-info text-white p-4 rounded" id="misval" th:if="${company.dna != null}" th:text="${company.dna.mission}"></p>
+				<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no mission</h3>
+      		</div>
+      		<div>
+      		<h4>Vision</h4>
+      		<p class="m-2 bg-warning text-white p-4 rounded" id="visval" th:if="${company.dna != null}" th:text="${company.dna.vision}"></p>
+			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no vision</h3>
+      		</div>
+		 </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex mx-5">
+<div class="accordion w-50" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+       <h3><span class="text-center justify-content-center">Philosophy</span></h3>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingTwo">
+      <div class="accordion-body">
+      	 <div>
+      	 	<p class="m-2 bg-dark text-white p-4 rounded" id="philval" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
+			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>  
+      	 </div>
+		</div>
+    </div>
+  </div>
+</div>
+<div class="accordion w-50" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
+        <h3><span class="text-center justify-content-center">Core Values</span></h3>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingThree">
+      <div class="accordion-body">
+			<p class="m-2  text-white p-4 bg-primary rounded" id="coreval" th:if="${company.dna != null}" th:text="${company.dna.corevalue}"></p>
+			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no core values</p>       </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>			
 			
 			</div>
 

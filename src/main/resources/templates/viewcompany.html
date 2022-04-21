@@ -35,63 +35,7 @@ table.dataTable thead {
 </head>
 <body>
 
-<div class="modal" id="companyDNA">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 style="margin-left: auto; margin-right: 0px auto;" class="modal-title">Sunflower Inc.</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <h5 style="text-align:center;">History</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Mission</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Vision</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p><br>
-
-        <h5 style="text-align:center;">Philosophy</h5>
-        <p style="text-align:center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet risus nisl. 
-            Praesent et ex maximus, malesuada sapien a, hendrerit ipsum. Vivamus dignissim pellentesque laoreet. 
-            Mauris nec varius mauris, quis rutrum lorem. Pellentesque nec scelerisque est. Sed elementum mi ut lacus vehicula,
-            non iaculis eros efficitur. Cras euismod erat sit amet ipsum fringilla, vel tempor odio porta. Morbi massa nibh, 
-            lacinia eget luctus nec, dapibus vitae leo. Praesent sit amet sem sed nibh interdum fermentum ac sed tortor. Nullam pulvinar,
-            nibh at tempus condimentum, tellus quam suscipit diam, vitae bibendum orci leo id tortor. Mauris sollicitudin fringilla lacus,
-            vehicula maximus felis auctor vel.</p>
-      
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
 <!--End View DNA Modal -->
 
 <!-- Company Profile Edit -->
@@ -166,8 +110,8 @@ table.dataTable thead {
 					</ul>
 				</div>
 			</nav>
-
-			<div class="container">
+			
+<div class="container" th:if="${company != null}">
 			
 <div class="accordion mx-5" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
@@ -178,9 +122,32 @@ table.dataTable thead {
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body text-center">
-			<p class="m-2 bg-info text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
+			<p class="m-2 bg-success text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
 			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no history</h3>
       </div>
+    </div>
+  </div>
+</div>
+<div class="accordion mx-5" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
+      <button  class="accordion-button collapsed" th:classappend="${company.dna != null ? '' : 'disabled'}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        <h3><span class="text-center justify-content-center">Mission And Vision</span></h3>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body text-center">
+      		<div>
+      		<h4>Mission</h4>
+      			<p class="m-2 bg-info text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.mission}"></p>
+				<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no mission</h3>
+      		</div>
+      		<div>
+      		<h4>Vision</h4>
+      		<p class="m-2 bg-warning text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.vision}"></p>
+			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no vision</h3>
+      		</div>
+		 </div>
     </div>
   </div>
 </div>
@@ -189,20 +156,14 @@ table.dataTable thead {
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-       <h3><span class="text-center justify-content-center">Mission And Vision</span></h3>
+       <h3><span class="text-center justify-content-center">Philosophy</span></h3>
       </button>
     </h2>
     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingTwo">
       <div class="accordion-body">
       	 <div>
-      	 	<h4>Mission</h4>
-      	 	<p class="m-2 bg-info text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.mission}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no mission</p>  
-      	 </div>
-      	 <div>
-      	 	<h4>Vision</h4>
-      	 	<p class="m-2  text-white bg-success rounded" th:if="${company.dna != null}" th:text="${company.dna.vision}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no vision</p>  
+      	 	<p class="m-2 bg-dark text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
+			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>  
       	 </div>
 		</div>
     </div>
@@ -217,14 +178,14 @@ table.dataTable thead {
     </h2>
     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingThree">
       <div class="accordion-body">
-			<p class="m-2  text-white bg-primary rounded" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>       </div>
+			<p class="m-2  text-white bg-primary rounded" th:if="${company.dna != null}" th:text="${company.dna.corevalue}"></p>
+			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no core values</p>       </div>
     </div>
   </div>
 </div>
 </div>
 
-		<div class="m-5">
+	<div class="m-5">
 		
 		<div class="col" th:if="${comppersonnel != null}">
 						<table class="table bg-white rounded shadow-sm  table-hover" id="cptable">
@@ -245,6 +206,11 @@ table.dataTable thead {
 						<h5 class="text-center m-5">No personnel found</h5>
 					</div>
 				</div>
+			</div>
+			<div th:unless="${company != null}" class="container">
+			
+				<h5 class="text-center">SUPERADMIN doesn't have a company!</h5>
+			
 			</div>
 		</div>
 	</div>

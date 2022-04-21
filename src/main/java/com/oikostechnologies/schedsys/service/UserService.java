@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
-import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.User;
+import com.oikostechnologies.schedsys.model.PersonnelModel;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 
 public interface UserService {
@@ -28,4 +28,5 @@ public interface UserService {
 	public List<User> getAllByCompany(MyUserDetails user);
 	public User findById(long id);
 	public List<User> getAllByCompany(String name);
+	public boolean addPersonnel(MyUserDetails user,PersonnelModel model, HttpServletRequest request);
 }

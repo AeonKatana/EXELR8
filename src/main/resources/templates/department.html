@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,9 +21,9 @@
 <div class="modal fade" id="adddepartment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-       <form id="adddept">
+       <form id="adddept" method="post">
         <div class="modal-header">
-        <h5 class="modal-title">Add new Department</h5>
+        <h5 class="modal-title" >Add new Department</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -33,7 +34,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputLastName" class="form-label fw-bold">Members :</label>
-                    <textarea type="text" class="mention" id="mention" placeholder="Type @ names(s) to add"></textarea>
+                    <textarea type="text" class="mention" id="mention" style="height:50px;" placeholder="Type @ names(s) to add"></textarea>
                 </div>
                   
              
@@ -117,7 +118,7 @@
 
        	  <div class="container">
                 <div class="row">
-                    <div class="col text-center">
+                    <div class="col text-center" sec:authorize="!hasAuthority('RANKANDFILE')">
                     <button type="button" class="btn btn-success btn-default rounded-pill" data-bs-toggle="modal" data-bs-target="#adddepartment">Add department</button>    
                     </div>
                 </div>
@@ -129,7 +130,10 @@
 							<div class="card-body text-center">
 							<h4 class="card-title text-center m-2" th:text="${dept.deptname}">Marketing Department</h4>
 							<p class="card-text my-2 mx-2">Company : <span class="badge bg-info text-dark" th:text="${dept.companyname}"></span></p>	
-							<p class="card-text m-2">Supervisor : <span class="badge bg-success text-light">Sample User</span></p>
+							<p class="card-text m-2">Supervisor/s : <th:block th:each="member, num : ${dept.supervisor}" th:if="${num.index} < 1"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
+								<span th:if="${num.index == 0 && #lists.size(dept.supervisor) > 2}" th:text="${'+' + (#lists.size(dept.supervisor) - 2)}" class="badge bg-success text-light rounded-pill"></span>
+								</th:block>
+							</p>
 							
 								<p class="card-text m-2">Members : <th:block th:each="member, num : ${dept.userdepartment}" th:if="${num.index} < 2"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
 								<span th:if="${num.index == 1 && dept.usercount > 2}" th:text="${'+' + (dept.usercount - (num.index + 1))}" class="badge bg-success text-light rounded-pill"></span>
@@ -137,26 +141,33 @@
 								</p>
 						
 							
-							<a href="#" class="btn btn-primary m-2 text-center">View Department</a>
+							<a th:href="@{/department/{department}(department=${dept.deptname})}" class="btn btn-primary m-2 text-center">View Department</a>
 							</div>
 						</div>
 					</div>
-					<div class="m-2" sec:authorize="!hasAuthority('SUPERADMIN')" th:each="dept : ${mydept}">
+					<div class="m-2" sec:authorize="!hasAuthority('SUPERADMIN')" th:each="dept : ${mydept}" th:if="${#lists.size(mydept) > 0}">
 						<div class="card" style="width: 25rem;height:230px;">
 							<div class="card-body text-center">
 							<h4 class="card-title text-center m-2" th:text="${dept.deptname}">Marketing Department</h4>
 							<p class="card-text my-2 mx-2">Company : <span class="badge bg-info text-dark" th:text="${dept.companyname}"></span></p>	
-							<p class="card-text m-2">Supervisor : <span class="badge bg-success text-light">Sample User</span></p>
-							
+<p class="card-text m-2">Supervisor/s : <th:block th:each="member, num : ${dept.supervisor}" th:if="${num.index} < 1"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
+								<span th:if="${num.index == 0 && #lists.size(dept.supervisor) > 2}" th:text="${'+' + (#lists.size(dept.supervisor) - 2)}" class="badge bg-success text-light rounded-pill"></span>
+								</th:block>
+							</p>							
 								<p class="card-text m-2">Members : <th:block th:each="member, num : ${dept.userdepartment}" th:if="${num.index} < 2"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
 								<span th:if="${num.index == 1 && dept.usercount > 2}" th:text="${'+' + (dept.usercount - 2)}" class="badge bg-success text-light rounded-pill"></span>
 								</th:block>
 								</p>
 						
 							
-							<a href="#" class="btn btn-primary m-2 text-center">View Department</a>
+							<a th:href="@{/department/{department}(department=${dept.deptname})}" class="btn btn-primary m-2 text-center">View Department</a>
 							</div>
 						</div>
+					</div>
+					<div class="m-2" sec:authorize="!hasAnyAuthority('SUPERADMIN','MASTERADMIN','EXECUTIVE','MANAGER')" th:unless="${#lists.size(mydept) > 0}">
+						
+						<h5 class="text-center">You don't belong to any departments. Please consult your higher ups</h5>
+						
 					</div>
 				</div>
         

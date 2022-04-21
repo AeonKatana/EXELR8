@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	
-	
+	// Send Email by calling the server
 	$("#register-form").submit(function(){
 		$("#reset").prop("disabled", true);
 		$("#sendmessage").text("Sending");

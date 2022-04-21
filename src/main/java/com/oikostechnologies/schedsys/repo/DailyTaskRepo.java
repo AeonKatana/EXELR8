@@ -14,7 +14,7 @@ public interface DailyTaskRepo extends JpaRepository<DailyTask, Long> {
 
 	List<DailyTask> findAllByUserAndDoneFalseOrderByStarteddateDesc(User user);
 	
-	List<DailyTask> findAllByDoneFalseOrderByStarteddateDesc();
+	List<DailyTask> findAllByDoneFalseOrderByIdDesc();
 	
 	List<DailyTask> findAllByDoneFalseAndUserOrderById(User user);
 	

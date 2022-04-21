@@ -14,5 +14,6 @@ public interface DepartmentRepo extends JpaRepository<Department, Long> {
 	@Query("SELECT d from Department d join d.userdepartment ud join ud.user u where u =:user")
 	List<Department> getAllByUser(@Param("user") User user);
 	
+	Department findByDeptname(String deptname);
 	
 }

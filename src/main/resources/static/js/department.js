@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 
-
+// Reveal names in mentions when typing @
 
 $('textarea.mention').mentionsInput({
 	  onDataRequest:function (mode, query, callback) {
@@ -12,6 +12,7 @@ $('textarea.mention').mentionsInput({
 	  }
 	});
 	
+// Add the department	
 $("#adddept").submit(function(e){
 	
 	e.preventDefault();

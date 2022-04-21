@@ -1,14 +1,14 @@
 $(document).ready(function(){
-	
+	// For Recurring which is not available
 	$("#radio1").click(function(){
 		
 		$("#date").prop("disabled",false);
 	});
-	
+	// For Recurring which is not available
 	$("#radio2").click(function(){
 		$("#date").prop("disabled",true);
 	});
-	
+	// Destroy IFrame
 	$(".btncancel").click(function(){
 		$("#radio2").attr("checked", true);
 		$(this).parent().parent().parent().remove();
@@ -17,7 +17,7 @@ $(document).ready(function(){
 	});
 	 
 	
-	// For Add Task
+	// For Add Task (Reveal names when using @ for notify)
 	$('textarea.mention').mentionsInput({
 	  minChars : 1,
 	  onDataRequest:function (mode, query, callback) {
@@ -27,7 +27,7 @@ $(document).ready(function(){
 		      });
 	  }
 	});	
-	//For Add Task
+	//For Add Task (Reveal names when using @ for assign)
 	$('textarea#who').mentionsInput({
 		 minChars : 1,
 	  onDataRequest:function (mode, query, callback) {
@@ -37,7 +37,7 @@ $(document).ready(function(){
 		      });
 	  }
 	})
-	//For Edit Task
+	//For Edit Task (Reveal names when using @ for notify)
 	$('textarea.mentions').mentionsInput({
 	  minChars : 1,
 	  onDataRequest:function (mode, query, callback) {
@@ -47,7 +47,7 @@ $(document).ready(function(){
 		      });
 	  }
 	});	
-	//For Edit Task
+	//For Edit Task (Reveal names when using @ for assign)
 	$('textarea#whos').mentionsInput({
 		 minChars : 1,
 	  onDataRequest:function (mode, query, callback) {
@@ -59,12 +59,9 @@ $(document).ready(function(){
 	})
 	
 
-$("#shet").click(function(){
-	 
-});
+
 	
-	
-	// HTTP Requests
+	// Add the Task
 	
 	$("#addform").submit(function(e){
 		e.preventDefault();
@@ -98,6 +95,8 @@ $("#shet").click(function(){
 	});
 	let taskid = 0;
 	
+	
+	// Get task detail and make it as a placeholder for edit
 	$(".editbtn").click(function(){
 		taskid = $(this).attr("tid");
 		
@@ -121,7 +120,7 @@ $("#shet").click(function(){
 		
 	});
 	
-	
+	// Save edit changes
 	$("#edittask").submit(function(e){
 		e.preventDefault();
 		var task = {};

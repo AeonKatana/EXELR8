@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	
+	// Verify new user
 	$("#submit").prop("disabled",true);
 		
 		$("#newPassword").keyup(function(){

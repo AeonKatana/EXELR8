@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -18,8 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oikostechnologies.schedsys.entity.Department;
 import com.oikostechnologies.schedsys.entity.User;
+import com.oikostechnologies.schedsys.entity.UserDepartment;
 import com.oikostechnologies.schedsys.model.PeopleModel;
+import com.oikostechnologies.schedsys.model.PersonnelModel;
+import com.oikostechnologies.schedsys.repo.UserDepartmentRepo;
+import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.UserService;
 
@@ -29,6 +35,12 @@ public class PersonnelController {
 
 	@Autowired
 	private UserService userservice;
+	
+	@Autowired
+	private UserRepo userRepo;
+	
+	@Autowired
+	private UserDepartmentRepo repo;
 	
 /**	
  * Manual Pagination and Search functionality
@@ -79,6 +91,8 @@ public class PersonnelController {
 		return userservice.getAllByCompany(userdetail);
 	}
 	
+	
+	
 	@GetMapping("/companypeople")
 	@ResponseBody
 	public List<User> companyPeople(HttpSession session){
@@ -86,6 +100,22 @@ public class PersonnelController {
 		System.out.println("Company Name :" + companyname);
 		return userservice.getAllByCompany(companyname);
 	}
+	
+	@GetMapping("/deptpeople")
+	@ResponseBody
+	public List<PeopleModel> departmentPeople(HttpSession session,@AuthenticationPrincipal MyUserDetails userdetail){
+		List<PeopleModel> mention = new ArrayList<>();
+		
+		for(UserDepartment u : repo.findByDepartment((Department)session.getAttribute("dep"))) {
+			
+			mention.add(new PeopleModel(u.getUser().getId(),u.getUser().fullname(),"people"));
+			
+		}
+		
+		return mention;
+		
+	}
+	
 	
 	@GetMapping("/people")
 	@ResponseBody
@@ -112,6 +142,12 @@ public class PersonnelController {
 			return "You're not powerful enough to use this. Please consult your boss";
 		}
 		return "Scorecard Added!";
+	}
+	
+	@PostMapping("/addPersonnel")
+	@ResponseBody
+	public boolean addPersonnel(@AuthenticationPrincipal MyUserDetails user, PersonnelModel model ,HttpServletRequest request) {
+		return userservice.addPersonnel(user, model, request);
 	}
 	
 	@GetMapping("/getDetail")

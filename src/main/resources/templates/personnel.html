@@ -71,35 +71,40 @@ table.dataTable thead {
         <h5 class="modal-title">Add Personnel</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <form th:action="@{/personnel/addPersonnel}" id="addPersonnel" method="POST">
         <div class="modal-body">
-            <form >
+            
                 <div class="mb-3">
                   <label for="InputFistName" class="form-label fw-bold">Firstname</label>
-                  <input type="text" class="form-control" id="" placeholder="Enter first name">
+                  <input required type="text" name="firstname" class="form-control" id="" placeholder="Enter first name">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3" >
                     <label for="InputLastName" class="form-label fw-bold">Lastname</label>
-                    <input type="text" class="form-control" id="" placeholder="Enter last name">
+                    <input required type="text" name="lastname" class="form-control" id="" placeholder="Enter last name">
                   </div>
                 <div class="mb-3">
-                    <label for="InputLastName" class="form-label fw-bold">Department</label>
-                    <input type="text" class="form-control" id="" placeholder="Select Department">
+                    <label for="InputLastName" class="form-label fw-bold">Role</label>
+                    <select name="role" class="form-select">
+                    	<option value="EXECUTIVE">EXECUTIVE</option>
+                    	<option value="MANAGER">MANAGER</option>
+                    	<option value="RANKANDFILE" selected>RANK AND FILE</option>
+                    </select>
                 </div>
                 <div class="mb-3">
-                    <label for="InputLastName" class="form-label fw-bold">Role</label>
-                    <input type="text" class="form-control" id="" list="role"placeholder="Choose role">
-                  
+                	<label>Contact No</label>
+                	<input type="tel" class="form-control" id="contact" name="contactno" placeholder="639123456789" pattern="[63]{2}[0-9]{10}" required>
                 </div>
                 <div class="mb-3">
                     <label for="InputLastName" class="form-label fw-bold">Email address</label>
-                    <input type="text" class="form-control" id="" placeholder="Enter email address">
+                    <input required type="text" name="email" class="form-control" id="" placeholder="Enter email address">
                 </div>
-            </form>
+           
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success">Add</button>
+          <button type="submit" id="submit" class="btn btn-success">Add</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
+         </form>
       </div>
     </div>
   </div>
@@ -384,8 +389,8 @@ table.dataTable thead {
 			</div>
 				
 				<div sec:authorize="hasAuthority('SUPERADMIN')"
-					class="p-3 shadow-sm d-flex">
-					<div class="col" th:if="${totalpage != 0}">
+					class="p-3 shadow-sm ">
+					<div class="" th:if="${totalpage != 0}">
 						<table class="table bg-white rounded shadow-sm  table-hover" id="mytable">
 							<thead class="thead-dark">
 								<tr>
@@ -402,7 +407,7 @@ table.dataTable thead {
 							</tbody>
 						</table>
 					</div>
-					<div class="col" th:unless="${totalpage != 0}">
+					<div class="" th:unless="${totalpage != 0}">
 						<h5 class="text-center m-5">No companies found</h5>
 					</div>
 			</div>

@@ -10,7 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,6 +18,7 @@ import com.oikostechnologies.schedsys.entity.view.Quickview;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.QuickViewRepo;
+import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.TaskDetailRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
@@ -54,6 +54,8 @@ public class DashController {
 	@Autowired
 	private ActlogRepo actrepo;
 	
+	@Autowired
+	private RoleRepo rolerepo;
 	
 	
 	@RequestMapping("/")
@@ -116,10 +118,12 @@ public class DashController {
 	}
 	
 	@GetMapping("/dashboard/companies")
-	public String companylist(Model model) {
+	public String companylist( @AuthenticationPrincipal MyUserDetails user,Model model) {
 		model.addAttribute("masteradmincomp", comservice.getCompanies());
 		model.addAttribute("totalelement", comservice.getCompanies().getTotalElements());
 		model.addAttribute("totalpage", comservice.getCompanies().getTotalPages());
+		model.addAttribute("roles", rolerepo.findAll());
+		model.addAttribute("company", comservice.getCompany(user.getUser().companyname()));
 		return "companyprofile";
 	}
 	

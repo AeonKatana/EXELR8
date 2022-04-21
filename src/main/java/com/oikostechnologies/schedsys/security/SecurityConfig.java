@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/resources/**","/forgot-pass/**", "/resetPass").permitAll()
 			.antMatchers("/","/dashboard/**","/task/mytask/**", "/task/assignedtask/**", 
 					     "/task/savemytask","/personnel/**","/companies/**", "/personnel/mycompanypeople"
-					     ,"/personnel/savecard", "/task/searchtask", "/profile/**","/settings/**").authenticated()
+					     ,"/personnel/savecard", "/task/searchtask", "/profile/**","/settings/**", "/department/**").authenticated()
 			.and()
 			.formLogin().loginPage("/login-page").usernameParameter("email").passwordParameter("pass")
 			.loginProcessingUrl("/perform-login")

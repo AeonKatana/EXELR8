@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oikostechnologies.schedsys.entity.Company;
+import com.oikostechnologies.schedsys.entity.CompanyDna;
 import com.oikostechnologies.schedsys.model.CompanyModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
@@ -50,6 +51,13 @@ public class CompanyController {
 		model.addAttribute("company", viewcomp);
 		model.addAttribute("comppersonnel" , userservice.getAllByCompany(viewcomp.getCompname()));
 		return "viewcompany";
+	}
+	
+	
+	@PostMapping("/addDNA")
+	@ResponseBody
+	public String addDna(@AuthenticationPrincipal MyUserDetails user,CompanyDna dna) {
+		return companyService.addDna(dna, user.getUser().getCompany().getId());
 	}
 	
 	

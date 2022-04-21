@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	
+	// Show Personnels when viewing the company
 	var cptable = $("#cptable").DataTable({
         responsive: true,
 		"serverSide": false,

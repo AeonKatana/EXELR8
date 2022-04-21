@@ -13,7 +13,9 @@ $(document).ready(
 					$(".donebtn").click(function() {
 						taskid = $(this).attr("tid");
 					});
-
+					
+					
+					// Make the Task done
 					$("#confirmdone").click(
 							function() {
 
@@ -38,6 +40,7 @@ $(document).ready(
 						taskid = $(this).attr("tid");
 					});
 
+					// Delete the Task
 					$("#confirmdelete").click(
 							function() {
 								$
