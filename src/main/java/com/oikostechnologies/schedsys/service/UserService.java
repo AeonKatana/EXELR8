@@ -16,6 +16,7 @@ public interface UserService {
 
 	public long usercount();
 	public Page<User> getUsersByRole(String role);
+	public List<User> findAll();
 	public List<User> findAllUsers();
 	public Page<User> findAllUsers2();
 	public Page<User> findAllUsers(int page);
@@ -29,4 +30,5 @@ public interface UserService {
 	public User findById(long id);
 	public List<User> getAllByCompany(String name);
 	public boolean addPersonnel(MyUserDetails user,PersonnelModel model, HttpServletRequest request);
+	public List<User> getAllTardyUser();
 }

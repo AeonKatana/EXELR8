@@ -1,5 +1,7 @@
 package com.oikostechnologies.schedsys.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.data.domain.Page;
@@ -18,10 +20,11 @@ public interface CompanyService {
 
 	public long companycount();
 	public Page<Company> getCompanies();
-	public boolean addCompany(@AuthenticationPrincipal MyUserDetails detail,CompanyModel company, UserModel user, HttpServletRequest request);
+	public int addCompany(@AuthenticationPrincipal MyUserDetails detail,CompanyModel company, UserModel user, HttpServletRequest request);
 	public Page<Company> searchCompany(String search);
 	public DataTablesOutput<Company> findAll(DataTablesInput input);
 	public DataTablesOutput<Company> findAll(DataTablesInput input ,Specification<Company> spec);
 	public Company getCompany(String name);
 	public String addDna(CompanyDna dna, long id);
+	public List<Company> findAll();
 }

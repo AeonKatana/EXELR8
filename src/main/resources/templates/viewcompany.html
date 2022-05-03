@@ -34,11 +34,62 @@ table.dataTable thead {
 </style>
 </head>
 <body>
-
+<div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="text"></p>
+    </div>
+ </div>
+</div>
 
 <!--End View DNA Modal -->
 
 <!-- Company Profile Edit -->
+<div class="modal" id="addDNA">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+		<form th:action="@{/companies/addDNA}" id="dnaform" method="POST">
+      <!-- Modal body -->
+      <div class="modal-body">
+      
+            <div class="input-group">
+                
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">Purpose</h4>
+                   <textarea name="history" class="px-5 form-control"id="history" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
+                </div>
+                <input name="companyid" th:value="${company.id}" type="hidden" th:if="${company != null}">
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">CORE VALUES</h4>
+                   <textarea name="corevalue" class="px-5 form-control"id="corevalue" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
+                </div>
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">PHILOSOPHY</h4>
+                   <textarea name="philosophy" class="px-5 form-control"id="philosophy" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
+                </div>
+            </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      <button type="submit" id="dnasubmit" class="btn btn-success">Save</button>
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+	</form>
+    </div>
+  </div>
+</div>
+
+
 
 	<div class="d-flex" id="wrapper">
 
@@ -58,13 +109,10 @@ table.dataTable thead {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
-					th:href="@{/dashboard/task/mytask}"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-list-check me-2"></i>Task</a> <a
+					class="fas fa-user-group me-2"></i>Personnel</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -111,46 +159,29 @@ table.dataTable thead {
 				</div>
 			</nav>
 			
-<div class="container" th:if="${company != null}">
+<div class="container text-center" th:if="${company != null}">
 			
+			 <a class="text-center" href="#" sec:authorize="hasAuthority('SUPERADMIN')">
+                <button th:if="${company.dna == null}" id="addna"type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
+            	 <button th:unless="${company.dna == null}" id="addna" type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Edit DNA</button>
+            	
+            </a>
 <div class="accordion mx-5" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
       <button  class="accordion-button collapsed" th:classappend="${company.dna != null ? '' : 'disabled'}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-        <h3><span class="text-center justify-content-center">History</span></h3>
+        <h3><span class="text-center justify-content-center">Purpose</span></h3>
       </button>
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body text-center">
-			<p class="m-2 bg-success text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
+			<p class="m-2 bg-success text-white rounded p-4" id="histval" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
 			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no history</h3>
       </div>
     </div>
   </div>
 </div>
-<div class="accordion mx-5" id="accordionPanelsStayOpenExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
-      <button  class="accordion-button collapsed" th:classappend="${company.dna != null ? '' : 'disabled'}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-        <h3><span class="text-center justify-content-center">Mission And Vision</span></h3>
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
-      <div class="accordion-body text-center">
-      		<div>
-      		<h4>Mission</h4>
-      			<p class="m-2 bg-info text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.mission}"></p>
-				<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no mission</h3>
-      		</div>
-      		<div>
-      		<h4>Vision</h4>
-      		<p class="m-2 bg-warning text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.vision}"></p>
-			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no vision</h3>
-      		</div>
-		 </div>
-    </div>
-  </div>
-</div>
+
 <div class="d-flex mx-5">
 <div class="accordion w-50" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
@@ -162,7 +193,7 @@ table.dataTable thead {
     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingTwo">
       <div class="accordion-body">
       	 <div>
-      	 	<p class="m-2 bg-dark text-white rounded" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
+      	 	<p class="m-2 bg-dark text-white rounded p-4" id="philval" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
 			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>  
       	 </div>
 		</div>
@@ -178,7 +209,7 @@ table.dataTable thead {
     </h2>
     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingThree">
       <div class="accordion-body">
-			<p class="m-2  text-white bg-primary rounded" th:if="${company.dna != null}" th:text="${company.dna.corevalue}"></p>
+			<p class="m-2  text-white bg-primary rounded p-4" id="coreval" th:if="${company.dna != null}" th:text="${company.dna.corevalue}"></p>
 			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no core values</p>       </div>
     </div>
   </div>
@@ -209,7 +240,7 @@ table.dataTable thead {
 			</div>
 			<div th:unless="${company != null}" class="container">
 			
-				<h5 class="text-center">SUPERADMIN doesn't have a company!</h5>
+				<h5 class="text-center">Company does not exist!</h5>
 			
 			</div>
 		</div>
@@ -225,7 +256,12 @@ table.dataTable thead {
 			el.classList.toggle("toggled");
 		};
 	</script>
-	<script th:src="@{/js/viewcompany.js}"></script>
+	
+		<script th:src="@{/js/viewcompany.js}"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+		<script type="text/javascript" th:src="@{/js/notif.js}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	
 		
 </body>
 </html>

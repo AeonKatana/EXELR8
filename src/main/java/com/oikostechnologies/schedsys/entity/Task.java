@@ -3,6 +3,7 @@ package com.oikostechnologies.schedsys.entity;
 import java.time.LocalDate;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ public class Task {
 	@JsonBackReference
 	private Department department;
 	
-	@OneToMany(mappedBy = "task")
+	@OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<TaskDetail> taskdetails;
 	

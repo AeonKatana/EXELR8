@@ -6,15 +6,22 @@ $(document).ready(function(){
 		$("#submit").prop('disabled',true);
 		$("#submit").text("Please wait...");
 		$.post($(this).attr("action"), $(this).serialize(),function(result){
-			if(result){
-				alert("Company and Master Admin successfully added!");
+			console.log(result);
+			if(result === 1){
+				alert("Company Successfully Added!");
 				window.location.reload();
 			}
-			else{
-				alert("That email already exists");
-				$("#submit").prop('disabled',false);
-				$("#submit").text("Add");
+			else if(result === 2){
+				alert("This company name already exist");
 			}
+			else if(result === 3){
+				alert("This email is already being used by someone else");
+			}
+			else if(result === 4){
+				alert("An error occured. Please try again");
+			}
+			$("#submit").prop('disabled',false);
+		    $("#submit").text("Add");
 			
 		});
 		return false;
@@ -45,8 +52,7 @@ $(document).ready(function(){
 				
 				"scrollY":        "380px",
 		        "scrollCollapse": true,
-			    'ajax' : { url : '/companies/datatable' , type : "GET" },
-			    'serverSide' : true,
+			    'ajax' : { url : '/companies/datatable' , type : "GET", dataSrc : "" },
 			    "pageLength": 5,
 				"lengthChange": false,
 				"columnDefs": [{
@@ -59,9 +65,7 @@ $(document).ready(function(){
 					return "<p style='color :"+ row.color +" '> "+ data + "</p>";
 			      }
 			    }, {
-			      data : 'masteradmin',
-			      orderable : false,
-			      searchable : false
+			      data : 'masteradmin'
 			    },{
 			    	data : "user",
 			    	render : function(data, type ,row){
@@ -70,8 +74,7 @@ $(document).ready(function(){
 			    },{
 			    	data : 'id',
 			    	render : function(data){
-			    		return "<button class='btn btn-primary viewcomp'> View Details </button> "+
-			    		" <button class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#companyDNA'>View DNA</button>";
+			    		return "<button class='btn btn-primary viewcomp'> View Details </button> ";
 			    	}
 			    }]
 			  });

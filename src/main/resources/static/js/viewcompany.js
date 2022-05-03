@@ -1,5 +1,23 @@
 $(document).ready(function(){
 	
+	
+	$("#addna").click(function(){
+		$("#history").val($("#histval").text());
+		$("#philosophy").val($("#philval").text());
+		$("#corevalue").val($("#coreval").text());
+	})
+	
+	// Add Company DNA
+	
+	$("#dnaform").submit(function(){
+		$.post($(this).attr('action'),$(this).serialize(),function(result){
+			alert(result);
+			window.location.reload();
+		});
+		return false;
+	})
+	
+	
 	// Show Personnels when viewing the company
 	var cptable = $("#cptable").DataTable({
         responsive: true,

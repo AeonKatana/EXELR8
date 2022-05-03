@@ -1,6 +1,7 @@
 package com.oikostechnologies.schedsys.entity;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
@@ -46,49 +48,46 @@ public class User {
 	private long contactno;
 	
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<ActivityLog> actlog;
 	
 	
-	@OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserRole> userrole;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("user")
 	private Company company;
 
 	
-	@OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserDepartment> userdepartment;
 	
 	
-	@OneToMany(mappedBy = "user" , fetch =  FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "user" , fetch =  FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserTask> tasks;
 	
 	
-	@OneToMany(mappedBy = "user" , fetch=FetchType.LAZY , cascade = CascadeType.ALL , orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "user" , fetch=FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
 	@JsonManagedReference
+	@OrderBy("until DESC")
 	private Set<DailyTask> dailies;
 	
-	@OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user",cascade =CascadeType.ALL)
 	@JsonIgnore
 	private RegistrationToken token;
 	
-	@OneToOne(mappedBy ="user")
+	@OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private PasswordToken passtoken;
 	
-	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
+	@OrderBy("until DESC")
 	private Set<DailyTask> assigned;
 	
 	@Transient
@@ -150,6 +149,10 @@ public class User {
 		}
 	}
 	
+	@Transient
+	public int currentDaily() {
+		return dailies.stream().filter(x -> !x.isDone()).collect(Collectors.toList()).size();
+	}
 	
 	
 }

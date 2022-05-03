@@ -25,6 +25,18 @@
 
 </head>
 <body>
+<div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="text"></p>
+    </div>
+ </div>
+</div>
 	<div class="d-flex" id="wrapper">
 
 		<!----Sidebar STARTS here---->
@@ -43,13 +55,10 @@
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
-					th:href="@{/dashboard/task/mytask}"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-list-check me-2"></i>Task</a> <a
+					class="fas fa-user-group me-2"></i>Personnel</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -68,8 +77,11 @@
 				<div class="d-flex align-items-center">
 					<i class="fas fa-align-left primary-text fs-4 me-3"
 						id="menu-toggle"></i>
-					<h2 class="fs-2 m-0">
+					<h2 class="fs-2 m-0" sec:authorize="hasAuthority('SUPERADMIN')">
 						Welcome, <span sec:authentication="principal.Rolename"></span>
+					</h2>
+					<h2 class="fs-2 m-0" sec:authorize="!hasAuthority('SUPERADMIN')">
+						Welcome, <span sec:authentication="principal.Fullname"></span>
 					</h2>
 				</div>
 
@@ -100,11 +112,11 @@
 			<div class="container-fluid px-4">
 				<div class="row g-3 my-2">
 					<div class="col-md-3"
-						sec:authorize="hasAnyAuthority('RANKANDFILE','MASTERADMIN')">
+						sec:authorize="hasAnyAuthority('ASSOCIATE','MASTERADMIN')">
 						<div
 							class="p-3 bg-warning shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2 text-white">0</h3>
+								<h3 class="fs-2 text-white" th:text="${assignedtome}">0</h3>
 								<p class="fs-6 fw-bold text-white">Task Assigned</p>
 							</div>
 							<i class="fas fa-list fs-1  p-3 text-white"></i>
@@ -126,7 +138,7 @@
 							class="p-3 bg-success shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
 								<h3 class="fs-2 text-white" th:text="${usercount}"></h3>
-								<p class="fs-6 fw-bold text-white">Total Personel</p>
+								<p class="fs-6 fw-bold text-white">Total Personnel</p>
 							</div>
 							<i class="fas fa-user-group fs-1  p-3 text-white"></i>
 						</div>
@@ -136,23 +148,37 @@
 						<div
 							class="p-3 bg-danger shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2 text-white" th:text="${overduecount}">0</h3>
-								<p class="fs-6 fw-bold text-white">Overdue Task</p>
+								<h3 class="fs-2 text-white" sec:authorize="hasAuthority('SUPERADMIN')" th:text="${overduecount}">2</h3>
+								<h3 class="fs-2 text-white" sec:authorize="hasAuthority('MASTERADMIN')" th:text="${companyoverdue}">2</h3>
+								<h3 class="fs-2 text-white" sec:authorize="!hasAnyAuthority('MASTERADMIN', 'SUPERADMIN')" th:text="${myoverdue}">2</h3>								
+								<p class="fs-6 fw-bold text-white" sec:authorize="hasAnyAuthority('SUPERADMIN','MASTERADMIN')">Overdue</p>
+								<p class="fs-6 fw-bold text-white" sec:authorize="!hasAnyAuthority('SUPERADMIN','MASTERADMIN')">My Overdue</p>
 							</div>
 							<i class="fas fa-triangle-exclamation fs-1 p-3 text-white"></i>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-3" sec:authorize="!hasAuthority('SUPERADMIN')">
 						<div
 							class="p-3 bg-primary shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2 text-white" sec:authorize="hasAuthority('SUPERADMIN')" th:text="${dailies}">2</h3>
 								<h3 class="fs-2 text-white" sec:authorize="hasAuthority('MASTERADMIN')" th:text="${dailycomp}">2</h3>
-								<h3 class="fs-2 text-white" sec:authorize="!hasAnyAuthority('MASTERADMIN', 'SUPERADMIN')" th:text="${mydaily}">2</h3>								
-								<p class="fs-6 fw-bold text-white" sec:authorize="hasAnyAuthority('SUPERADMIN','MASTERADMIN')">Daily Task</p>
-								<p class="fs-6 fw-bold text-white" sec:authorize="!hasAnyAuthority('SUPERADMIN','MASTERADMIN')">My Daily Task</p>
+								<h3 class="fs-2 text-white" sec:authorize="!hasAuthority('MASTERADMIN')" th:text="${mydaily}">2</h3>								
+								<p class="fs-6 fw-bold text-white" sec:authorize="hasAuthority('MASTERADMIN')">Daily Task</p>
+								<p class="fs-6 fw-bold text-white" sec:authorize="!hasAuthority('MASTERADMIN')">My Daily Task</p>
 							</div>
 							<i class="fas fa-calendar-check fs-1 p-3 text-white"></i>
+						</div>
+					</div>
+					<div class="col-md-3" sec:authorize="hasAuthority('SUPERADMIN')" >
+						<div
+							class="p-3 bg-info shadow-sm d-flex justify-content-around align-items-center rounded">
+							<div>
+								<h3 class="fs-2 text-white" th:text="${#lists.size(tardyuser)}">2</h3>
+								<p class="fs-6 fw-bold text-white">Daily Checkup</p>
+							</div>
+							<i class="fa-solid fa-business-time text-white fs-1 p-3"></i>
+							
+							
 						</div>
 					</div>
 				</div>
@@ -172,18 +198,15 @@
 							</ul>
 						</div>
 					</div>
-					<div class="col" th:if="${view != 0}"
+					<div class="col" th:if="${#lists.size(tardyuser) > 0}"
 						sec:authorize="hasAuthority('SUPERADMIN')">
 						<table class="table bg-white rounded shadow-sm  table-hover"
 							id="view">
 							<thead>
 								<tr>
+									<th scope="col">Id</th>
+									<th scope="col">Full Name</th>
 									<th scope="col">Company</th>
-									<th scope="col">Department</th>
-									<th scope="col">Title Task</th>
-									<th scope="col">Date Started</th>
-									<th scope="col">Deadline</th>
-									<th scope="col">Progress</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -191,35 +214,11 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="col m-5" th:unless="${view != 0}"
+					<div class="col m-5" th:unless="${#lists.size(tardyuser) > 0}"
 						sec:authorize="hasAnyAuthority('SUPERADMIN')">
-						<h5 class="text-center m-5">There are currently no assigned
-							tasks within the department</h5>
+						<h5 class="text-center m-5">Personnel's who didn't able to create a daily task before 9am will be shown here</h5>
 					</div>
-					<div class="col" th:if="${compqview != 0}"
-						sec:authorize="hasAnyAuthority('MASTERADMIN','RANKANDFILE','EXECUTIVE','MANAGER')">
-						<table class="table bg-white rounded shadow-sm  table-hover"
-							id="compqview">
-							<thead>
-								<tr>
-									<th scope="col">Company</th>
-									<th scope="col">Department</th>
-									<th scope="col">Title Task</th>
-									<th scope="col">Date Started</th>
-									<th scope="col">Deadline</th>
-									<th scope="col">Progress</th>
-								</tr>
-							</thead>
-							<tbody>
-
-							</tbody>
-						</table>
-					</div>
-					<div class="col m-5" th:unless="${compqview != 0}"
-						sec:authorize="hasAnyAuthority('MASTERADMIN','RANKANDFILE','EXECUTIVE','MANAGER')">
-						<h5 class="text-center m-5">There are currently no assigned
-							tasks within your company's departments</h5>
-					</div>
+					
 				</div>
 
 			</div>
@@ -231,16 +230,30 @@
 
 
 
-
+	
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+		crossorigin="anonymous"></script>
+		<script type="text/javascript" th:src="@{/js/notif.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script>
 		var el = document.getElementById("wrapper");
 		var toggleButton = document.getElementById("menu-toggle");
 
+		
 		toggleButton.onclick = function() {
 			el.classList.toggle("toggled");
 		};
+	</script>
+	<script>
+		$(document).ready(function(){
+			
+			
+			
+		})
 	</script>
 
 </body>

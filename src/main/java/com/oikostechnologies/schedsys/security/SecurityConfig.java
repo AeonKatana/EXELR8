@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and()
 			.authorizeRequests()
 			.antMatchers("/resources/**","/forgot-pass/**", "/resetPass").permitAll()
-			.antMatchers("/","/dashboard/**","/task/mytask/**", "/task/assignedtask/**", 
+			.antMatchers("/","/dashboard/**","/task/**","/task/mytask/**", "/task/assignedtask/**", 
 					     "/task/savemytask","/personnel/**","/companies/**", "/personnel/mycompanypeople"
 					     ,"/personnel/savecard", "/task/searchtask", "/profile/**","/settings/**", "/department/**").authenticated()
 			.and()

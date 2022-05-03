@@ -1,5 +1,7 @@
 package com.oikostechnologies.schedsys.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +25,6 @@ import com.oikostechnologies.schedsys.entity.UserRole;
 import com.oikostechnologies.schedsys.event.CompanyEvent;
 import com.oikostechnologies.schedsys.event.PasswordEvent;
 import com.oikostechnologies.schedsys.model.PersonnelModel;
-import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.PasswordTokenRepo;
 import com.oikostechnologies.schedsys.repo.RegistrationTokenRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
@@ -54,10 +55,6 @@ public class UserServiceImp implements UserService {
 	
 	@Autowired
 	private UserRoleRepo userrolerepo;
-	
-	@Autowired
-	private CompanyRepo comprepo;
-	
 	
 	@Override
 	public long usercount() {
@@ -188,6 +185,19 @@ public class UserServiceImp implements UserService {
 	}
 	System.out.println(useremail.getFirstname());
 		return false;
+	}
+
+	@Override
+	public List<User> getAllTardyUser() {
+		LocalDateTime today =LocalDateTime.now(ZoneId.of("Asia/Manila")).withHour(9);
+		System.out.println("Today? : " + today);
+		return null;
+	}
+
+	@Override
+	public List<User> findAll() {
+		// TODO Auto-generated method stub
+		return userrepo.findAll();
 	}
 
 	

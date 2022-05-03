@@ -1,6 +1,7 @@
 package com.oikostechnologies.schedsys.repo;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,22 +19,39 @@ public interface DailyTaskRepo extends JpaRepository<DailyTask, Long> {
 	
 	List<DailyTask> findAllByDoneFalseAndUserOrderById(User user);
 	
-	@Query("SELECT count(*) from DailyTask dt where dt.starteddate = :today")
-	long countDailyToday(@Param("today") LocalDate today);
 	
-	@Query("SELECT count(*) from DailyTask dt join dt.user u join u.company c where c.compname =:company and dt.starteddate =:today")
-	long countDailyToday(@Param("today") LocalDate today, @Param("company") String company);
+	@Query("SELECT count(*) from DailyTask dt join dt.user u join dt.assignedby au where u.id =:id and au.id != u.id and dt.done = false")
+	long countDailyAssignedToMeBySomeoneElse(@Param("id") long id);
 	
-	@Query("SELECT count(*) from DailyTask dt join dt.user u where dt.starteddate = :today and u.id =:id and dt.done = false")
-	long countDailyToday(@Param("today") LocalDate today, @Param("id") long id);
+	@Query("SELECT count(*) from DailyTask dt where DATE(dt.starteddate) = :today")
+	long countDailyToday(@Param("today") Date today);
+	
+	@Query("SELECT count(*) from DailyTask dt join dt.user u join u.company c where c.compname =:company and DATE(dt.starteddate) =:today")
+	long countDailyToday(@Param("today") Date today, @Param("company") String company);
+	
+	@Query("SELECT count(*) from DailyTask dt join dt.user u where DATE(dt.starteddate) = :today and u.id =:id and dt.done = false")
+	long countDailyToday(@Param("today") Date today, @Param("id") long id);
 	
 	@Query("SELECT count(*) from DailyTask dt where dt.until < :today and dt.done = false")
 	long countOverdue(@Param("today") LocalDate today);
+	
+	@Query("SELECT count(*) from DailyTask dt join dt.user u where dt.until < :today and u.id = :id and dt.done = false")
+	long countOverdueByUser(@Param("today") LocalDate today, @Param("id") long id);
+	
+	@Query("SELECT count(*) from DailyTask dt join dt.user u join u.company c where c.compname =:company and dt.until < :today and dt.done = false")
+	long countOverdueByCompany(@Param("today") LocalDate today,@Param("company") String company);
 	
 	@Query("SELECT dt from DailyTask dt join dt.user u left join u.company c where (u.firstname like %:search% OR u.lastname like %:search% OR dt.title like %:search% OR"
 			+ " dt.description like %:search% OR c.compname like %:search%) and dt.done = false order by dt.title asc")
 	List<DailyTask> searchTask(@Param("search") String search);
 	
+	@Query("SELECT count(dt.id) from DailyTask dt join dt.user u join u.userdepartment ud join ud.department d where d.deptname =:department"
+			+ " and dt.done = false")
+	long countDailyByDepartment(@Param("department") String department);
+	
+	@Query("SELECT count(dt.id) from DailyTask dt join dt.user u join u.userdepartment ud join ud.department d where d.deptname =:department"
+			+ " and dt.done = false and dt.until < :today")
+	long countOverdueByDepartment(@Param("department") String department, @Param("today") LocalDate today);
 	
 	
 	

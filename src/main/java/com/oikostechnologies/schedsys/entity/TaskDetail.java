@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,7 +41,7 @@ public class TaskDetail {
 	private String recurringday;
 	private boolean done;
 	
-	@OneToMany(mappedBy = "taskdetail")
+	@OneToMany(mappedBy = "taskdetail" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserTask> taskdetail;
 	

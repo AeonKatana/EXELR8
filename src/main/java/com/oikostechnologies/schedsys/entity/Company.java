@@ -39,16 +39,15 @@ public class Company {
 	private long id;
 	private String compname;
 	
-	@OneToMany(mappedBy = "company")
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<Department> departments;
 	
-	@OneToMany(mappedBy = "company" , fetch = FetchType.LAZY , cascade = CascadeType.ALL, orphanRemoval = true)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "company" , fetch = FetchType.EAGER , cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("company")
 	private Set<User> user;
 	
-	@OneToOne(mappedBy = "company")
+	@OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private CompanyDna dna;
 	
@@ -72,6 +71,7 @@ public class Company {
 	public int deptcount() {
 		return departments.size();
 	}
+	
 	@Transient
 	@JsonSerialize
 	private String masteradmin;
@@ -79,7 +79,14 @@ public class Company {
 	@Transient
 	@JsonSerialize
 	public String masteradmin() {
-		masteradmin = user.stream().filter(x -> x.role().equalsIgnoreCase("MASTERADMIN")).findFirst().get().fullname();
+		
+		if(user.stream().filter(x -> x.role().equalsIgnoreCase("MASTERADMIN")).findFirst().get() == null) {
+		     return "No MASTERADMIN";
+		}
+		 masteradmin = user.stream().filter(x -> x.role().equalsIgnoreCase("MASTERADMIN")).findFirst().get().fullname();
+		if(masteradmin == null || masteradmin.isEmpty()) {
+			return "No MASTERADMIN";
+		}
 		return masteradmin;
 	}
 	

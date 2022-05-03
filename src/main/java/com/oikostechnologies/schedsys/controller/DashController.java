@@ -6,6 +6,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,17 +16,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.view.Quickview;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
+import com.oikostechnologies.schedsys.repo.NotificationRepo;
 import com.oikostechnologies.schedsys.repo.QuickViewRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
-import com.oikostechnologies.schedsys.repo.TaskDetailRepo;
-import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.CompanyService;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
+import com.oikostechnologies.schedsys.service.SchedulerService;
 import com.oikostechnologies.schedsys.service.UserService;
 
 @Controller
@@ -40,16 +44,10 @@ public class DashController {
 	private QuickViewRepo qrepo;
 	
 	@Autowired
-	private TaskDetailRepo detailrepo;
-	
-	@Autowired
 	private DailyTaskService dailyservice;
 	
 	@Autowired
 	private DepartmentRepo deptrepo;
-	
-	@Autowired
-	private UserRepo userepo;
 	
 	@Autowired
 	private ActlogRepo actrepo;
@@ -57,37 +55,42 @@ public class DashController {
 	@Autowired
 	private RoleRepo rolerepo;
 	
+	@Autowired
+	private SchedulerService schedservice;
+	
+	@Autowired
+	private NotificationRepo notifrepo;
 	
 	@RequestMapping("/")
 	public String dashboard(Model model, @AuthenticationPrincipal MyUserDetails userdetail) {
 		
 		
+		// I need Overdue for Masteradmin, and Others
 		model.addAttribute("usercount", userservice.usercount());
 		model.addAttribute("companycount", comservice.companycount());
-		model.addAttribute("view", qrepo.findAll().size());
-		model.addAttribute("compqview", qrepo.findAllByCompname(userdetail.getUser().companyname()).size());
-		model.addAttribute("completed", detailrepo.countCompleted());
-		model.addAttribute("dailies", dailyservice.countDailyToday());
-		model.addAttribute("dailycomp", dailyservice.countCompanyDaily(userdetail.getUser().companyname()));
-		model.addAttribute("mydaily", dailyservice.countMyDaily(userdetail.getUser().getId()));
-		model.addAttribute("overduecount", dailyservice.countOverdue());
+		//model.addAttribute("completed", detailrepo.countCompleted()); 
+		model.addAttribute("dailies", dailyservice.countDailyToday()); // For Superadmin
+		model.addAttribute("dailycomp", dailyservice.countCompanyDaily(userdetail.getUser().companyname())); // For Masteradmin
+		model.addAttribute("mydaily", dailyservice.countMyDaily(userdetail.getUser().getId())); // For Other Roles
+		model.addAttribute("overduecount", dailyservice.countOverdue()); // For Superadmin
+		model.addAttribute("myoverdue", dailyservice.countOverdueByUser(userdetail.getUser().getId()));
+		model.addAttribute("companyoverdue", dailyservice.countOverdueByCompany(userdetail.getUser().companyname()));
+		model.addAttribute("assignedtome", dailyservice.countDailyAssignedToMeBySomeoneElse(userdetail.getUser().getId()));
+		model.addAttribute("tardyuser", schedservice.getTardyusers());
 		
 		System.out.println(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 		
+		
 		return "dashboard";
 	}
-	// --------------------------------------------- REST API for Dashboard DataTable
-	@GetMapping("/superview")
+	// --------------------------------------------- REST API
+	
+	@GetMapping("/dashboard/tardy")
 	@ResponseBody
-	public List<Quickview> superview() {
-		return qrepo.findAll();
+	public List<User> tardyUsers(){
+		return schedservice.getTardyusers();
 	}
 	
-	@GetMapping("/compqview")
-	@ResponseBody
-	public List<Quickview> compqview(@AuthenticationPrincipal MyUserDetails userdetail){
-		return qrepo.findAllByCompname(userdetail.getUser().companyname());
-	}
 	// ----------------------------------------------
 	
 	
@@ -102,11 +105,13 @@ public class DashController {
 	
 	@GetMapping("/dashboard/personnel")
 	public String personel(Model model , @AuthenticationPrincipal MyUserDetails user) {
+		
+		Page<User> masteradmins = userservice.findAllUsers(0);
 		model.addAttribute("parameter", null);
 		model.addAttribute("currentPage" , 1);
-		model.addAttribute("masteradmins", userservice.findAllUsers(0));
-		model.addAttribute("totalelement", userservice.findAllUsers(0).getTotalElements());
-		model.addAttribute("totalpage", userservice.findAllUsers(0).getTotalPages());;
+		model.addAttribute("masteradmins", masteradmins);
+		model.addAttribute("totalelement", masteradmins.getTotalElements());
+		model.addAttribute("totalpage", masteradmins.getTotalPages());;
 		model.addAttribute("comppersonnel" , userservice.getAllByCompany(user));
 		
 		System.out.println("-------------------------------");
@@ -119,26 +124,27 @@ public class DashController {
 	
 	@GetMapping("/dashboard/companies")
 	public String companylist( @AuthenticationPrincipal MyUserDetails user,Model model) {
-		model.addAttribute("masteradmincomp", comservice.getCompanies());
-		model.addAttribute("totalelement", comservice.getCompanies().getTotalElements());
-		model.addAttribute("totalpage", comservice.getCompanies().getTotalPages());
+		Page<Company> mastercomp = comservice.getCompanies();
+		model.addAttribute("masteradmincomp", mastercomp);
+		model.addAttribute("totalelement", mastercomp.getTotalElements());
+		model.addAttribute("totalpage", mastercomp.getTotalPages());
 		model.addAttribute("roles", rolerepo.findAll());
 		model.addAttribute("company", comservice.getCompany(user.getUser().companyname()));
 		return "companyprofile";
 	}
 	
-	@GetMapping("/dashboard/task/mytask")
-	public String task(Model model, @AuthenticationPrincipal MyUserDetails userdetails) {
-		model.addAttribute("currentUser", userdetails.getUser().getId());
-		model.addAttribute("mytask", dailyservice.getAllTask());
-		model.addAttribute("currentDate", ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
-		return "task";
-	}
+//	@GetMapping("/dashboard/task/mytask")
+//	public String task(Model model, @AuthenticationPrincipal MyUserDetails userdetails) {
+//		model.addAttribute("currentUser", userdetails.getUser().getId());
+//		model.addAttribute("mytask", dailyservice.getAllTask());
+//		model.addAttribute("currentDate", ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+//		return "task";
+//	}
 	
-	@GetMapping("/dashboard/task/assignedtask")
-	public String assignedTask(Model model) {
-		return "pnltask";
-	}
+//	@GetMapping("/dashboard/task/assignedtask")
+//	public String assignedTask(Model model) {
+//		return "pnltask";
+//	}
 		
 	@GetMapping("/dashboard/activitylog")
 	public String activity(Model model) {
@@ -148,6 +154,11 @@ public class DashController {
 		return "activitylog";
 	}
 	
+	@GetMapping("/dashboard/notification")
+	public String notifications(@AuthenticationPrincipal MyUserDetails user,Model model) {
+		model.addAttribute("notifications", notifrepo.findAllByUser(user.getUser(), PageRequest.of(0, 10 , Sort.by("Id").descending())));
+		return "notifications";
+	}
 	
 	
 	

@@ -1,11 +1,12 @@
 package com.oikostechnologies.schedsys.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,20 +18,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class CompanyDna {
+public class Notification {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	private String history;
-	private String vision;
-	private String mission;
-	private String philosophy;
-	private String corevalue;
-	
 	@OneToOne
-	private Company company;
+	private User user;
 	
-	@Transient
-	private long companyid;
+	private String action;
+	private String actiontarget;
+	private String targetlink;
+	private LocalDateTime date;
+	
 }

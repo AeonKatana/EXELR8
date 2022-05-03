@@ -1,9 +1,10 @@
 package com.oikostechnologies.schedsys.controller;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,15 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.oikostechnologies.schedsys.entity.Department;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.UserDepartment;
-import com.oikostechnologies.schedsys.entity.UserTask;
 import com.oikostechnologies.schedsys.model.DeptModel;
 import com.oikostechnologies.schedsys.model.PeopleModel;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
-import com.oikostechnologies.schedsys.repo.TaskRepo;
 import com.oikostechnologies.schedsys.repo.UserDepartmentRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
-import com.oikostechnologies.schedsys.repo.UserTaskRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
+import com.oikostechnologies.schedsys.service.DailyTaskService;
 
 @Controller
 @RequestMapping("/department")
@@ -49,13 +48,7 @@ public class DepartmentController {
 	private UserDepartmentRepo udrepo;
 	
 	@Autowired
-	private TaskRepo taskrepo;
-	
-	@Autowired
-	private UserRepo userrepo;
-	
-	@Autowired
-	private UserTaskRepo userTaskRepo;
+	private DailyTaskService dailyservice;
 	
 	@PostMapping("/addDeptUser")
 	@ResponseBody
@@ -66,7 +59,7 @@ public class DepartmentController {
 			return "This department doesn't exist anymore";
 		}
 		for(PeopleModel pm : model.getPeople()) {
-			User user = userrepo.findById(pm.getId()).orElse(null);
+			User user = repo.findById(pm.getId()).orElse(null);
 			UserDepartment exists = udrepo.findByUserAndDepartment(user,d);
 			if(exists == null) {
 				UserDepartment ud = new UserDepartment();
@@ -86,7 +79,7 @@ public class DepartmentController {
 	@ResponseBody
 	@Transactional
 	public String kickUser(@PathVariable("id") long id, @RequestParam("deptid") long deptid) {
-		User user = userrepo.findById(id).orElse(null);
+		User user = repo.findById(id).orElse(null);
 		Department d = deptrepo.findById(deptid).orElse(null);
 		
 		if(user == null || d == null) {
@@ -94,11 +87,6 @@ public class DepartmentController {
 		}
 		
 		UserDepartment ud = udrepo.findByUserAndDepartment(user, d);
-		Set<UserTask> ut = ud.getUser().getTasks();
-		for(UserTask t : ut) {
-			System.out.println(t.getTaskdetail().getDescription());
-			userTaskRepo.deleteById(t.getId());
-		}
 		udrepo.delete(ud);
 		
 		
@@ -124,16 +112,14 @@ public class DepartmentController {
 		udrepo.save(ud2);
 		
 		for(PeopleModel pm : model.getPeople()) {
+			System.out.println("Name : " + pm.getName());
 			User user = repo.findById(pm.getId()).orElse(null);
-			
-			UserDepartment exists = udrepo.findByUser(user);
-			if(exists == null) {
 				UserDepartment ud = new UserDepartment();
 				ud.setDepartment(d);
 				ud.setDeptrole("MEMBER");
 				ud.setUser(user);
 				udrepo.save(ud);
-		     }
+		     
 		}
 		
 		return "Department Added!";
@@ -150,39 +136,18 @@ public class DepartmentController {
 		if(d == null) {
 			return "redirect:/dashboard/department";
 		}
-		List<UserDepartment> userdept = new ArrayList<>(d.getUserdepartment());
-		
-		Set<UserTask> ut = user.getUser().getTasks();
-		
-		UserDepartment ud = udrepo.findByUserAndDepartment(user.getUser(), d);
-		
-		model.addAttribute("ut", ut);
+		List<UserDepartment> userdept = new ArrayList<>(d.getUserdepartment()); // Get all users of this department
+		UserDepartment ud = udrepo.findByUserAndDepartment(user.getUser(), d); // Find the current logged-in user if he belongs to this department
+		model.addAttribute("currUser", user.getUser());
 		model.addAttribute("department", d);
-		model.addAttribute("user", ud);
-		model.addAttribute("supervisors", userdept.stream().filter(x -> x.getDeptrole().equals("SUPERVISOR")).collect(Collectors.toList()));
+		model.addAttribute("deptuser", ud);
 		model.addAttribute("users", userdept);
-		model.addAttribute("task", taskrepo.findByDepartmentOrderByIdDesc(d));
+		model.addAttribute("today", ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+		model.addAttribute("dailycount", dailyservice.countDailyByDeparment(department));
+		model.addAttribute("overduecount", dailyservice.countOverdueByDepartment(department));
 		return "viewdepartment";
 	}
 	
-	@PostMapping("/editDeptRole")
-	@ResponseBody
-	public boolean editDeptRole(@RequestParam("role") String role, @RequestParam("userid") long id,
-			@RequestParam("deptid") long deptid){
-		try {
-			if(!role.equals("MEMBER") && !role.equals("SUPERVISOR")) {
-				return false;
-			}else {
-				Department d = deptrepo.findById(deptid).orElse(null);
-				User user = userrepo.findById(id).orElse(null);
-			    UserDepartment ud = udrepo.findByUserAndDepartment(user, d);
-			    ud.setDeptrole(role);
-			    udrepo.save(ud);
-		     }
-			return true;
-		}catch(Exception e) {
-			return false;
-		}
-	}
+	
 	
 }

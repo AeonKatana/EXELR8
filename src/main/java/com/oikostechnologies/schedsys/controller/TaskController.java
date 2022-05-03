@@ -60,11 +60,11 @@ public class TaskController {
 		return "addmytask";
 	}
 	
-	@GetMapping("/assignedtask/addtask")
-	public String addAssignedTask() {
-		return "addpnltask";
+	@PostMapping("/multiAdd")
+	@ResponseBody
+	public DailyTaskModel saveMultiTask(@RequestBody DailyTaskModel daily, @AuthenticationPrincipal MyUserDetails user) {
+		return dailyservice.addMultiTask(daily, user.getUser());
 	}
-	
 	
 	@PutMapping("/edittask/{id}")
 	@ResponseBody
@@ -178,6 +178,8 @@ public class TaskController {
 		model.addAttribute("currentDate", ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
 		return "task";
 	}
+	
+	
 	
 	
 //	@PostMapping("/mentionTest")

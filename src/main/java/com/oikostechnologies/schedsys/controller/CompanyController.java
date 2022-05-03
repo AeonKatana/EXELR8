@@ -1,14 +1,11 @@
 package com.oikostechnologies.schedsys.controller;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oikostechnologies.schedsys.entity.Company;
@@ -40,33 +36,43 @@ public class CompanyController {
 	
 	
 	@GetMapping("/{company}")
-	private String viewCompany(@PathVariable("company") String company, Model model, HttpServletRequest request) {
+	private String viewCompany(@PathVariable("company") String company, Model model,@AuthenticationPrincipal MyUserDetails user ,HttpServletRequest request) {
 		HttpSession session = request.getSession(true); // For DataTable Purposes hehe
 		session.setAttribute("companyview", company);
 		Company viewcomp = companyService.getCompany(company);
 		if(viewcomp == null) {
 			model.addAttribute("company", null);
 			return "viewcompany";
+		}else {
+			if(user.getUser().getCompany() == null) {
+				model.addAttribute("company", viewcomp);
+				model.addAttribute("comppersonnel" , userservice.getAllByCompany(viewcomp.getCompname()));
+				return "viewcompany";
+			}
+			else if(user.getUser().getCompany().getId() == viewcomp.getId()) {
+				return "redirect:/dashboard/companies";
+			}
+			
+			model.addAttribute("company", viewcomp);
+			model.addAttribute("comppersonnel" , userservice.getAllByCompany(viewcomp.getCompname()));
+			return "viewcompany";
 		}
-		model.addAttribute("company", viewcomp);
-		model.addAttribute("comppersonnel" , userservice.getAllByCompany(viewcomp.getCompname()));
-		return "viewcompany";
+		
 	}
 	
 	
 	@PostMapping("/addDNA")
 	@ResponseBody
 	public String addDna(@AuthenticationPrincipal MyUserDetails user,CompanyDna dna) {
-		return companyService.addDna(dna, user.getUser().getCompany().getId());
+		return companyService.addDna(dna, dna.getCompanyid());
 	}
 	
 	
 	@PostMapping("/addcompany")
 	@ResponseBody
-	public boolean addCompany(@AuthenticationPrincipal MyUserDetails detail,CompanyModel company, UserModel user, HttpServletRequest request) {
-		companyService.addCompany(detail,company, user , request);
+	public int addCompany(@AuthenticationPrincipal MyUserDetails detail,CompanyModel company, UserModel user, HttpServletRequest request) {
+		return companyService.addCompany(detail,company, user , request);
 		
-		return true;
 	}
 	
 	
@@ -92,7 +98,7 @@ public class CompanyController {
 **/
 	@GetMapping("/datatable") // End point for DataTable Jquery Ajax
 	@ResponseBody
-	public DataTablesOutput<Company> companyList(@Valid DataTablesInput input , @RequestParam Map<String, String> queryParam){
-		return companyService.findAll(input);
+	public List<Company> companyList(){
+		return companyService.findAll();
 	}
 }

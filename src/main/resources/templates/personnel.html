@@ -40,6 +40,18 @@ table.dataTable thead {
 
 </head>
 <body>
+<div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="text"></p>
+    </div>
+ </div>
+</div>
 	<!-- Button trigger modal -->
 
 <!-- Modal -->
@@ -86,8 +98,10 @@ table.dataTable thead {
                     <label for="InputLastName" class="form-label fw-bold">Role</label>
                     <select name="role" class="form-select">
                     	<option value="EXECUTIVE">EXECUTIVE</option>
+                    	<option value="PROJLEAD">PROJECT LEADER</option>
+                    	<option value="SUPERVISOR">SUPERVISOR</option>
                     	<option value="MANAGER">MANAGER</option>
-                    	<option value="RANKANDFILE" selected>RANK AND FILE</option>
+                    	<option value="ASSOCIATE" selected>ASSOCIATE</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -327,12 +341,9 @@ table.dataTable thead {
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
-					th:href="@{/dashboard/task/mytask}"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-list-check me-2"></i>Task</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -408,10 +419,10 @@ table.dataTable thead {
 						</table>
 					</div>
 					<div class="" th:unless="${totalpage != 0}">
-						<h5 class="text-center m-5">No companies found</h5>
+						<h5 class="text-center m-5">No personnel found</h5>
 					</div>
 			</div>
-			<div sec:authorize="hasAnyAuthority('MASTERADMIN','RANKANDFILE','MANAGER','EXECUTIVE')"
+			<div sec:authorize="hasAnyAuthority('MASTERADMIN','ASSOCIATE','MANAGER','EXECUTIVE')"
 					class="p-3 shadow-sm d-flex">
 					<div class="col" th:if="${comppersonnel != null}">
 						<table class="table bg-white rounded shadow-sm  table-hover" id="cptable">
@@ -430,7 +441,7 @@ table.dataTable thead {
 						</table>
 					</div>
 					<div class="col" th:unless="${comppersonnel != null}">
-						<h5 class="text-center m-5">No companies found</h5>
+						<h5 class="text-center m-5">No personnel found</h5>
 					</div>
 			</div>
 
@@ -454,6 +465,8 @@ table.dataTable thead {
 		<script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js"></script>
 		<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 		<script th:src="@{/js/personnel.js}"></script>
-		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+		<script type="text/javascript" th:src="@{/js/notif.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </body>
 </html>

@@ -1,24 +1,40 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-     <link rel="stylesheet" th:href="@{/css/jquery.mentionsInput.css}">
-     
-    <title>EXELR8</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+	integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<link rel="stylesheet" th:href="@{/css/jquery.mentionsInput.css}">
+
+<title>EXELR8</title>
 
 </head>
 <body>
-<!-- Remove Member Modal -->
+<div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="text"></p>
+    </div>
+ </div>
+</div>
 <div class="modal fade" id="exampleModalCenter2" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
@@ -30,7 +46,31 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<p class="m-2">Are you sure you want to kick this member? </p>
+					<p class="m-2">Are you sure you want to delete this task? This
+						cannot be undone.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" id="deletetask">Confirm</button>
+					<button type="button" class="btn btn-danger"
+						data-bs-dismiss="modal">Close</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Remove Member Modal -->
+	<div class="modal fade" id="exampleModalCenter2" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p class="m-2">Are you sure you want to kick this member?</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-success" id="confirmdelete">Confirm</button>
@@ -41,490 +81,441 @@
 			</div>
 		</div>
 	</div>
-<!-- Add Members Modal -->
-<div class="modal fade" id="adddeptuser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       <form id="adddeptuserform">
-        <div class="modal-header">
-        <h5 class="modal-title" >Add Member</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-              <input type="hidden" th:value="${department.deptname}" id="deptid" >
-                <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Members :</label>
-                    <textarea type="text" class="mention3" id="mention" style="height:50px;" placeholder="Type @ names(s) to add"></textarea>
-                </div>
-                
-                  
-             
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="submit3" class="btn btn-success">Add</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Never mind</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
- <!-- Add more detail modal -->
-<div class="modal fade" id="adddetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       <form id="detailform" method="POST">
-        <div class="modal-header">
-        <h5 class="modal-title" >Add Task detail</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">   
-                 <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">What</label>
-                    <input type="text" class="form-control" name="detail" id="detail2" placeholder="What to do?" required>
-                </div>
-        		  <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Deadline</label>
-                    <input type="date" name="tedate" id="date2" required>
-                </div>
-                 <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Assign to</label>
-                    <textarea type="text" class="mention2" id="mention2" style="height:50px;" placeholder="Type @ names(s) to add"></textarea>
-                </div>          
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="submit2" class="btn btn-success">Add Task</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
- <!-- Add Main Task Modal -->
-<div class="modal fade" id="addtask" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       <form id="addtask" method="POST">
-        <div class="modal-header">
-        <h5 class="modal-title" >Create Task</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-           
-                <div class="mb-3">
-                  <label for="exampleInputFistName" class="form-label fw-bold">Task Title</label>
-                  <input type="text" class="form-control"  name="taskname" id="taskname" placeholder="Title of Task" required>
-                </div>
-              
-                 <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">What</label>
-                    <input type="text" class="form-control" name="detail" id="detail" placeholder="What to do?" required>
-                </div>
-        		  <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Deadline</label>
-                    <input type="date" name="tedate" id="date" required>
-                </div>
-                 <div class="mb-3">
-                    <label for="exampleInputLastName" class="form-label fw-bold">Assign to</label>
-                    <textarea type="text" class="mention" id="mention" style="height:50px;" placeholder="Type @ names(s) to add"></textarea>
-                </div>          
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="submit" class="btn btn-success">Add Task</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-   <!-- End Modal -->
-    <div class="d-flex" id="wrapper">
+	<!-- Add Members Modal -->
+	<div class="modal fade" id="adddeptuser" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form id="adddeptuserform">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Member</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" th:value="${department.deptname}" id="deptid">
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Members
+								:</label>
+							<textarea type="text" class="mention3" id="mention"
+								style="height: 50px;" placeholder="Type @ names(s) to add"></textarea>
+						</div>
 
-        <!----Sidebar STARTS here---->  
 
-        <div class="bg-dark text-dark" id="sidebar-wrapper">
-				<div
-				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom"><img th:src="@{/favicon.ico}" width="30px;" style=""><br>EXELR8</div>
-		                <div class="list-group list-group-flush my-3">
+
+					</div>
+					<div class="modal-footer">
+						<button type="submit" id="submit3" class="btn btn-success">Add</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Never mind</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Add more detail modal -->
+	<div class="modal fade" id="adddetail" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form id="detailform" method="POST">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Task detail</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Verb</label>
+							<input type="text" class="form-control" name="detail"
+								id="verb" placeholder="What to do?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Number</label>
+							<input type="number" class="form-control" name="detail"
+								id="number" placeholder="How many times?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">What</label>
+							<input type="text" class="form-control" name="detail"
+								id="what" placeholder="Object/Person/Others" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Deadline</label>
+							<input type="date" name="tedate" id="date" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" id="submit" class="btn btn-success">Add
+							Task</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Quick/ Multi Assign -->
+	<div class="modal fade" id="multitask" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form id="addform" method="POST">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Task</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Whom</label>
+							<textarea type="text" class="form-control" name="detail"
+								id="who" placeholder="For whom?(Type @ or Leave empty to assign to yourself)"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Verb</label>
+							<input type="text" class="form-control" name="detail"
+								id="verb3" placeholder="What to do?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Number</label>
+							<input type="number" class="form-control" name="detail"
+								id="number3" placeholder="How many times?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">What</label>
+							<input type="text" class="form-control" name="detail"
+								id="what3" placeholder="Object/Person/Others" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Deadline</label>
+							<input type="date" name="tedate" id="date3" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" id="submit3" class="btn btn-success">Add
+							Task</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="editdetail" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form id="editform">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Task detail</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Verb</label>
+							<input type="text" class="form-control" name="detail"
+								id="verb2" placeholder="What to do?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Number</label>
+							<input type="number" class="form-control" name="detail"
+								id="number2" placeholder="How many times?" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">What</label>
+							<input type="text" class="form-control" name="detail"
+								id="what2" placeholder="Object/Person/Others" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputLastName" class="form-label fw-bold">Deadline</label>
+							<input type="date" name="tedate" id="date2" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" id="submit2" class="btn btn-success">Save
+							Changes</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex" id="wrapper">
+
+		<!----Sidebar STARTS here---->
+
+		<div class="bg-dark text-dark" id="sidebar-wrapper">
+			<div
+				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom">
+				<img th:src="@{/favicon.ico}" width="30px;" style=""><br>EXELR8
+			</div>
+			<div class="list-group list-group-flush my-3">
 				<a th:href="@{/}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a
 					th:href="@{/dashboard/companies}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-building me-2"></i>Company</a> <a th:href="@{/dashboard/department}"
+					class="fas fa-building me-2"></i>Company</a> <a
+					th:href="@{/dashboard/department}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
-					th:href="@{/dashboard/task/mytask}"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-list-check me-2"></i>Task</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a href="#"
+					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notification</a> <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
 			</div>
-        </div>
+		</div>
 
-  
-          <!----Sidebar END here---->
 
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-        <nav class="navbar navbar-expand-lg navbar-light bg-transparent py-4 px-4">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-align-left primary-text fs-4 me-3" id="menu-toggle"></i>
-                <h2 class="fs-2 m-0" th:text="${department.deptname}">Department Name</h2>
-            </div>
+		<!----Sidebar END here---->
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<nav
+				class="navbar navbar-expand-lg navbar-light bg-transparent py-4 px-4">
+				<div class="d-flex align-items-center">
+					<i class="fas fa-align-left primary-text fs-4 me-3"
+						id="menu-toggle"></i>
+					<h2 class="fs-2 m-0" th:text="${department.deptname}">Department
+						Name</h2>
+				</div>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-2"></i><span
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle second-text fw-bold" href="#"
+							id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false"> <i class="fas fa-user me-2"></i><span
 								sec:authentication="principal.Fullname"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
-                            <li><a class="dropdown-item" th:href="@{/profile}">Settings</a></li>
-                            <li><a class="dropdown-item" th:href="@{/perform-logout}">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+						</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
+								<li><a class="dropdown-item" th:href="@{/profile}">Settings</a></li>
+								<li><a class="dropdown-item" th:href="@{/perform-logout}">Logout</a></li>
+							</ul></li>
+					</ul>
+				</div>
+			</nav>
 
-       	  <div class="container">
-       	  	<div class="d-flex p-2">
-       	  		  <div class="card mx-2 w-100">
-                	<div class="card p-4 mx-4 my-2 float-left">
-						<h5>Supervisor/s : <span th:each="super : ${supervisors}" class="badge bg-info">[[${super.user.fullname()}]]</span></h5>
-						<span class="m-0">Total Number of Tasks : <span class="badge bg-info" th:text="${department.numoftask()}"></span> </span>
-						<span class="m-0">Total Number of Members : <span class="badge bg-info" th:text="${department.usercount()}"></span></span>
-					</div>
-             		<div  id="tasks" class="d-flex  flex-wrap my-2 mx-4 float-left"  style="display : block;height: 350px; overflow-y: auto;">
-					<div class="card w-100">
-						<h4 class="mx-4 mt-2">Tasks</h4>
-						<span class="text-center" th:if="${user != null}">
-						
-						<button type="button"  class="btnadd border" data-bs-toggle="modal" data-bs-target="#addtask" th:if="${user.deptrole == 'SUPERVISOR'}">
-							<i class="fa fa-plus-circle" style="color: #009d63"></i> Add Task
-						</button>
-						</span>
-						<div class="">
-							<div class="card m-2" th:each="task : ${task}" th:if="${#lists.size(task) > 0}">
-								<h4 class="m-2 bg-info p-2 text-white"  th:text="${task.taskname}"></h4>
-								<table class="table-striped table">
-									<thead>
-										<tr>
-											<th></th>
-											<th>Task Detail</th>
-											<th>Task Owner</th>
-											<th>Task Deadline</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="detail : ${task.taskdetails}" >
-											<td>
-											<th:block th:each="taskdetail : ${detail.taskdetail}" th:if="${user != null}">
-												<input type="checkbox" th:checked="${detail.done}" class="form-check-input check" th:id="${'check' + detail.id}" th:did="${detail.id}"  th:if="${user.user.id == taskdetail.user.id}">
-											</th:block>
-										    </td>
-											<td th:text="${detail.description}"></td>
-											<td > <p th:each="taskdetail : ${detail.taskdetail}" th:text="${taskdetail.user.fullname()}"></p></td>
-											<td th:text="${#temporals.monthNameShort(detail.sdate) + ' ' + #temporals.day(detail.sdate) + ' - ' + #temporals.monthNameShort(detail.edate) + ' ' + #temporals.day(detail.edate)}" class="mx-4 text-muted"></td>
-											
-										</tr>
-										<tr class="text-center">
-										<th:block th:if="${user != null}">
-											<td colspan="4" th:if="${user.deptrole == 'SUPERVISOR'}"><button class="btn btn-success btn-sm taskbtn" data-bs-toggle="modal" data-bs-target="#adddetail" th:id="${'task' + task.id}" th:tid="${task.id}">+ Add</button></td>
-										</th:block>
-										</tr>
-									</tbody>
-								</table>
-									
+			<div class="container">
+				<div class="row p-2">
+					<div class="col-sm-8">
+						<div class=" row p-2 my-2">
+							<div class="col-sm-4">
+								<div
+									class="p-3 bg-primary shadow-sm d-flex justify-content-around align-items-center rounded">
+									<div>
+										<h3 class="fs-2 text-white" th:text="${dailycount}">0</h3>
+										<p class="fs-6 fw-bold text-white">Tasks</p>
+									</div>
+									<i class="fas fa-list fs-1  p-3 text-white"></i>
+								</div>
 							</div>
-							<div class="" th:unless="${#lists.size(task) > 0}">
-								<h4 class="m-5 text-center text-muted">No Tasks to display</h4>
+							<div class="col-sm-4">
+								<div
+									class="p-3 bg-danger shadow-sm d-flex justify-content-around align-items-center rounded">
+									<div>
+										<h3 class="fs-2 text-white" th:text="${overduecount}">0</h3>
+										<p class="fs-6 fw-bold text-white">Overdues</p>
+									</div>
+									<i class="fas fa-triangle-exclamation fs-1 p-3 text-white"></i>
+
+								</div>
 							</div>
+							<div class="col-sm-4">
+								<div
+									class="p-3 bg-success shadow-sm d-flex justify-content-around align-items-center rounded">
+									<div>
+										<h3 class="fs-2 text-white" th:text="${department.usercount}">0</h3>
+										<p class="fs-6 fw-bold text-white">Personnel</p>
+									</div>
+									<i class="fas fa-user-group fs-1  p-3 text-white"></i>
+								</div>
+							</div>
+							
 						</div>
 						
+						
+					
+											
+						<div id="tasks" class="d-flex  flex-wrap my-2 mx-4 float-left"
+							>
+							<div class="card w-100">
+							
+								<div class=" border w-100">
+									
+									<div class="d-flex">
+									<div class="text-left w-100">
+										<h3 class="m-3 text-left">Tasks</h3>
+									</div>
+									<div class="text-end w-100">
+										<button type="button" id="framebtn" data-bs-target="#multitask" data-bs-toggle="modal" class="btnadd border m-2">
+											<i class="fa fa-plus-circle" style="color: #009d63"></i> Add Task
+										</button>
+									</div>
+										
+									</div>
+									
+								
+								</div>
+								
+								<div class="" style="display: block; height: 350px; overflow-y: auto;">
+									<div class=" m-2" th:each="user : ${users}">
+										<div
+											th:styleappend="${'background-color:' + user.user.companycolor()}">
+											<h5 class="m-2 p-2 text-white">
+												[[${user.user.fullname()}]] <span class="text-end float-end" 
+												>Tasks
+													:  <span th:uid="${user.user.id}" th:id="${'count' + user.user.id}"> [[${user.user.currentDaily()}]]</span></span>
+											</h5>
+
+										</div>
+										<table class="table">
+											<thead>
+												<tr>
+													<th>Task Detail</th>
+													<th>Task Deadline</th>
+													<th>Assigned By</th>
+													<th class="text-end">Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="daily : ${user.user.dailies}"
+													th:if="${!daily.done}" th:id="${'row' + daily.id}" th:rid="${daily.id}"
+													th:classappend="${daily.until < today ? 'bg-danger text-white' : ''}">
+													<td th:text="${daily.description}"></td>
+													<td
+														th:text="${'(' + #temporals.dayOfWeekNameShort(daily.until) + ') '  + #temporals.monthNameShort(daily.until) + ' ' + #temporals.day(daily.until)}"></td>
+													<td th:text="${daily.assignedby.fullname()}" th:id="${'assign' + daily.assignedby.id}" th:aid="${daily.assignedby.id}"></td>
+													<td class="text-end">
+														<button class="btn btn-success btn-sm donebtn" th:id="${'taskdone' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}" th:aid="${daily.assignedby.id}">
+															<i class="fa-solid fa-check"></i>
+														</button>
+														<button class="btn btn-warning btn-sm editbtn" th:id="${'edittask' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}" data-bs-toggle="modal" data-bs-target="#editdetail">
+															<i class="fa-solid fa-pen-to-square"></i>
+														</button>
+														<button class="btn btn-danger btn-sm deletebtn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter2" th:id="${'task' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}">
+															<i class="fa-solid fa-xmark"></i>
+														</button>
+													</td>
+													
+												</tr>
+
+												<tr class="text-center">
+													<td colspan="4"><button class="btn btn-success addbtn" th:id="${'user' + user.user.id}"
+															th:uid="${user.user.id}" th:if="${deptuser != null || currUser.role() == 'SUPERADMIN'}"
+															data-bs-toggle="modal" data-bs-target="#adddetail">+
+															Add Task</button></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="col-sm-4 card">
+						<h3 class="m-3">Members</h3>
+						<table class="table-striped table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Role</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="users : ${users}">
+									<td th:text="${users.user.fullname()}"></td>
+									<td>
+										<th:block>
+											<p th:text="${users.user.role()}"></p>
+										</th:block>
+									</td>
+									<th:block >
+										<td
+											sec:authorize="hasAnyAuthority('MASTERADMIN','SUPERADMIN')">
+											<button class="btn btn-danger kickbtn"
+												th:id="${'kick' + users.user.id}" th:dep="${department.id}"
+												th:kid="${users.user.id}"
+												
+												data-bs-toggle="modal" data-bs-target="#exampleModalCenter2">
+												<i class="fa-solid fa-xmark"></i>
+											</button>
+										</td>
+										<td
+											sec:authorize="!hasAnyAuthority('MASTERADMIN','SUPERADMIN')">
+											<button class="btn btn-danger disabled" 
+												data-bs-toggle="modal" data-bs-target="#exampleModalCenter2">
+												<i class="fa-solid fa-xmark"></i>
+											</button>
+										</td>
+									</th:block>
+								</tr>
+								<tr class="text-center">
+									
+										<td colspan="4" sec:authorize="hasAnyAuthority('MASTERADMIN','SUPERADMIN')"><button
+												class="btn btn-success btn-sm" data-bs-toggle="modal"
+												data-bs-target="#adddeptuser" id="adduser">+ Member</button></td>
+												
+									
+								</tr>
+							</tbody>
+
+						</table>
+
 					</div>
 				</div>
-					
-				</div>
-				<div class="card w-50">
-					<h3 class="m-3">Members</h3>
-					<table class="table-striped table">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Role</th>
-								<th:block th:if="${user != null}">
-									<th th:if="${user.deptrole == 'SUPERVISOR'}">Action</th>
-								</th:block>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="users : ${users}">
-								<td th:text="${users.user.fullname()}"></td>
-								<td>
-								<form th:action="@{/department/editDeptRole}" class="roleform" th:id="${'roleform' + users.user.id}" th:fid="${users.user.id}">
-									<input type="hidden" name="userid" th:value="${users.user.id}">
-									<input type="hidden" name="deptid" th:value="${users.department.id}">
-									<th:block th:if="${user != null}">
-									<select name="role" class="rolechange form-select" th:id="${'rolechange' + users.user.id}" th:fid="${users.user.id}" th:if="${user.deptrole == 'SUPERVISOR'}" th:disabled="${users.user.id == user.user.id ? true : false }">
-										<option th:text="${users.deptrole}" selected></option>
-										<option value="MEMBER" th:if="${users.deptrole == 'SUPERVISOR'}">MEMBER</option>
-										<option value="SUPERVISOR" th:unless="${users.deptrole == 'SUPERVISOR'}">SUPERVISOR</option>
-									</select>
-									<p th:unless="${user.deptrole == 'SUPERVISOR'}" th:text="${users.deptrole}"></p>
-									</th:block>
-									<th:block th:unless="${user != null}">
-										<p th:text="${users.deptrole}"></p>
-									</th:block>
-								</form>
-								</td>
-								<th:block th:if="${user != null}">
-								<td th:if="${user.deptrole == 'SUPERVISOR'}">
-									<button class="btn btn-danger kickbtn" th:id="${'kick' + users.user.id}" th:dep="${department.id}" th:kid="${users.user.id}" th:if="${users.user.id != user.user.id}" data-bs-toggle="modal" data-bs-target="#exampleModalCenter2"><i class="fa-solid fa-xmark"></i></button>
-								</td>
-								</th:block>
-							</tr>
-							<tr class="text-center">
-							<th:block th:if="${user != null}">
-									<td colspan="4" th:if="${user.deptrole == 'SUPERVISOR'}"><button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#adddeptuser" id="adduser">+ Member</button></td>
-							</th:block>
-							</tr>
-						</tbody>
-					
-					</table>
-				
-				</div>
-        	  </div>
-            </div>   
-            
-       
-            
-        </div>    
-  </div>
-    
-  
+			</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    var el = document.getElementById("wrapper");
-    var toggleButton = document.getElementById("menu-toggle");
 
-    toggleButton.onclick = function () {
-        el.classList.toggle("toggled");
-    };
 
-    
+		</div>
+	</div>
 
-  
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-<script th:src="@{/js/jquery.mentionsInput.js}"></script>
-<script th:src="@{/js/jquery.elastic.js}"></script>
-<script type="text/javascript" th:src="@{/js/jquery.events.input.js}"></script>
-<script>
-$(document).ready(function(){
-	
-	
-	
-	
-	let taskid = 0;
-	$(".taskbtn").click(function(){
-		taskid = $(this).attr("tid");
-	});
-	
-	
-	$(".rolechange").on('change',function(){
-		
-		
-			$.post($(this).parent().attr('action'),$(this).parent().serialize(),function(result){
-				if(result){
-					alert("Role Succesfully changed");
-				}
-				else{
-					alert("An Error Occured. Please try again");
-				}
-			});
-			return false;
-		});
-	
-	$('textarea.mention3').mentionsInput({
-		  onDataRequest:function (mode, query, callback) {
-			  $.getJSON('/personnel/people', function(responseData) {
-			        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-			        callback.call(this, responseData);
-			      });
-		  }
-		});
-	
-	
-	// Add the members
-	$("#adddeptuserform").submit(function(e){
-		
-		e.preventDefault();
-		$('textarea.mention3').mentionsInput('getMentions', function(data) {
-			
-			var department = {};
-			department['deptname'] = $("#deptid").val();
-			department['people'] = data;
-			$.ajax({
-				type : "POST",
-				url : "/department/addDeptUser",
-				contentType : "application/json",
-				data : JSON.stringify(department),
-				success: function(result){
-					alert(result);
-					window.location.reload();
-				}
-			})
-			
-	    });
-		
-	});
-	
-	
-	$(".check").click(function(){
-		let isCheck = $(this).is(":checked");
-		let taskid = $(this).attr('did');
-		$.ajax({
-			type : "PUT",
-			url : "/task/markdetaildone/" + taskid,
-			data : {
-				check : isCheck
-			},
-			success : function(result){
-				alert(result);
-			}
-		})
-	});
 
-	// Reveal names in mentions when typing @
 
-	$('textarea.mention').mentionsInput({
-		  onDataRequest:function (mode, query, callback) {
-			  $.getJSON('/personnel/deptpeople', function(responseData) {
-			        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-			        callback.call(this, responseData);
-			      });
-		  }
-		});
-	
-	$('textarea.mention2').mentionsInput({
-		  onDataRequest:function (mode, query, callback) {
-			  $.getJSON('/personnel/deptpeople', function(responseData) {
-			        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-			        callback.call(this, responseData);
-			      });
-		  }
-		});
-	
-	
-	$("#detailform").submit(function(e){
-		e.preventDefault();
-		var task = {};
-		$('textarea.mention2').mentionsInput('getMentions', function(data) {
-			
-			$("#submit2").prop('disabled',true);
-			$("#submit2").text('Please wait...');
-			task['id'] = taskid;
-			task['detail'] = $("#detail2").val();
-			task['edate'] = $("#date2").val();
-			task['who'] = data;
-			
-			$.ajax({
-				type : "POST",
-				url : "/task/addTaskDetail",
-				contentType : "application/json",
-				data : JSON.stringify(task),
-				success: function(result){	
-					alert("Task Added Successfully");
-					window.location.reload();
-				},
-				error : function(){
-					$("#submit2").prop('disabled',false);
-					$("#submit2").text('Add Task');
-					alert('An Error occured. Please try again');
-				}
-			})
-		});
-		
-	});
-	
-		
-	// Add the task	
-	$("#addtask").submit(function(e){
-		e.preventDefault();
-		var task = {};
-		$('textarea.mention').mentionsInput('getMentions', function(data) {
-		
-		$("#submit").prop('disabled',true);
-		$("#submit").text('Please wait...');
-		task['taskname'] = $("#taskname").val();
-		task['detail'] = $("#detail").val();
-		task['edate'] = $("#date").val();
-		task['who'] = data;
-		
-		$.ajax({
-			type : "POST",
-			url : "/task/addDepttask",
-			contentType : "application/json",
-			data : JSON.stringify(task),
-			success: function(result){	
-				alert(result);
-				window.location.reload();
-			},
-			error : function(){
-				$("#submit").prop('disabled',false);
-				$("#submit").text('Add Task');
-				alert('An Error occured. Please try again');
-			}
-		})
-		
-    });
-		
-		
-	});	
-	let kickid = 0;
-	let deptid = 0;
-	$(".kickbtn").click(function(){
-		
-		kickid = $(this).attr("kid");
-		deptid = $(this).attr("dep");
-		
-	});
-	$("#confirmdelete").click(function(){
-		$.ajax({
-			type : "DELETE",
-			url : "/department/kickUser/" + kickid,
-			data:{
-				deptid : deptid
-			},
-			success:function(result){
-				alert(result);
-				window.location.reload();
-			}
-		});
-	});
-});
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		var el = document.getElementById("wrapper");
+		var toggleButton = document.getElementById("menu-toggle");
 
-</script>
+		toggleButton.onclick = function() {
+			el.classList.toggle("toggled");
+		};
+	</script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+	<script th:src="@{/js/jquery.mentionsInput.js}"></script>
+	<script th:src="@{/js/jquery.elastic.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery.events.input.js}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+	<script th:src="@{/js/notif.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script th:src="@{/js/viewdepartment.js}"></script>
+	
 </body>
 </html>

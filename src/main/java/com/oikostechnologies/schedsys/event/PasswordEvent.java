@@ -12,6 +12,10 @@ import lombok.Setter;
 public class PasswordEvent extends  ApplicationEvent{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private User user;
 	private String applicationUrl;
 	

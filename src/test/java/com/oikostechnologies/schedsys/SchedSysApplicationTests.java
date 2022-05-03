@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.entity.Department;
-import com.oikostechnologies.schedsys.entity.PasswordToken;
 import com.oikostechnologies.schedsys.entity.Role;
 import com.oikostechnologies.schedsys.entity.Task;
 import com.oikostechnologies.schedsys.entity.TaskDetail;
@@ -42,9 +42,8 @@ import com.oikostechnologies.schedsys.repo.UserRoleRepo;
 import com.oikostechnologies.schedsys.repo.UserTaskRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
+import com.oikostechnologies.schedsys.service.SchedulerService;
 import com.oikostechnologies.schedsys.service.UserService;
-
-import antlr.StringUtils;
 
 @SpringBootTest
 class SchedSysApplicationTests {
@@ -96,6 +95,9 @@ class SchedSysApplicationTests {
 	
 	@Autowired
 	private PasswordTokenRepo tokenrepo;
+	
+	@Autowired
+	private SchedulerService schedservice;
 	
 	void contextLoads() {
 		
@@ -334,9 +336,7 @@ class SchedSysApplicationTests {
 		 userrepo.delete(user);
 	}
 	
-	void deleteNotif() {
-		DailyTask task = dailyrepo.findById(42L).orElse(null);
-	}
+	
 	
 	void findByCompanyName() {
 		
@@ -352,7 +352,7 @@ class SchedSysApplicationTests {
     	user.setPassword(passwordEncoder.encode("abcde").toCharArray());
     	userrepo.save(user);
 	}
-	@Test
+	
 	void checkPassword() {
 		
 		User user = userrepo.findByEmail("aeonkatana@gmail.com");
@@ -362,6 +362,21 @@ class SchedSysApplicationTests {
 		else {
 			System.out.println("Not matched!");
 		}
+	}
+	
+
+	void deleteDaily() {
+		DailyTask task = dailyrepo.findById(46L).orElse(null);
+		dailyrepo.deleteById(task.getId());
+	}
+	
+	void deleteNotif() {
+		DailyTask task = dailyrepo.findById(46L).orElse(null);
+		notifrepo.deleteAllByDaily(task);
+	}
+	@Test
+	void findMasteradmin() {
+		
 	}
 	
 }

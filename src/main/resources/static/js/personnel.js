@@ -75,8 +75,8 @@ $(document).ready(function() {
 		
 		"scrollY": "350px",
 		"scrollCollapse": true,
-		'ajax': { url: '/personnel/datatable', type: "GET" },
-		'serverSide': true,
+		'ajax': { url: '/personnel/datatable', type: "GET" , dataSrc: ""},
+		'serverSide': false,
 		"pageLength": 5,
 		"lengthChange": false,
 		"columnDefs": [{
@@ -118,10 +118,10 @@ $(document).ready(function() {
 			data: 'id',
 			render: function(data, type, row) {
 				if (row.enabled) {
-					return "<button class='btn btn-primary viewermy' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'> View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
+					return "<button class='btn btn-primary viewermy' > View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
 				}
 				else {
-					return "<button class='btn btn-primary' disabled> View Details </button> <button class='btn btn-secondary' disabled> View Scorecard </button>";
+					return "<button class='btn btn-primary viewermy' > View Details </button> <button class='btn btn-secondary' disabled> View Scorecard </button>";
 				}
 			}
 		}, {

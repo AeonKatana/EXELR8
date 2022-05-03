@@ -1,7 +1,9 @@
 package com.oikostechnologies.schedsys.service;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -37,19 +39,89 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	@Autowired
 	private ActlogRepo actrepo;
 	
+	
+	
+	@Override
+	@Transactional
+	public DailyTaskModel addMultiTask(DailyTaskModel model, User user) {
+		User assign = user;
+		
+			
+			if(model.getWho().size() > 0) {
+				for(PeopleModel pm : model.getWho()) {
+					
+					User person = userrepo.findById(pm.getId()).orElse(null); 
+						
+					if(person != null) {
+						DailyTask task = new DailyTask();
+						task.setNote(model.getNote());
+						task.setUntil(LocalDate.parse(model.getUntil()));
+						task.setDescription(model.getTaskdetail());
+						task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+						task.setUser(person);
+						task.setAssignedby(assign);
+						dailyrepo.save(task);
+						
+						User sa = userrepo.findSuperAdmin();
+						NotifyUser superadmin = new NotifyUser();
+						superadmin.setUserid(sa.getId());
+						superadmin.setUsername(sa.fullname());
+						superadmin.setDaily(task);
+						notifrepo.save(superadmin);
+					}
+										
+				}
+				for(PeopleModel pm : model.getWho()) {
+					User person = userrepo.findById(pm.getId()).orElse(null); 
+					if(person != null) {
+						ActivityLog actlog = new ActivityLog();
+						actlog.setAction("has assigned a daily task for " + person.fullname());
+						actlog.setUser(assign);
+						actlog.setTarget(model.getTaskdetail());
+						actlog.setTargetlink("#");
+						actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+						actrepo.save(actlog);
+					}
+				}
+				
+			}else {
+				DailyTask task = new DailyTask();
+				task.setNote(model.getNote());
+				task.setUntil(LocalDate.parse(model.getUntil()));
+				task.setDescription(model.getTaskdetail());
+				task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+				task.setUser(assign);
+				task.setAssignedby(assign);
+				dailyrepo.save(task);
+				
+				User sa = userrepo.findSuperAdmin();
+				NotifyUser superadmin = new NotifyUser();
+				superadmin.setUserid(sa.getId());
+				superadmin.setUsername(sa.fullname());
+				superadmin.setDaily(task);
+				ActivityLog actlog = new ActivityLog();
+				actlog.setAction("has created a daily task");
+				actlog.setUser(assign);
+				actlog.setTarget(model.getTaskdetail());
+				actlog.setTargetlink("#");
+				actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+				actrepo.save(actlog);
+			}
+			
+		
+		return null;
+	}
+
 	@Override
 	public DailyTaskModel addMyTask(DailyTaskModel model, User user) {
 		
-	if(model.getWho().size() > 0) {
-	for(PeopleModel who : model.getWho()) {
-		
+		User assign = userrepo.findById(model.getUserid()).orElse(user);
 		DailyTask task = new DailyTask();
-		task.setTitle(model.getTitle());
 		task.setNote(model.getNote());
 		task.setUntil(LocalDate.parse(model.getUntil()));
-		task.setStarteddate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+		task.setStarteddate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 		task.setDescription(model.getTaskdetail());
-		task.setUser(userrepo.findById(who.getId()).orElse(user));
+		task.setUser(assign);
 		task.setAssignedby(user);
 		dailyrepo.save(task);
 		User sa = userrepo.findSuperAdmin();  // Add Superadmin to be notified on default
@@ -58,67 +130,19 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		superadmin.setUsername(sa.fullname());
 		superadmin.setDaily(task);
 		notifrepo.save(superadmin);
-		
-		for(PeopleModel pm : model.getMentions()) { // Get all personnels that was mentioned and save them
-			NotifyUser mention = new NotifyUser();
-			mention.setUserid(pm.getId());
-			mention.setUsername(pm.getName());
-			mention.setDaily(task);
-			notifrepo.save(mention);
-		}
-		
-		
 		ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
-		if(model.getWho().size() > 0) {
-			compcreate.setAction("has assigned a daily task for " + who.getName());
+		if(model.getUserid() != user.getId()) {
+			compcreate.setAction("has assigned a daily task for " + assign.fullname());
 		}
 		else {
 			compcreate.setAction("has created a daily task");
 		}
-		compcreate.setTarget(task.getTitle());
+		compcreate.setTarget(model.getTaskdetail());
 		compcreate.setTargetlink("#");
 		compcreate.setUser(user);
 		compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 		
 		actrepo.save(compcreate);
-		}
-	}else {
-		DailyTask task = new DailyTask();
-		task.setTitle(model.getTitle());
-		task.setNote(model.getNote());
-		task.setUntil(LocalDate.parse(model.getUntil()));
-		task.setStarteddate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
-		task.setDescription(model.getTaskdetail());
-		task.setUser(user);
-		task.setAssignedby(user);
-		dailyrepo.save(task);
-		User sa = userrepo.findSuperAdmin();  // Add Superadmin to be notified on default
-		NotifyUser superadmin = new NotifyUser();
-		superadmin.setUserid(sa.getId());
-		superadmin.setUsername(sa.fullname());
-		superadmin.setDaily(task);
-		notifrepo.save(superadmin);
-		
-		for(PeopleModel pm : model.getMentions()) { // Get all personnels that was mentioned and save them
-			NotifyUser mention = new NotifyUser();
-			mention.setUserid(pm.getId());
-			mention.setUsername(pm.getName());
-			mention.setDaily(task);
-			notifrepo.save(mention);
-		}
-		
-		
-		ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
-		
-		
-		compcreate.setAction("has created a daily task");
-		compcreate.setTarget(task.getTitle());
-		compcreate.setTargetlink("#");
-		compcreate.setUser(user);
-		compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
-		
-		actrepo.save(compcreate);
-		}
 	return model;
 	}
 		
@@ -151,17 +175,18 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	
 	@Override
 	public long countDailyToday() {		
-		return dailyrepo.countDailyToday(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+		return dailyrepo.countDailyToday(Date.valueOf( ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()));
 	}
 
 	@Override
 	public long countCompanyDaily(String company) {
-		return dailyrepo.countDailyToday(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), company);
+		
+		return dailyrepo.countDailyToday(Date.valueOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()), company);
 	}
 
 	@Override
 	public long countMyDaily(long id) {
-		return dailyrepo.countDailyToday(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), id);
+		return dailyrepo.countDailyToday(Date.valueOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()), id);
 	}
 
 	@Override
@@ -177,7 +202,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		}
 		else {
 			ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
-			compcreate.setTarget(task.getTitle());
+			compcreate.setTarget(task.getDescription());
 			compcreate.setTargetlink("#");
 			compcreate.setUser(user);
 			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
@@ -201,6 +226,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	}
 
 	@Override
+	@Transactional
 	public String deleteTask(User user, long taskid) {
 		DailyTask task = dailyrepo.findById(taskid).orElse(null);
 		if(task == null) {
@@ -210,7 +236,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			
 			ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
 			compcreate.setAction(" has deleted a task");
-			compcreate.setTarget(task.getTitle());
+			compcreate.setTarget(task.getDescription());
 			compcreate.setTargetlink("#");
 			compcreate.setUser(user);
 			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
@@ -243,87 +269,22 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		if(task == null) {
 			return "An error occured. Please refresh the page";
 		}
+		
 		else {
-
-			
-			
-			ActivityLog edittask = new ActivityLog(); // Create an activity log for this event
-			
-			edittask.setAction("has edited a task");
-			edittask.setTarget(task.getTitle());
-			edittask.setTargetlink("#");
-			edittask.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
-			edittask.setUser(user);
-			actrepo.save(edittask);
-			
-			
-			notifrepo.deleteAllByDaily(task); // Delete notif user in this task
-			
-			if(dailyedit.getWho().size() > 0) {
-				for(PeopleModel who : dailyedit.getWho()) {
-					task.setTitle(dailyedit.getTitle());
-					task.setUntil(LocalDate.parse(dailyedit.getUntil()));
-					task.setUser(userrepo.findById(who.getId()).orElse(null));
-					task.setDescription(dailyedit.getTaskdetail());
-				
-					
-					
-				
-				for(PeopleModel pm : dailyedit.getMentions()) { // Get all personnels that was mentioned and save them
-					NotifyUser mention = new NotifyUser();
-						mention.setUserid(pm.getId());
-						mention.setUsername(pm.getName());
-						mention.setDaily(task);
-						notifrepo.save(mention);
-					
-				}
-				User sa = userrepo.findSuperAdmin();
-				NotifyUser superadmin = new NotifyUser();
-				superadmin.setDaily(task);
-				superadmin.setUsername(sa.fullname());
-				superadmin.setUserid(sa.getId());
-				
-				notifrepo.save(superadmin);
-				
-				ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
-				
-				compcreate.setAction("changed assignation for a daily task to " + who.getName());
-				compcreate.setTarget(task.getTitle());
-				compcreate.setTargetlink("#");
-				compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
-				compcreate.setUser(user);
-				actrepo.save(compcreate);
-				}
-			}
-			else {
-				task.setTitle(dailyedit.getTitle());
 				task.setNote(dailyedit.getNote());
 				task.setUntil(LocalDate.parse(dailyedit.getUntil()));
-				task.setStarteddate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+				task.setStarteddate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 				task.setDescription(dailyedit.getTaskdetail());
-				task.setUser(user);
 				dailyrepo.save(task);
 				
-				
-				for(PeopleModel pm : dailyedit.getMentions()) { // Get all personnels that was mentioned and save them
-					NotifyUser mention = new NotifyUser();
-						mention.setUserid(pm.getId());
-						mention.setUsername(pm.getName());
-						mention.setDaily(task);
-						notifrepo.save(mention);
-					
+				ActivityLog editlog = new ActivityLog();
+				editlog.setAction("has edited a task");
+				editlog.setTarget(task.getDescription());
+				editlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+				editlog.setTargetlink("#");
+				editlog.setUser(user);
+				actrepo.save(editlog);
 				}
-				
-				User sa = userrepo.findSuperAdmin();
-				NotifyUser superadmin = new NotifyUser();
-				superadmin.setDaily(task);
-				superadmin.setUsername(sa.fullname());
-				superadmin.setUserid(sa.getId());
-				
-				notifrepo.save(superadmin);
-			}
-		}
-		
 		return "Task Updated!";
 	}
 
@@ -336,6 +297,31 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		model.setTaskdetail(task.getDescription());
 		
 		return model;
+	}
+
+	@Override
+	public long countOverdueByUser(long id) {
+		return dailyrepo.countOverdueByUser(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), id);
+	}
+	@Override
+	public long countOverdueByCompany(String company) {
+		return dailyrepo.countOverdueByCompany(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), company);
+	}
+
+	@Override
+	public long countOverdueByDepartment(String department) {
+		// TODO Auto-generated method stub
+		return dailyrepo.countOverdueByDepartment(department, ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+	}
+	@Override
+	public long countDailyByDeparment(String department) {
+		// TODO Auto-generated method stub
+		return  dailyrepo.countDailyByDepartment(department);
+	}
+	@Override
+	public long countDailyAssignedToMeBySomeoneElse(long id) {
+		// TODO Auto-generated method stub
+		return dailyrepo.countDailyAssignedToMeBySomeoneElse(id);
 	}
 	
 

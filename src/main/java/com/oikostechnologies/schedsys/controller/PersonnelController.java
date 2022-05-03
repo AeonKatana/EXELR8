@@ -2,15 +2,11 @@ package com.oikostechnologies.schedsys.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,11 +32,13 @@ public class PersonnelController {
 	@Autowired
 	private UserService userservice;
 	
-	@Autowired
-	private UserRepo userRepo;
+	
 	
 	@Autowired
 	private UserDepartmentRepo repo;
+	
+	@Autowired
+	private UserRepo userRepo;
 	
 /**	
  * Manual Pagination and Search functionality
@@ -77,8 +75,8 @@ public class PersonnelController {
 **/
 	@GetMapping("/datatable")   // End point for DataTables in JQUERY AJAX
 	@ResponseBody
-	public DataTablesOutput<User> personnelList(@Valid DataTablesInput input, @RequestParam Map<String, String> queryParams){
-		return userservice.findAll(input);
+	public List<User> personnelList(){
+		return userservice.findAll();
 	}
 	
 	@GetMapping("/mycompanypeople")
@@ -114,6 +112,58 @@ public class PersonnelController {
 		
 		return mention;
 		
+	}
+	
+	@GetMapping("/allProjleader")
+	@ResponseBody
+	public List<PeopleModel> getAllProjlead(@AuthenticationPrincipal MyUserDetails userdetail){
+		List<PeopleModel> mention = new ArrayList<>();
+		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
+			for(User u : userRepo.getAllProjectLeader()) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		else {
+			for(User u : userRepo.getAllProjectLeaderByCompany(userdetail.getUser().companyname())) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		return mention;
+	}
+	
+	
+	@GetMapping("/allSupervisor")
+	@ResponseBody
+	public List<PeopleModel> getAllSupervisor(@AuthenticationPrincipal MyUserDetails userdetail){
+		List<PeopleModel> mention = new ArrayList<>();
+		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
+			for(User u : userRepo.getAllSupervisor()) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		else {
+			for(User u : userRepo.getAllSupervisorByCompany(userdetail.getUser().companyname())) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		return mention;
+	}
+	
+	@GetMapping("/allAssociate")
+	@ResponseBody
+	public List<PeopleModel> getAllAssociate(@AuthenticationPrincipal MyUserDetails userdetail){
+		List<PeopleModel> mention = new ArrayList<>();
+		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
+			for(User u : userRepo.getAllAssociate()) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		else {
+			for(User u : userRepo.getAllAssociateByCompany(userdetail.getUser().companyname())) {
+				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+			}
+		}
+		return mention;
 	}
 	
 	

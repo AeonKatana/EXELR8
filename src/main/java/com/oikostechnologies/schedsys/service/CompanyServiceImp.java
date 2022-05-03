@@ -3,6 +3,7 @@ package com.oikostechnologies.schedsys.service;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -71,10 +72,11 @@ public class CompanyServiceImp implements CompanyService {
 	}
 
 	@Override
-	public boolean addCompany(@AuthenticationPrincipal MyUserDetails detail, CompanyModel company, UserModel user,
+	public int addCompany(@AuthenticationPrincipal MyUserDetails detail, CompanyModel company, UserModel user,
 			HttpServletRequest request) {
 		User useremail = userrepo.findByEmail(user.getUseremail());
-		if (useremail == null) {
+		Company companyname = companyrepo.findByCompname(company.getCompanyname());
+		if(useremail == null && companyname == null) {
 			Company comp = Company.builder().color(company.getCompanycolor()).compname(company.getCompanyname())
 					.build();
 			User master = User.builder().firstname(user.getFname()).lastname(user.getLname())
@@ -104,11 +106,15 @@ public class CompanyServiceImp implements CompanyService {
 
 			actrepo.save(compcreate);
 			actrepo.save(createuser);
-			return true;
+			return 1;
 		}
-		else {
-			return false;
+		else if(companyname != null){
+			return 2;
 		}
+		else if(useremail != null) {
+			return 3;
+		}
+		return 4;
 	}
 
 	private String applicationUrl(HttpServletRequest request) {
@@ -155,6 +161,12 @@ public class CompanyServiceImp implements CompanyService {
 		}
 		
 		return "DNA Successfully Updated!";
+	}
+
+	@Override
+	public List<Company> findAll() {
+		// TODO Auto-generated method stub
+		return companyrepo.findAll();
 	}
 
 }

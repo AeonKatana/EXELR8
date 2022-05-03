@@ -14,6 +14,10 @@ import lombok.Setter;
 @Getter
 public class CompanyEvent extends ApplicationEvent{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private User user;
 	private String applicationUrl;
 	private MyUserDetails mydetails;

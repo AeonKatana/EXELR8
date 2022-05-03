@@ -3,26 +3,59 @@ $(document).ready(function(){
 
 // Reveal names in mentions when typing @
 
-$('textarea.mention').mentionsInput({
+$('textarea#mention1').mentionsInput({
 	  onDataRequest:function (mode, query, callback) {
-		  $.getJSON('/personnel/people', function(responseData) {
+		  $.getJSON('/personnel/allProjleader', function(responseData) {
 		        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
 		        callback.call(this, responseData);
 		      });
 	  }
 	});
+
+$('textarea#mention2').mentionsInput({
+	  onDataRequest:function (mode, query, callback) {
+		  $.getJSON('/personnel/allSupervisor', function(responseData) {
+		        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+		        callback.call(this, responseData);
+		      });
+	  }
+	});
+$('textarea#mention3').mentionsInput({
+	  onDataRequest:function (mode, query, callback) {
+		  $.getJSON('/personnel/allAssociate', function(responseData) {
+		        responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+		        callback.call(this, responseData);
+		      });
+	  }
+});
+	
+	
 	
 // Add the department	
 $("#adddept").submit(function(e){
 	
 	e.preventDefault();
-	$('textarea.mention').mentionsInput('getMentions', function(data) {
-		
+	var supervisors = [];
+	var projleaders = [];
+	var associates = [];
+	$("textarea#mention1").mentionsInput('getMentions',function(data){
+		projleaders = data;
+	});
+	
+	$("textarea#mention2").mentionsInput('getMentions',function(data){
+		supervisors = data;
+	});
+	
+	
+	$('textarea#mention3').mentionsInput('getMentions', function(data) {
+		associates = data;
+	});
+	
+		const allmembers = projleaders.concat(supervisors,associates);
 		var department = {};
 		department['deptname'] = $("#deptname").val();
-		department['people'] = data;
-		
-		
+		department['people'] = allmembers;
+
 		$.ajax({
 			type : "POST",
 			url : "/department/savedept",
@@ -33,7 +66,7 @@ $("#adddept").submit(function(e){
 			}
 		})
 		
-    });
+    
 	
 });
 	

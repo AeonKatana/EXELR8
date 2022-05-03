@@ -20,4 +20,5 @@ public class DailyTaskModel {
 	private String note = "No Notes";
 	private List<PeopleModel> mentions;
 	private List<PeopleModel> who;
+	private long userid;
 }

@@ -1,6 +1,7 @@
 package com.oikostechnologies.schedsys.repo;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.oikostechnologies.schedsys.entity.User;
-import com.oikostechnologies.schedsys.entity.UserDepartment;
 import com.oikostechnologies.schedsys.projection.UserDeptDTO;
 
 public interface UserRepo extends JpaRepository<User, Long> {
@@ -42,7 +42,27 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	User findByEmail(String email);
 	
+	@Query("Select u from User u where not exists(select dt from u.dailies dt where DATE(dt.starteddate) =: today)")
+	List<User> getAllTardyUsers(@Param("today") Date today);
 	
+	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename = 'PROJLEAD'")
+	List<User> getAllProjectLeader();
+	
+	@Query("Select u from User u join u.company c join u.userrole ur join ur.role r where r.rolename = 'PROJLEAD' and c.compname =:companyname")
+	List<User> getAllProjectLeaderByCompany(@Param("companyname")String companyname);
+	
+	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename = 'ASSOCIATE'")
+	List<User> getAllAssociate();
+	
+	@Query("Select u from User u join u.company c join u.userrole ur join ur.role r where r.rolename = 'ASSOCIATE' and c.compname =:companyname")
+	List<User> getAllAssociateByCompany(@Param("companyname")String companyname);
+	
+	
+	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename = 'SUPERVISOR'")
+	List<User> getAllSupervisor();
+	
+	@Query("Select u from User u join u.company c join u.userrole ur join ur.role r where r.rolename = 'SUPERVISOR' and c.compname =:companyname")
+	List<User> getAllSupervisorByCompany(@Param("companyname")String companyname);
 	
 	
 	Page<User> findByFirstnameContainingOrLastnameContaining(String firstname, String lastname , Pageable page);
