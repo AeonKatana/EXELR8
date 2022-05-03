@@ -185,19 +185,7 @@
 
 				<div class="row my-5">
 
-					<div class="container my-3">
-						<div class="dropdown">
-							<button type="button" class="btn btn-primary dropdown-toggle"
-								style="float: right;" data-bs-toggle="dropdown">
-								Overview</button>
-							<h3 class="fs-4 mb-3">Dashboard</h3>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item active" href="#">Overview</a></li>
-								<li><a class="dropdown-item" href="#">Completed Task</a></li>
-								<li><a class="dropdown-item" href="#">Overdue</a></li>
-							</ul>
-						</div>
-					</div>
+					
 					<div class="col" th:if="${#lists.size(tardyuser) > 0}"
 						sec:authorize="hasAuthority('SUPERADMIN')">
 						<table class="table bg-white rounded shadow-sm  table-hover"
