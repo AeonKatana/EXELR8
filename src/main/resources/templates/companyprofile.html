@@ -231,7 +231,7 @@ table.dataTable thead {
 					</div>
 				</div>
 			</div>
-			<div class="container-fluid text-center px-3 p-2" sec:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','RANKANDFILE')">
+			<div class="container-fluid text-center px-3 p-2" sec:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','ASSOCIATE','SUPERVIOR','PROJLEAD')">
 				
 			 <a class="text-center" href="#" sec:authorize="hasAuthority('MASTERADMIN')">
                 <button th:if="${company.dna == null}" id="addna"type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>

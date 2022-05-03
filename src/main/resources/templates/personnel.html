@@ -422,7 +422,7 @@ table.dataTable thead {
 						<h5 class="text-center m-5">No personnel found</h5>
 					</div>
 			</div>
-			<div sec:authorize="hasAnyAuthority('MASTERADMIN','ASSOCIATE','MANAGER','EXECUTIVE')"
+			<div sec:authorize="hasAnyAuthority('MASTERADMIN','ASSOCIATE','MANAGER','EXECUTIVE','SUPERVISOR','PROJLEAD')"
 					class="p-3 shadow-sm d-flex">
 					<div class="col" th:if="${comppersonnel != null}">
 						<table class="table bg-white rounded shadow-sm  table-hover" id="cptable">
