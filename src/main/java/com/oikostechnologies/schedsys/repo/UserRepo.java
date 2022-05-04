@@ -1,6 +1,7 @@
 package com.oikostechnologies.schedsys.repo;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -74,6 +75,9 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename = 'SUPERADMIN'")
 	User findSuperAdmin();
+	
+	@Query("Select u from User u join u.dailies dt where dt.until <:today and dt.done = false")
+	List<User> getAllUserOverdue(@Param("today") LocalDate today);
 	
 }
 

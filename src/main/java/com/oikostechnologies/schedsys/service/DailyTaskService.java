@@ -28,4 +28,6 @@ public interface DailyTaskService {
 	public String editTask(long id, DailyTaskModel dailyedit,User user);
 	public DailyTaskModel getTask(long id);
 	public DailyTaskModel addMultiTask(DailyTaskModel model, User user);
+	public List<DailyTask> getAllOverdue();
+	public List<DailyTask> getAllOverdueByUser(User user);
 }

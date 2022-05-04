@@ -31,4 +31,5 @@ public interface UserService {
 	public List<User> getAllByCompany(String name);
 	public boolean addPersonnel(MyUserDetails user,PersonnelModel model, HttpServletRequest request);
 	public List<User> getAllTardyUser();
+	public List<User> getAllOverdueUser();
 }

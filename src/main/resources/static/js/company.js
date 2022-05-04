@@ -46,6 +46,18 @@ $(document).ready(function(){
 	})
 
 
+	function getTardy(){
+		$.ajax({
+			type : 'GET',
+			url : '/companies/datatable',
+			success : function(result){
+				console.log(result);
+			}
+		})
+	}
+	
+	getTardy();
+
 	// Show Companies in the Table
 			
 	var table = $('#mytable').DataTable({

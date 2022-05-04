@@ -20,6 +20,9 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Anton&family=Lato:ital,wght@1,900&family=Poppins&display=swap"
 	rel="stylesheet">
+
+
+<link rel='stylesheet' href='https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css'>
 <link rel="stylesheet" href="css/style.css">
 <title>EXELR8</title>
 
@@ -55,7 +58,7 @@
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a>  <a
+					class="fas fa-user-group me-2"></i>Team</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
@@ -123,6 +126,7 @@
 						</div>
 					</div>
 					<div class="col-md-3" sec:authorize="hasAuthority('SUPERADMIN')">
+					<a th:href="@{/dashboard/companies}" style="text-decoration:none;">
 						<div
 							class="p-3 bg-warning shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
@@ -131,21 +135,25 @@
 							</div>
 							<i class="fas fa-building fs-1 p-3 text-white"></i>
 						</div>
+					</a>
 					</div>
 
-					<div class="col-md-3" sec:authorize="hasAuthority('SUPERADMIN')">
+					<div class="col-md-3" >
+					<a th:href="@{/dashboard/personnel}" style="text-decoration:none;">
 						<div
 							class="p-3 bg-success shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2 text-white" th:text="${usercount}"></h3>
-								<p class="fs-6 fw-bold text-white">Total Personnel</p>
+								<h3 class="fs-2 text-white" th:text="${usercount}" sec:authorize="hasAuthority('SUPERADMIN')"></h3>
+								<h3 class="fs-2 text-white" th:text="${usercompcount}" sec:authorize="!hasAuthority('SUPERADMIN')"></h3>
+								<p class="fs-6 fw-bold text-white">Total Team</p>
 							</div>
 							<i class="fas fa-user-group fs-1  p-3 text-white"></i>
 						</div>
+						</a>
 					</div>
 
 					<div class="col-md-3">
-						<div
+						<div id="overduebtn"
 							class="p-3 bg-danger shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
 								<h3 class="fs-2 text-white" sec:authorize="hasAuthority('SUPERADMIN')" th:text="${overduecount}">2</h3>
@@ -170,7 +178,7 @@
 						</div>
 					</div>
 					<div class="col-md-3" sec:authorize="hasAuthority('SUPERADMIN')" >
-						<div
+						<div id="tardybtn"
 							class="p-3 bg-info shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
 								<h3 class="fs-2 text-white" th:text="${#lists.size(tardyuser)}">2</h3>
@@ -183,13 +191,14 @@
 					</div>
 				</div>
 
-				<div class="row my-5">
+				<div class="row my-2">
 
-					
+				<div style="display:none;" id="tardysection">
 					<div class="col" th:if="${#lists.size(tardyuser) > 0}"
-						sec:authorize="hasAuthority('SUPERADMIN')">
-						<table class="table bg-white rounded shadow-sm  table-hover"
-							id="view">
+						sec:authorize="hasAuthority('SUPERADMIN')" >
+						<h2 class="text-center m-2">People who didn't create a task before 9am today</h2>
+						<table class="table bg-white rounded shadow-sm table-hover m-2"
+							id="mytable">
 							<thead>
 								<tr>
 									<th scope="col">Id</th>
@@ -202,10 +211,38 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="col m-5" th:unless="${#lists.size(tardyuser) > 0}"
+					<div class="col m-5 text-center" th:unless="${#lists.size(tardyuser) > 0}"
 						sec:authorize="hasAnyAuthority('SUPERADMIN')">
-						<h5 class="text-center m-5">Personnel's who didn't able to create a daily task before 9am will be shown here</h5>
+						<i class="fa-solid fa-business-time fa-4x p-3"></i>
+						<h5 class="text-center my-5">Personnel's who didn't able to create a daily task before 9am will be shown here</h5>
 					</div>
+				</div>
+				<div id="overduesection">
+					<div class="col" th:if="${overduecount > 0}">
+						<h2 class="text-center m-2">Overdues</h2>
+						<table class="table bg-white rounded shadow-sm table-hover m-2"
+							id="overduetbl">
+							<thead>
+								<tr>
+									<th scope="col">Company</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Task Name</th>
+									<th scope="col">Since</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+					<div class="col m-5 text-center" th:unless="${overduecount > 0}"
+						>
+						<i class="fa-solid fa-4x my-5 fa-face-laugh text-center"></i>
+						<h5 class="text-center m-2">Yay! No Overdue Tasks</h5>
+					</div>
+				
+				</div>
+					
 					
 				</div>
 
@@ -225,7 +262,11 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"
 		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 		crossorigin="anonymous"></script>
+		<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 		<script type="text/javascript" th:src="@{/js/notif.js}"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js"></script>
+		<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script>
 		var el = document.getElementById("wrapper");
@@ -236,13 +277,24 @@
 			el.classList.toggle("toggled");
 		};
 	</script>
+	<script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
 	<script>
+	
 		$(document).ready(function(){
 			
+			$("#tardybtn").click(function(){
+				$("#overduesection").css("display","none");
+				$("#tardysection").css("display","block");
+				
+			});
+			$("#overduebtn").click(function(){
+				$("#overduesection").css("display","block");
+				$("#tardysection").css("display","none");
+				
+			});
 			
-			
-		})
+		});
+	
 	</script>
-
 </body>
 </html>

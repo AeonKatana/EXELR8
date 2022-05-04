@@ -3,26 +3,51 @@ $(document).ready(function() {
 	
 	// Table view for SuperAdmin
 	
-	const superview = $("#view").DataTable({
-		"scrollY": "350px",
-		"scrollCollapse": true,
-		"serverSide": false,
-		'ajax': {
-			url: '/dashboard/tardy', type: 'GET', dataSrc: ""
-		},
-		"pageLength": 10,
-		"lengthChange": false,
-		 column :[{
-			title : 'Id',
-			data :  'id'	
-		},{
-			title : 'Full Name',
-			data : 'fullname'
-		},{
-			title : 'Company',
-			data : 'companyname'
+	var table = $('#mytable').DataTable({
+		'ajax': { url: '/dashboard/tardy', type: "GET" , dataSrc: ""},
+		columns: [{
+			data: 'id'
+		}, {
+			data: 'fullname',
+		}, {
+			data: "company.compname",
+			render: function(data, type, row) {
+				if (data == null) {
+					return "Does not belong to any company";
+				}
+				else {
+					return "<p style='color :" + row.company.color + " '> " + data + "</p>";
+				}
+			}
 		}]
 	});
+	
+	var table = $('#overduetbl').DataTable({
+		'ajax': { url: '/dashboard/overdue', type: "GET" , dataSrc: ""},
+		columns: [{
+			data: 'user.companyname'
+		}, {
+			data: 'user.fullname',
+		}, {
+			data: "description",
+		},{
+			data : "until"
+		}]
+	});
+	
+	
+	
+	function getTardy(){
+		$.ajax({
+			type : 'GET',
+			url : 'dashboard/overdue',
+			success : function(result){
+				console.log(result);
+			}
+		})
+	}
+	
+	getTardy();
 	
 	// Table view for MASTERADMIN and others
 	

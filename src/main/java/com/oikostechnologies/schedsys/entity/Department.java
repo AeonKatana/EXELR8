@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,11 +38,11 @@ public class Department {
 	private long id;
 	private String deptname;
 	
-	@OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE,orphanRemoval = true)
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
 	@JsonManagedReference
 	private Set<Task> tasks;
 	
-	@OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	@OrderBy("id ASC")
 	private Set<UserDepartment> userdepartment;

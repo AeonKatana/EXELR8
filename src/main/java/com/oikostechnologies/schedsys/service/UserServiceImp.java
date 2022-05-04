@@ -1,7 +1,9 @@
 package com.oikostechnologies.schedsys.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -198,6 +200,12 @@ public class UserServiceImp implements UserService {
 	public List<User> findAll() {
 		// TODO Auto-generated method stub
 		return userrepo.findAll();
+	}
+
+	@Override
+	public List<User> getAllOverdueUser() {
+		
+		return userrepo.getAllUserOverdue(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
 	}
 
 	

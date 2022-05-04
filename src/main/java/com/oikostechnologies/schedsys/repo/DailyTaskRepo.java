@@ -19,6 +19,11 @@ public interface DailyTaskRepo extends JpaRepository<DailyTask, Long> {
 	
 	List<DailyTask> findAllByDoneFalseAndUserOrderById(User user);
 	
+	@Query("Select dt from DailyTask dt where dt.until < :today and dt.done = false order by dt.until desc")
+	List<DailyTask> getAllByDoneFalseOrderByUntilDesc(@Param("today") LocalDate today);
+	@Query("Select dt from DailyTask dt join dt.user u where dt.until < :today and dt.done = false and u.id =:id order by dt.until desc")
+	List<DailyTask> getAllByDoneFalseAndUserOrderByUntilDesc(@Param("today")LocalDate today, @Param("id") long id);
+	
 	
 	@Query("SELECT count(*) from DailyTask dt join dt.user u join dt.assignedby au where u.id =:id and au.id != u.id and dt.done = false")
 	long countDailyAssignedToMeBySomeoneElse(@Param("id") long id);

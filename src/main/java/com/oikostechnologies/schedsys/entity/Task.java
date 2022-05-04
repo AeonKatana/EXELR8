@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class Task {
 	@JsonBackReference
 	private Department department;
 	
-	@OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "task",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<TaskDetail> taskdetails;
 	

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class TaskDetail {
 	private String recurringday;
 	private boolean done;
 	
-	@OneToMany(mappedBy = "taskdetail" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "taskdetail", fetch = FetchType.EAGER ,cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserTask> taskdetail;
 	

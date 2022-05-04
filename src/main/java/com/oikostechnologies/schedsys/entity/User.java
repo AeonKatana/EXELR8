@@ -15,9 +15,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -86,7 +83,7 @@ public class User {
 	private PasswordToken passtoken;
 	
 	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
-	@JsonManagedReference
+	@JsonIgnore
 	@OrderBy("until DESC")
 	private Set<DailyTask> assigned;
 	

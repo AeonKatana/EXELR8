@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oikostechnologies.schedsys.entity.Company;
+import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.entity.User;
-import com.oikostechnologies.schedsys.entity.view.Quickview;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.NotificationRepo;
@@ -68,6 +68,7 @@ public class DashController {
 		// I need Overdue for Masteradmin, and Others
 		model.addAttribute("usercount", userservice.usercount());
 		model.addAttribute("companycount", comservice.companycount());
+		model.addAttribute("usercompcount", userservice.getAllByCompany(userdetail).size());
 		//model.addAttribute("completed", detailrepo.countCompleted()); 
 		model.addAttribute("dailies", dailyservice.countDailyToday()); // For Superadmin
 		model.addAttribute("dailycomp", dailyservice.countCompanyDaily(userdetail.getUser().companyname())); // For Masteradmin
@@ -89,6 +90,15 @@ public class DashController {
 	@ResponseBody
 	public List<User> tardyUsers(){
 		return schedservice.getTardyusers();
+	}
+	
+	@GetMapping("/dashboard/overdue")
+	@ResponseBody
+	public List<DailyTask> overdueUsers(@AuthenticationPrincipal MyUserDetails detail){
+		if(detail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
+			return dailyservice.getAllOverdue();
+		}
+		return dailyservice.getAllOverdueByUser(detail.getUser());
 	}
 	
 	// ----------------------------------------------

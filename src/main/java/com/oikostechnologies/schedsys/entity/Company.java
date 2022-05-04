@@ -39,7 +39,7 @@ public class Company {
 	private long id;
 	private String compname;
 	
-	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<Department> departments;
 	
