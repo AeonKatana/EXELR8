@@ -176,31 +176,15 @@ table.dataTable thead {
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body text-center">
 			<p class="m-2 bg-success text-white rounded p-4" id="histval" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
-			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no history</h3>
+			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no purpose</h3>
       </div>
     </div>
   </div>
 </div>
 
 <div class="d-flex mx-5">
-<div class="accordion w-50" id="accordionPanelsStayOpenExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-       <h3><span class="text-center justify-content-center">Philosophy</span></h3>
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingTwo">
-      <div class="accordion-body">
-      	 <div>
-      	 	<p class="m-2 bg-dark text-white rounded p-4" id="philval" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>  
-      	 </div>
-		</div>
-    </div>
-  </div>
-</div>
-<div class="accordion w-50" id="accordionPanelsStayOpenExample">
+
+<div class="accordion w-100" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">

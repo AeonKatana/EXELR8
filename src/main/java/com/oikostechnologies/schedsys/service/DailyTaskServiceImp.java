@@ -335,6 +335,24 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		// TODO Auto-generated method stub
 		return dailyrepo.getAllByDoneFalseAndUserOrderByUntilDesc( ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), user.getId());
 	}
+
+	@Override
+	public List<DailyTask> getAllOverdueByCompany(String company) {
+		// TODO Auto-generated method stub
+		return dailyrepo.getAllByDoneFalseAndCompanyOrderByUntilDesc(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(), company);
+	}
+
+	@Override
+	public List<DailyTask> getAllDailyByUser(User user) {
+		// TODO Auto-generated method stub
+		return dailyrepo.getAllDailyByUser(Date.valueOf( ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()), user.getId());
+	}
+
+	@Override
+	public List<DailyTask> getAllDailyByCompany(String company) {
+		// TODO Auto-generated method stub
+		return dailyrepo.getAllDailyByCompany(Date.valueOf( ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()), company);
+	}
 	
 
 }

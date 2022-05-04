@@ -42,7 +42,7 @@
            
                 <div class="mb-3">
                   <label for="exampleInputFistName" class="form-label fw-bold">Name of department</label>
-                  <input type="text" class="form-control" name="deptname" id="deptname" placeholder="e.g. IT Department">
+                  <input type="text" class="form-control" name="deptname" id="deptname" placeholder="">
                 </div>
                   <label for="exampleInputLastName" class="form-label fw-bold">Members :</label>
                 <div class="mb-3">
@@ -150,12 +150,12 @@
 							<div class="card-body text-center">
 							<h4 class="card-title text-center m-2" th:text="${dept.deptname}">Marketing Department</h4>
 							<p class="card-text my-2 mx-2">Company : <span class="badge bg-info text-dark" th:text="${dept.companyname}"></span></p>	
-							<p class="card-text m-2">Supervisor/s : <th:block th:each="member, num : ${dept.supervisor}" th:if="${num.index} < 1"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
+							<p class="card-text m-2">Supervisor/s : <th:block th:each="member, num : ${dept.supervisor}" th:if="${num.index} < 1"> <a class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}" th:href="@{/profile/{id}(id=${member.user.id})}"></a>
 								<span th:if="${num.index == 0 && #lists.size(dept.supervisor) > 2}" th:text="${'+' + (#lists.size(dept.supervisor) - 2)}" class="badge bg-success text-light rounded-pill"></span>
 								</th:block>
 							</p>
 							
-								<p class="card-text m-2">Members : <th:block th:each="member, num : ${dept.userdepartment}" th:if="${num.index} < 2"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
+								<p class="card-text m-2">Members : <th:block th:each="member, num : ${dept.userdepartment}" th:if="${num.index} < 2"> <a class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}" th:href="@{/profile/{id}(id=${member.user.id})}"></a>
 								<span th:if="${num.index == 1 && dept.usercount > 2}" th:text="${'+' + (dept.usercount - (num.index + 1))}" class="badge bg-success text-light rounded-pill"></span>
 								</th:block>
 								</p>

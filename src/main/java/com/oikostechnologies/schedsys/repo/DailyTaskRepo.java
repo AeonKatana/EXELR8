@@ -21,9 +21,18 @@ public interface DailyTaskRepo extends JpaRepository<DailyTask, Long> {
 	
 	@Query("Select dt from DailyTask dt where dt.until < :today and dt.done = false order by dt.until desc")
 	List<DailyTask> getAllByDoneFalseOrderByUntilDesc(@Param("today") LocalDate today);
+	
+	@Query("Select dt from DailyTask dt join dt.user u join u.company c where dt.until < :today and dt.done = false and c.compname =:compname order by dt.until desc")
+	List<DailyTask> getAllByDoneFalseAndCompanyOrderByUntilDesc(@Param("today")LocalDate today, @Param("compname") String companyname);
+	
 	@Query("Select dt from DailyTask dt join dt.user u where dt.until < :today and dt.done = false and u.id =:id order by dt.until desc")
 	List<DailyTask> getAllByDoneFalseAndUserOrderByUntilDesc(@Param("today")LocalDate today, @Param("id") long id);
 	
+	@Query("SELECT dt from DailyTask dt join dt.user u where DATE(dt.starteddate) = :today and u.id =:id and dt.done = false")
+	List<DailyTask> getAllDailyByUser(@Param("today") Date today,@Param("id") long id);
+	
+	@Query("SELECT dt from DailyTask dt join dt.user u join u.company c where c.compname =:company and DATE(dt.starteddate) =:today and dt.done = false")
+	List<DailyTask> getAllDailyByCompany(@Param("today") Date today,@Param("company") String company);
 	
 	@Query("SELECT count(*) from DailyTask dt join dt.user u join dt.assignedby au where u.id =:id and au.id != u.id and dt.done = false")
 	long countDailyAssignedToMeBySomeoneElse(@Param("id") long id);
@@ -31,7 +40,7 @@ public interface DailyTaskRepo extends JpaRepository<DailyTask, Long> {
 	@Query("SELECT count(*) from DailyTask dt where DATE(dt.starteddate) = :today")
 	long countDailyToday(@Param("today") Date today);
 	
-	@Query("SELECT count(*) from DailyTask dt join dt.user u join u.company c where c.compname =:company and DATE(dt.starteddate) =:today")
+	@Query("SELECT count(*) from DailyTask dt join dt.user u join u.company c where c.compname =:company and DATE(dt.starteddate) =:today and dt.done = false")
 	long countDailyToday(@Param("today") Date today, @Param("company") String company);
 	
 	@Query("SELECT count(*) from DailyTask dt join dt.user u where DATE(dt.starteddate) = :today and u.id =:id and dt.done = false")

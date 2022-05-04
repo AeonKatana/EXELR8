@@ -29,8 +29,11 @@ $(document).ready(function() {
 												contentType : "application/json",
 											    data : JSON.stringify(department),
 												success : function(result) {
-														alert(result);
+													
 														window.location.reload();
+												},error : function(){
+													alert("An error occured while adding members. Maybe the personnel doesn't exist anymore");
+													window.location.reload();
 												}
 										})
 
@@ -65,10 +68,11 @@ $(document).ready(function() {
 										data : JSON.stringify(task),
 										success: function(result){
 											window.location.reload();
-											alert("Task Added!");
+											
 										},
 										error : function(){
-											alert("Task creation failed. Please reload and try again")
+											alert("Task creation failed. Please reload and try again");
+											window.location.reload();
 										}
 									})
 									
@@ -99,14 +103,14 @@ $(document).ready(function() {
 											contentType : "application/json",
 											data : JSON.stringify(task),
 											success : function(result) {
-												alert("Task Added!");
+												
 												window.location.reload();
 											},
 											error : function() {
 												$("#submit").prop('disabled',false);
 												$("#submit").text('Add Task');
-												alert('An Error occured. Please try again');
-												
+												alert('An Error occured. Reloading the page...');
+												window.location.reload();
 											}
 										})
 
@@ -151,9 +155,12 @@ $(document).ready(function() {
 									data : JSON.stringify(task),
 									success: function(result){
 										window.location.reload();
-										alert("Task Updated!");
+									
 										$("#submit2").prop('disabled',false);
 										$("#submit2").text("Save Changes");
+									},
+									error: function(){
+										alert("An error occured. Reloading the page...");
 									}
 								});
 							});
@@ -188,6 +195,7 @@ $(document).ready(function() {
 									},
 									error : function(){
 										alert("An error has occured. Please try again later");
+										window.location.reload();
 									}
 								})
 							});
@@ -229,6 +237,8 @@ $(document).ready(function() {
 										
 										window.location.reload();
 										
+									},error : function(){
+										alert("Something went wrong.Reloading the page...");
 									}
 								});
 							});

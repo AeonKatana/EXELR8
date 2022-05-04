@@ -61,7 +61,11 @@ $(document).ready(function(){
 	// Show Companies in the Table
 			
 	var table = $('#mytable').DataTable({
-				
+				"createdRow": function( row, data, dataIndex ) {
+    	
+      		$(row).addClass( 'pe-auto' );
+    		
+  		},
 				"scrollY":        "380px",
 		        "scrollCollapse": true,
 			    'ajax' : { url : '/companies/datatable' , type : "GET", dataSrc : "" },
@@ -83,16 +87,10 @@ $(document).ready(function(){
 			    	render : function(data, type ,row){
 			    		return data.length;
 			    	}
-			    },{
-			    	data : 'id',
-			    	render : function(data){
-			    		return "<button class='btn btn-primary viewcomp'> View Details </button> ";
-			    	}
 			    }]
 			  });
-			 $("#mytable tbody").on('click','.viewcomp',function(){
-				 var data = table.row($(this).parents('tr')).data();
-				
+			 $("#mytable tbody").on('click','tr',function(){
+				 var data = table.row(this).data();
 				  window.location.href="/companies/" + data.compname;
 				 
 			 });

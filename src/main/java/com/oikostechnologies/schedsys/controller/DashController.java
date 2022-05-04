@@ -69,7 +69,7 @@ public class DashController {
 		model.addAttribute("usercount", userservice.usercount());
 		model.addAttribute("companycount", comservice.companycount());
 		model.addAttribute("usercompcount", userservice.getAllByCompany(userdetail).size());
-		//model.addAttribute("completed", detailrepo.countCompleted()); 
+		
 		model.addAttribute("dailies", dailyservice.countDailyToday()); // For Superadmin
 		model.addAttribute("dailycomp", dailyservice.countCompanyDaily(userdetail.getUser().companyname())); // For Masteradmin
 		model.addAttribute("mydaily", dailyservice.countMyDaily(userdetail.getUser().getId())); // For Other Roles
@@ -98,9 +98,21 @@ public class DashController {
 		if(detail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
 			return dailyservice.getAllOverdue();
 		}
-		return dailyservice.getAllOverdueByUser(detail.getUser());
+		else if(detail.getUser().role().equalsIgnoreCase("MASTERADMIN")) {
+			return dailyservice.getAllOverdueByCompany(detail.getUser().companyname());
+		}
+			return dailyservice.getAllOverdueByUser(detail.getUser());
 	}
 	
+	@GetMapping("/dashboard/daily")
+	@ResponseBody
+	public List<DailyTask> dailyTask(@AuthenticationPrincipal MyUserDetails detail){
+		 if(detail.getUser().role().equalsIgnoreCase("MASTERADMIN")) {
+			return dailyservice.getAllDailyByCompany(detail.getUser().companyname());
+		 }
+			return dailyservice.getAllDailyByUser(detail.getUser());
+	}
+
 	// ----------------------------------------------
 	
 	

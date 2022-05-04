@@ -30,4 +30,7 @@ public interface DailyTaskService {
 	public DailyTaskModel addMultiTask(DailyTaskModel model, User user);
 	public List<DailyTask> getAllOverdue();
 	public List<DailyTask> getAllOverdueByUser(User user);
+	public List<DailyTask> getAllOverdueByCompany(String company);
+	public List<DailyTask> getAllDailyByUser(User user);
+	public List<DailyTask> getAllDailyByCompany(String company);
 }

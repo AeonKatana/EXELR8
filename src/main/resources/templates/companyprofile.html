@@ -204,9 +204,14 @@ table.dataTable thead {
 
 			<div class="container-fluid px-3 p-2" sec:authorize="hasAuthority('SUPERADMIN')">
 				
-				<button type="button" class="btn btn-success btn"
+				<div class="text-center">
+					<button type="button" class="btn btn-success btn"
 						data-bs-toggle="modal" data-bs-target="#addcompany">Add
 						company</button>
+				<a type="button" class="btn btn-info text-white" th:href="@{/dashboard/department}"
+						>Add Department</a>
+				</div>	
+				
 				<div
 					class="p-3 bg-white shadow-sm justify-content-around align-items-center rounded">
 					<div class="" th:if="${totalpage != 0}">
@@ -217,7 +222,6 @@ table.dataTable thead {
 									<th scope="col">Company Name</th>
 									<th scope="col">Master Admin</th>
 									<th scope="col">No of Personnel</th>
-									<th scope="col">View Details</th>
 
 								</tr>
 							</thead>
@@ -256,24 +260,8 @@ table.dataTable thead {
 </div>
 
 <div class="d-flex mx-5">
-<div class="accordion w-50" id="accordionPanelsStayOpenExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-       <h3><span class="text-center justify-content-center">Philosophy</span></h3>
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingTwo">
-      <div class="accordion-body">
-      	 <div>
-      	 	<p class="m-2 bg-dark text-white p-4 rounded" id="philval" th:if="${company.dna != null}" th:text="${company.dna.philosophy}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no philosophy</p>  
-      	 </div>
-		</div>
-    </div>
-  </div>
-</div>
-<div class="accordion w-50" id="accordionPanelsStayOpenExample">
+
+<div class="accordion w-100" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">

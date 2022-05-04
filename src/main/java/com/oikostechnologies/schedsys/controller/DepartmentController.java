@@ -105,12 +105,6 @@ public class DepartmentController {
 		
 		deptrepo.save(d);
 		
-		UserDepartment ud2 = new UserDepartment();
-		ud2.setUser(detail.getUser());
-		ud2.setDeptrole("SUPERVISOR");
-		ud2.setDepartment(d);
-		udrepo.save(ud2);
-		
 		for(PeopleModel pm : model.getPeople()) {
 			System.out.println("Name : " + pm.getName());
 			User user = repo.findById(pm.getId()).orElse(null);
