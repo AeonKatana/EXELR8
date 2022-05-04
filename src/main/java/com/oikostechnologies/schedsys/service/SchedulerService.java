@@ -26,10 +26,11 @@ public class SchedulerService {
 	 
 	private List<User> tardyusers = new ArrayList<>();
 	
-	@Scheduled(cron = "0 0 9 * * 1-6", zone = "Asia/Manila") // Run everyday at 9am except Sunday
+	@Scheduled(cron = "0 * * * * 1-6", zone = "Asia/Manila") // Run everyday at 9am except Sunday
 	public void checkTardy() {
 		LocalDate date = ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(); // Get the date today
 		tardyusers = repo.getAllTardyUsers(Date.valueOf(date));
+		System.out.println("Calling cron service...");
 	}
 	
 }

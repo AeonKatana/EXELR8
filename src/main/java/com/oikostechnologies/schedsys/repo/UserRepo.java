@@ -42,7 +42,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	User findByEmail(String email);
 	
-	@Query("Select u from User u where not exists(select dt from u.dailies dt where DATE(dt.starteddate) =: today)")
+	@Query("Select u from User u where not exists(select dt from u.dailies dt where DATE(dt.starteddate) =:today)")
 	List<User> getAllTardyUsers(@Param("today") Date today);
 	
 	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename = 'PROJLEAD'")
