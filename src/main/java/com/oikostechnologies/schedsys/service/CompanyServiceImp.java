@@ -21,14 +21,17 @@ import com.oikostechnologies.schedsys.datatable.repo.CompanyDataTable;
 import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.CompanyDna;
+import com.oikostechnologies.schedsys.entity.CoreValue;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.UserRole;
 import com.oikostechnologies.schedsys.event.CompanyEvent;
 import com.oikostechnologies.schedsys.model.CompanyModel;
+import com.oikostechnologies.schedsys.model.CoreValueModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.CompanyDnaRepo;
 import com.oikostechnologies.schedsys.repo.CompanyRepo;
+import com.oikostechnologies.schedsys.repo.CoreValueRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.repo.UserRoleRepo;
@@ -61,6 +64,9 @@ public class CompanyServiceImp implements CompanyService {
 	@Autowired
 	private CompanyDnaRepo dnarepo;
 
+	@Autowired
+	private CoreValueRepo corerepo;
+	
 	@Override
 	public long companycount() {
 		return companyrepo.count();
@@ -85,8 +91,16 @@ public class CompanyServiceImp implements CompanyService {
 			UserRole ur = UserRole.builder().role(rolerepo.findById(2L).orElse(null)).user(master).build();
 
 			companyrepo.save(comp);
+			
+			CompanyDna dna = new CompanyDna();
+			dna.setCompany(comp);
+			dnarepo.save(dna);
+			
 			userrepo.save(master);
 
+			
+			
+			
 			userrolerepo.save(ur);
 			publisher.publishEvent(new CompanyEvent(detail, master, applicationUrl(request)));
 
@@ -153,10 +167,6 @@ public class CompanyServiceImp implements CompanyService {
 		}
 		else {
 			newdna.setHistory(dna.getHistory());
-			newdna.setCorevalue(dna.getCorevalue());
-			newdna.setMission(dna.getMission());
-			newdna.setPhilosophy(dna.getPhilosophy());
-			newdna.setVision(dna.getVision());
 			dnarepo.save(newdna);
 		}
 		
@@ -167,6 +177,29 @@ public class CompanyServiceImp implements CompanyService {
 	public List<Company> findAll() {
 		// TODO Auto-generated method stub
 		return companyrepo.findAll();
+	}
+
+	@Override
+	public String addCoreValue(CoreValueModel model, User user) {
+		
+		CoreValue value = corerepo.findById(model.getId()).orElse(null);
+		Company company = companyrepo.findById(model.getCompanyid()).orElse(null);
+		if(company == null) {
+			return "An error occured.Company does not exist";
+		}
+		if(value == null) {
+			value = new CoreValue();
+			value.setName(model.getTitle());
+			value.setDescription(model.getDescription());
+			value.setDna(company.getDna());
+			corerepo.save(value);
+			return "Core Value Successfully Added!";
+		}
+		value.setName(model.getTitle());
+		value.setDna(company.getDna());
+		value.setDescription(model.getDescription());
+		corerepo.save(value);
+		return "Core Value Updated";
 	}
 
 }

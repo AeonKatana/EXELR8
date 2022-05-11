@@ -379,79 +379,36 @@ tl-item.active .tl-dot:before {
 						<div class="tab-pane fade" id="tasks">
 							<div class="card-body pb-2">
 								<h5 class="mb-2">Daily Tasks</h5>
-								<div id="tasks" class="d-flex flex-wrap justify-content-center"
-									style="display: none;">
-									<div class="m-2" th:each="task : ${mytask}"
-										th:if="${#lists.size(mytask) > 0}">
-
-										<div class="card shadow-lg"
-											th:classappend="${currentDate > task.until ? 'bg-danger text-light' : ''}"
-											style="width: 21rem; height: 250px; border-radius: 20px;">
-
-											<span class="text-right">
-												<button class="btn btn-success btn-sm donebtn"
-													data-bs-toggle="modal" data-bs-target="#exampleModalCenter"
-													th:id="${'done' + task.id}" th:tid="${task.id}">
-													<i class="fa-solid fa-check"></i>
-												</button>
-												<button class="btn btn-warning btn-sm"
-													th:classappend="${currentUser.id != task.assignedby.id ? 'disabled' : ''}">
-													<i class="fa-solid fa-pen-to-square"></i>
-												</button>
-												<button class="btn btn-danger btn-sm deletebtn"
-													data-bs-toggle="modal"
-													data-bs-target="#exampleModalCenter2"
-													th:id="${'delete' + task.id}" th:tid="${task.id}">
-													<i class="fa-solid fa-xmark"></i>
-												</button>
-											</span>
-											<h4 class="card-title text-center mx-0 mb-2"
-												th:text="${task.title}">Title Task</h4>
-											<div class="card-body">
-												<h5 th:text="${'Task :' +task.description}"
-													class="m-1 text-left">This is where the task
-													description will be</h5>
-												<span class="m-1">Owner :</span><span
-													class="badge text-white"
-													th:style="${'background-color:' + task.user.companycolor()}"
-													th:text="${task.user.fullname()}"></span> <br> <span
-													class="m-1">Assigned By : </span><span
-													class="badge text-white"
-													th:style="${'background-color:' + task.assignedby.companycolor()}"
-													th:text="${task.assignedby.fullname()}"></span>
-
-												<p class="card-text m-1">
-													Timeline : <i class="fa-regular fa-calendar text-primary"></i>
-													[[${#temporals.monthNameShort(task.starteddate) + ' ' +
-													#temporals.day(task.starteddate) + ' - ' +
-													#temporals.monthNameShort(task.until) + ' ' +
-													#temporals.day(task.until)}]]
-												</p>
-												<span class="m-1">Notify :</span>
-												<th:block th:each="mention,num : ${task.notifyusers}"
-													th:if="${num.index} < 2 ">
-													<span class="badge bg-info text-dark  mx-1"
-														th:text="${mention.username}"></span>
-													<span th:if="${num.index} == 2"
-														th:text="${'+' + (#lists.size(task.notifyusers) - (num.index + 1))}"
-														class="badge bg-info text-light"></span>
-												</th:block>
-
-											</div>
-
-										</div>
-
-									</div>
-								</div>
-								<div th:unless="${#lists.size(mytask) > 0}">
-									<div class="card-body pb-2 text-center">
-										<h5 class="text-muted text-center">No Tasks</h5>
-									</div>
-
-
-								</div>
-
-
+								<table class="table table-striped" id="mytasks">
+									<thead>
+										<tr>
+											<th>Task Name</th>
+											<th>Deadline</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="daily : ${mytask}"
+													th:if="${!daily.done && !daily.deleted}" th:id="${'row' + daily.id}" th:rid="${daily.id}"
+													th:classappend="${daily.until < today ? 'bg-danger text-white' : ''}">
+													<td th:text="${daily.description}"></td>
+													<td
+														th:text="${'(' + #temporals.dayOfWeekNameShort(daily.until) + ') '  + #temporals.monthNameShort(daily.until) + ' ' + #temporals.day(daily.until)}"></td>
+													<td class="text-end">
+														<button class="btn btn-success btn-sm donebtn" th:id="${'taskdone' + daily.id}" th:uid="${currentUser.id}" th:did="${daily.id}" th:aid="${daily.assignedby.id}">
+															<i class="fa-solid fa-check"></i>
+														</button>
+														<button class="btn btn-warning btn-sm editbtn" th:id="${'edittask' + daily.id}" th:uid="${currentUser.id}" th:did="${daily.id}" data-bs-toggle="modal" data-bs-target="#editdetail">
+															<i class="fa-solid fa-pen-to-square"></i>
+														</button>
+														<button class="btn btn-danger btn-sm deletebtn" th:id="${'task' + daily.id}" th:uid="${currentUser.id}" th:did="${daily.id}">
+															<i class="fa-solid fa-xmark"></i>
+														</button>
+													</td>
+													
+												</tr>
+									</tbody>
+								</table>	
 							</div>
 
 						</div>

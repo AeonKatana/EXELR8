@@ -1,5 +1,9 @@
 package com.oikostechnologies.schedsys.controller;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +52,7 @@ public class ProfileController {
 		
 		model.addAttribute("viewuser", viewuser);
 		model.addAttribute("activity", actrepo.findByUserOrderByDateDesc(viewuser));
-		model.addAttribute("mytask", dailyrepo.findAllByDoneFalseAndUserOrderById(viewuser));
+		model.addAttribute("mytask", dailyrepo.findAllByDoneFalseAndDeletedFalseAndUserOrderById(viewuser));
 		
 		return "viewprofile";
 		
@@ -59,7 +63,9 @@ public class ProfileController {
 		model.addAttribute("message", msg);
 		model.addAttribute("currentUser", user.getUser());
 		model.addAttribute("activity", actrepo.findByUserOrderByDateDesc(user.getUser()));
-		model.addAttribute("mytask", dailyrepo.findAllByDoneFalseAndUserOrderById(user.getUser()));
+		model.addAttribute("today", ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate());
+
+		model.addAttribute("mytask", dailyrepo.findAllByDoneFalseAndDeletedFalseAndUserOrderById(user.getUser()));
 		return "settings";
 	}
 	

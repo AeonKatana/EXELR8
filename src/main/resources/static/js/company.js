@@ -27,20 +27,34 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	$("#addna").click(function(){
-		$("#history").val($("#histval").text());
-		$("#vision").val($("#visval").text());
-		$("#mission").val($("#misval").text());
-		$("#philosophy").val($("#philval").text());
-		$("#corevalue").val($("#coreval").text());
+	$("#editbtn").click(function(){
+		$("#purpose").val($("#purposeval").text());
 	})
 	
+	$(".corebtn").click(function(){
+		
+		$("#coretitleedit").val($(this).attr('title'));
+		$("#descedit").val($(this).attr('desc'));
+		$("#coreid").val($(this).attr('cid'));
+	})
+	
+	
 	// Add Company DNA
+	
+	
+	
 	
 	$("#dnaform").submit(function(){
 		$.post($(this).attr('action'),$(this).serialize(),function(result){
 			alert(result);
 			window.location.reload();
+		});
+		return false;
+	})
+
+	$("#coreform").submit(function(e){
+		$.post($(this).attr('action'),$(this).serialize(),function(result){
+			alert(result);
 		});
 		return false;
 	})
@@ -94,6 +108,8 @@ $(document).ready(function(){
 				  window.location.href="/companies/" + data.compname;
 				 
 			 });
+			 
+			
 		
 	
 });

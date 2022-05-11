@@ -44,6 +44,9 @@ $(document).ready(function() {
 			}
 		}, {
 			data: "description",
+			render : function(data,type,row){
+				return "<a href='/department/" + row.department.deptname + "'>" + data + "</a>"; 
+			}
 		},{
 			data : "until"
 		}]
@@ -56,7 +59,7 @@ $(document).ready(function() {
 		}, {
 			data: 'user.fullname',
 			render : function(data,type,row){
-				return "<a href='/profile/" + row.id + "'>"+ data + "</a>";
+				return "<a href='/profile/" + row.user.id + "'>"+ data + "</a>";
 			}
 		}, {
 			data: "description",
@@ -66,17 +69,7 @@ $(document).ready(function() {
 	
 	
 	
-	function getTardy(){
-		$.ajax({
-			type : 'GET',
-			url : 'dashboard/overdue',
-			success : function(result){
-				console.log(result);
-			}
-		})
-	}
 	
-	getTardy();
 	
 	// Table view for MASTERADMIN and others
 	

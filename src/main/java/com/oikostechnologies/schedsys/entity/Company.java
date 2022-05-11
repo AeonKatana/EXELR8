@@ -48,7 +48,6 @@ public class Company {
 	private Set<User> user;
 	
 	@OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
-	@JsonIgnore
 	private CompanyDna dna;
 	
 	private String color;
@@ -88,6 +87,16 @@ public class Company {
 			return "No MASTERADMIN";
 		}
 		return masteradmin;
+	}
+	
+	@Transient
+	@JsonSerialize
+	public int donetask() {
+		int total = 0;
+		for(User u : user) {
+			total += u.getDailies().stream().filter(x -> x.isDone() == true).count();
+		}
+		return total;
 	}
 	
 }

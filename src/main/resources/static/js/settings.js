@@ -9,14 +9,12 @@ $(document).ready(
 						$("#myframe").prop("height", 400);
 					});
 
-					let taskid = 0;
-					$(".donebtn").click(function() {
-						taskid = $(this).attr("tid");
-					});
-
-					$("#confirmdone").click(
-							function() {
-
+							let undotype = "";
+							let taskid = 0;
+							$(".donebtn").click(function(){
+								taskid = $(this).attr("did");
+								let userid = $(this).attr("uid");
+								undotype = "done";
 								$.ajax({
 									type : "POST",
 									url : "/task/markasdone",
@@ -24,38 +22,56 @@ $(document).ready(
 										status : true,
 										id : taskid
 									},
-									success : function(result) {
-										console.log(result);
-										location.reload();
-										$("#done" + taskid).parent().parent()
-												.fadeOut();
+									success : function(result){
+										$("#row" + taskid).fadeOut();
+										let count = parseInt($("#count" + userid).text());
+										count--;
+										$("#count" + userid).text(count);
+											$("#undotext").text("Task completed!");
+											$("#undo").toast({delay:5000});
+											$("#undo").toast("show");	
+										
+									},
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
+										
 									}
-								});
-
-							})
-
-					$(".deletebtn").click(function() {
-						taskid = $(this).attr("tid");
-					});
-
-					$("#confirmdelete").click(
-							function() {
-								$
-										.ajax({
-											type : "DELETE",
-											url : "/task/deleteTask",
-											data : {
-												id : taskid
-											},
-											success : function(result) {
-												console.log(result);
-												$("#exampleModalCenter2")
-														.modal('hide');
-												$("#delete" + taskid).parent()
-														.parent().fadeOut();
-											}
-										});
-							})
+								})
+							});
+							
+							
+							let userid3 = 0;
+							$(".deletebtn").click(function() {
+								 taskid = $(this).attr("did");
+								 userid3 = $(this).attr("uid");
+								 undotype = "delete";
+								 
+								 $.ajax({
+									type : "PUT",
+									url : "/task/softdelete/" + taskid,
+									success : function(){
+										$("#row" + taskid).fadeOut();
+										let count = parseInt($("#count" + userid3).text());
+										count--;
+										$("#count" + userid3).text(count);
+											$("#undotext").text("Task deleted!");
+											$("#undo").toast({delay:5000});
+											$("#undo").toast("show");	
+									},
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
+										else if(response.status == 500){
+											alert('An error occured. Reloading the page...');
+										}
+										
+									}
+								})
+								 
+							});
 
 					$("#register").prop("disabled", true);
 

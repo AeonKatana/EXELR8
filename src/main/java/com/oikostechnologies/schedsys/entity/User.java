@@ -43,6 +43,7 @@ public class User {
 	private char[] password;
 	private boolean enabled;
 	private long contactno;
+	private long violationcount;
 	
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -59,14 +60,9 @@ public class User {
 	private Company company;
 
 	
-	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserDepartment> userdepartment;
-	
-	
-	@OneToMany(mappedBy = "user" , fetch =  FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
-	@JsonManagedReference
-	private Set<UserTask> tasks;
 	
 	
 	@OneToMany(mappedBy = "user" , fetch=FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
@@ -82,10 +78,17 @@ public class User {
 	@JsonIgnore
 	private PasswordToken passtoken;
 	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	private Scorecard scorecard;
+	
 	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonIgnore
 	@OrderBy("until DESC")
 	private Set<DailyTask> assigned;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
+	@JsonIgnore
+	private Set<Notification> notification;
 	
 	@Transient
 	private String role;

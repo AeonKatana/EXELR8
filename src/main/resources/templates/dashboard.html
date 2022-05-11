@@ -61,7 +61,10 @@
 					class="fas fa-user-group me-2"></i>Team</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a>  <a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -182,7 +185,7 @@
 							class="p-3 bg-info shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
 								<h3 class="fs-2 text-white" th:text="${#lists.size(tardyuser)}">2</h3>
-								<p class="fs-6 fw-bold text-white">Daily Checkup</p>
+								<p class="fs-6 fw-bold text-white">Daily Check-in</p>
 							</div>
 							<i class="fa-solid fa-business-time text-white fs-1 p-3"></i>
 							

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
 import com.oikostechnologies.schedsys.datatable.repo.UserDataTable;
+import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.PasswordToken;
 import com.oikostechnologies.schedsys.entity.RegistrationToken;
@@ -27,6 +28,7 @@ import com.oikostechnologies.schedsys.entity.UserRole;
 import com.oikostechnologies.schedsys.event.CompanyEvent;
 import com.oikostechnologies.schedsys.event.PasswordEvent;
 import com.oikostechnologies.schedsys.model.PersonnelModel;
+import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.PasswordTokenRepo;
 import com.oikostechnologies.schedsys.repo.RegistrationTokenRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
@@ -57,6 +59,9 @@ public class UserServiceImp implements UserService {
 	
 	@Autowired
 	private UserRoleRepo userrolerepo;
+	
+	@Autowired
+	private CompanyRepo comprepo;
 	
 	@Override
 	public long usercount() {
@@ -157,12 +162,21 @@ public class UserServiceImp implements UserService {
 	public boolean addPersonnel(MyUserDetails master,PersonnelModel model, HttpServletRequest request) {
 		
 		User useremail = userrepo.findByEmail(model.getEmail());
+		Company company;
+	    if(useremail == null) {
+		  
+	       if(model.getCompanyname() == null) {
+	    	  company = master.getUser().getCompany();
+	       }
+	       else {
+	    	   company = comprepo.findByCompname(model.getCompanyname());
+	    	   if(company == null) {
+	    		   throw new NullPointerException("Company doesn't exist");
+	    	   }
+	       }
+		   
 		
-	if(useremail == null) {
-		
-		Company company = master.getUser().getCompany();
-		
-		User user = User.builder()
+		   User user = User.builder()
 				.firstname(model.getFirstname())
 				.lastname(model.getLastname())
 				.email(model.getEmail())
@@ -182,6 +196,12 @@ public class UserServiceImp implements UserService {
 	userrepo.save(user);
 	userrolerepo.save(userRole);
 	publisher.publishEvent(new CompanyEvent(master, user, applicationUrl(request)));
+	ActivityLog createuser = new ActivityLog();
+	createuser.setAction("has created a user");
+	createuser.setTarget(model.getFirstname() + " " + model.getLastname());
+	createuser.setTargetlink("#");
+	createuser.setUser(master.getUser());
+	createuser.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 	
 		return true;
 	}

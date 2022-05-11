@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.entity.Department;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.UserDepartment;
@@ -49,6 +52,7 @@ public class DepartmentController {
 	
 	@Autowired
 	private DailyTaskService dailyservice;
+	
 	
 	@PostMapping("/addDeptUser")
 	@ResponseBody
@@ -140,6 +144,37 @@ public class DepartmentController {
 		model.addAttribute("dailycount", dailyservice.countDailyByDeparment(department));
 		model.addAttribute("overduecount", dailyservice.countOverdueByDepartment(department));
 		return "viewdepartment";
+	}
+	
+	@GetMapping("/{department}/trash")
+	public String trash(@PathVariable("department") String department, Model model) {
+		
+		Department d = deptrepo.findByDeptname(department);
+		if(d == null) {
+			return "redirect:/dashboard/department";
+		}
+		model.addAttribute("department", d);
+		model.addAttribute("title", d.getDeptname() + "'s Trash");
+		return "trash";
+	}
+	
+	@GetMapping("/{department}/taskTrash")
+	@ResponseBody
+	public List<DailyTask> trashes(@PathVariable("department") String department){
+		Department d = deptrepo.findByDeptname(department);
+		if(d == null) {
+			return Collections.emptyList();
+		}
+		return dailyservice.findAllDeletedTaskByDepartment(d);
+	}
+	@GetMapping("/{department}/taskDone")
+	@ResponseBody
+	public List<DailyTask> doneTasks(@PathVariable("department") String department){
+		Department d = deptrepo.findByDeptname(department);
+		if(d == null) {
+			return Collections.emptyList();
+		}
+		return dailyservice.findAllDoneTaskByDepartment(d);
 	}
 	
 	

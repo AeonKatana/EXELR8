@@ -21,4 +21,5 @@ public class DailyTaskModel {
 	private List<PeopleModel> mentions;
 	private List<PeopleModel> who;
 	private long userid;
+	private long deptid;
 }

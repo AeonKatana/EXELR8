@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.repo.CompanyRepo;
+import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
 
@@ -26,6 +27,9 @@ public class TestingRest {
 	
 	@Autowired
 	private CompanyRepo comprepo;
+	
+	@Autowired
+	private DepartmentRepo deptrepo;
 	
 	@GetMapping("/getAllTask/{name}")
 	public List<DailyTask> getAllTask(@PathVariable("name") String name){
@@ -47,5 +51,11 @@ public class TestingRest {
 	@DeleteMapping("/deleteCompany/{id}")
 	public void deleteCompany(@PathVariable("id") long id) {
 		comprepo.deleteById(id);
+	}
+	
+	@Transactional
+	@DeleteMapping("/deleteDepartment/{id}")
+	public void deleteDepartment(@PathVariable("id") long id) {
+		deptrepo.deleteById(id);
 	}
 }

@@ -43,6 +43,7 @@ public class DailyTask {
 	private LocalDate until;
 	private boolean recurring;
 	private boolean done;
+	private boolean deleted;
 	
 	@OneToMany(mappedBy = "daily", fetch =FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
@@ -51,6 +52,10 @@ public class DailyTask {
 	@ManyToOne
 	@JsonIgnoreProperties("dailies")
 	private User user;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("dailies")
+	private Department department;
 	
 	@ManyToOne
 	@JsonIgnore

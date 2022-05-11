@@ -38,11 +38,13 @@ public class Department {
 	private long id;
 	private String deptname;
 	
+	
 	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
 	@JsonManagedReference
-	private Set<Task> tasks;
+	private Set<DailyTask> dailies;
 	
-	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	@OrderBy("id ASC")
 	private Set<UserDepartment> userdepartment;
@@ -64,17 +66,7 @@ public class Department {
 	{
 		return userdepartment.size();
 	}
-	@Transient
-	public int numoftask() {
-		// Get the current department this
-		// Get all users of this department
-		// Get all user task of each users
-		int total = 0;
-		for(Task k : tasks) {
-			total += k.getTaskdetails().size();
-		}
-		return total;
-	}
+	
 	@Transient
 	public List<UserDepartment> supervisor() {
 		

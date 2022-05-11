@@ -257,7 +257,10 @@ tl-item.active .tl-dot:before {
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a><a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -312,7 +315,7 @@ tl-item.active .tl-dot:before {
 	                        <div class="tl-dot" th:style="${'border-color :' + act.user.company.color}" th:if="${act.user.company != null}"></div>
 	                        <div class="tl-dot" th:style="${'border-color : black' }" th:unless="${act.user.company != null}"></div>
 	                        <div class="tl-content">
-	                            <div class=""><a th:href="@{/profile/{id}(id=${act.user.id})}" style="text-decoration:none;">[[${act.user.fullname()}]]</a> from <a th:href="@{/companies/{company}(company=${act.user.companyname()})}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.user.companyname()}]] </span></a> <span class="" th:classappend="${#strings.contains(act.action,'late') || #strings.contains(act.action,'deleted') ? 'text-danger' : ''}">[[${act.action}]]</span>  <a class="" href="#"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.target}]]</span></a></div>
+	                            <div class=""><a th:href="@{/profile/{id}(id=${act.user.id})}" style="text-decoration:none;">[[${act.user.fullname()}]]</a> from <a th:href="@{/companies/{company}(company=${act.user.companyname()})}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.user.companyname()}]] </span></a> <span class="" th:classappend="${#strings.contains(act.action,'late') || #strings.contains(act.action,'deleted') ? 'text-danger' : ''}">[[${act.action}]]</span>  <a class="" th:href="${act.targetlink}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.target}]]</span></a></div>
 	                            <div class="tl-date text-muted mt-1" th:text="${#temporals.monthNameShort(act.date) + ' ' + #temporals.day(act.date) + ' ' + #temporals.year(act.date) }"></div>
 	                        	<div class="tl-date text-muted mt-1" th:text="${(#temporals.hour(act.date) - 12) + ':' + #temporals.minute(act.date) + ' PM'}" th:if="${#temporals.hour(act.date) >= 12}"> </div>
 	                        	<div class="tl-date text-muted mt-1" th:text="${#temporals.hour(act.date) + ':' + #temporals.minute(act.date) + ' AM'}" th:if="${#temporals.hour(act.date) < 12}"> </div>

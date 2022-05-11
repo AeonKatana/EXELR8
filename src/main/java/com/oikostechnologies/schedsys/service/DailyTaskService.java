@@ -3,6 +3,7 @@ package com.oikostechnologies.schedsys.service;
 import java.util.List;
 
 import com.oikostechnologies.schedsys.entity.DailyTask;
+import com.oikostechnologies.schedsys.entity.Department;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.model.DailyTaskModel;
 
@@ -33,4 +34,10 @@ public interface DailyTaskService {
 	public List<DailyTask> getAllOverdueByCompany(String company);
 	public List<DailyTask> getAllDailyByUser(User user);
 	public List<DailyTask> getAllDailyByCompany(String company);
-}
+	public String undoTask(User user, long id);
+	public String softDeleteTask(User user, long id);
+	public String undoDelete(User user, long id);
+	public List<DailyTask> findAllDeletedTaskByDepartment(Department d);
+	public List<DailyTask> findAllDoneTaskByDepartment(Department d);
+
+} 

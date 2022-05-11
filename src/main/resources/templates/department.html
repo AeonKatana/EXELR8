@@ -19,6 +19,7 @@
 </head>
 <body>
 <div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
+
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
     <div class="toast-header">
       <strong class="me-auto">Notification</strong>
@@ -92,7 +93,10 @@
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a><a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"

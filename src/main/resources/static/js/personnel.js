@@ -58,7 +58,7 @@ $(document).ready(function() {
 					return "<button class='btn btn-primary viewercp' > View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
 				}
 				else {
-					return "<button class='btn btn-primary'  disabled> View Details </button> <button class='btn btn-secondary' disabled> View Scorecard </button>";
+					return "<button class='btn btn-primary viewercp'> View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard' > View Scorecard </button>";
 				}
 
 			}
@@ -121,7 +121,7 @@ $(document).ready(function() {
 					return "<button class='btn btn-primary viewermy' > View Details </button> <button class='btn btn-secondary addscorecard' data-bs-toggle='modal' data-bs-target='#addscorecard'>View Scorecard</button>";
 				}
 				else {
-					return "<button class='btn btn-primary viewermy' > View Details </button> <button class='btn btn-secondary' disabled> View Scorecard </button>";
+					return "<button class='btn btn-primary viewermy' > View Details </button> <button class='btn btn-secondary addscorecard' disabled> View Scorecard </button>";
 				}
 			}
 		}, {
@@ -148,6 +148,57 @@ $(document).ready(function() {
 		var data = cptable.row($(this).parents('tr')).data();
 		id = data.id;
 		window.location.href="/profile/" + id;
+	});
+	
+	
+	$("#mytable tbody").on('click', '.addscorecard', function() {
+		var data = table.row($(this).parents('tr')).data();
+		$("#cores").find('tr').remove();
+		$.ajax({
+			type : "GET",
+			url : "/personnel/getDetail",
+			data : {
+				id : data.id
+			},
+			success: function(result){
+				$("#role").val(result.role);
+				for(var i = 0;i < result.company.dna.corevalue.length;i++){
+					$("#cores").append("<tr colspan='3'> "
+                         +  "<th class='p-5' style='text-align:center'>" + result.company.dna.corevalue[i].name +"</th> "
+                          +  "<th>"
+                           + "<textarea class='textareadef' rows='4' style='font-size:14px; width:100%;border: none;text-align:center;'>"
+                           + " </textarea> </th><th><input class='bi-form form-control' type='text'><input class='bi-form form-control' type='text'><input class='bi-form form-control' type='text'> </th></tr>")
+			
+				}
+			}
+		});
+		
+		
+	});
+	
+	$("#cptable tbody").on('click', '.addscorecard', function() {
+		var data = cptable.row($(this).parents('tr')).data();
+		$("#cores").find('tr').remove();
+		$.ajax({
+			type : "GET",
+			url : "/personnel/getDetail",
+			data : {
+				id : data.id
+			},
+			success: function(result){
+				$("#role").val(result.role);
+				for(var i = 0;i < result.company.dna.corevalue.length;i++){
+					$("#cores").append("<tr colspan='3'> "
+                         +  "<th class='p-5' style='text-align:center'>" + result.company.dna.corevalue[i].name +"</th> "
+                          +  "<th>"
+                           + "<textarea class='textareadef' rows='4' style='font-size:14px; width:100%;border: none;text-align:center;'>"
+                           + " </textarea> </th><th><input class='bi-form form-control' type='text'><input class='bi-form form-control' type='text'><input class='bi-form form-control' type='text'> </th></tr>")
+			
+				}
+			}
+		});
+		
+		
 	});
 	
 	// For Saving Scorecard (testing only not working)

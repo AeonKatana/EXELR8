@@ -1,6 +1,5 @@
 package com.oikostechnologies.schedsys.entity;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,40 +8,41 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@Builder
-public class Task {
-	
+@AllArgsConstructor
+@NoArgsConstructor
+public class Scorecard {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	private String taskname;
-	private LocalDate sdate;
-	private LocalDate edate;
+	private String mainscorecard;
+	private String perforaccel;
+	private String educationalbg;
+	private String metrics;
+	private String corecompetencies;
+	private String definition;
+	private String indicators;
 	
-	@ManyToOne
-	@JsonBackReference
-	private Department department;
+	@OneToOne
+	@JsonIgnoreProperties("scorecard")
+	private User user;
 	
-	@OneToMany(mappedBy = "task",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "card",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
-	private Set<TaskDetail> taskdetails;
-	
-
+	private Set<ScoreCore> scorecore;
 }

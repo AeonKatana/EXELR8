@@ -1,12 +1,12 @@
 package com.oikostechnologies.schedsys.entity;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,17 +18,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Notification {
+public class ScoreCore {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@ManyToOne
-	private User user;
+	private String indicator;
 	
-	private String action;
-	private String actiontarget;
-	private String targetlink;
-	private LocalDateTime date;
+	@ManyToOne
+	@JsonBackReference
+	private Scorecard card;
+	
+	@ManyToOne
+	@JsonBackReference
+	private CoreValue core;
 	
 }

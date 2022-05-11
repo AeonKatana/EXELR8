@@ -23,18 +23,7 @@
 
 </head>
 <body>
-<div class="toast-container position-absolute p-3  bottom-0 end-0" id="toastPlacement">
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
-    <div class="toast-header">
-      <strong class="me-auto">Notification</strong>
-      <small class="text-muted">just now</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      <p id="text"></p>
-    </div>
- </div>
-</div>
+
 <div class="modal fade" id="exampleModalCenter2" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
@@ -167,7 +156,7 @@
 							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						
+						<input type="hidden" th:value="${department.id}" id="deptid2">
 						<div class="mb-3">
 							<label for="exampleInputLastName" class="form-label fw-bold">Verb</label>
 							<input type="text" class="form-control" name="detail"
@@ -244,6 +233,32 @@
 			</div>
 		</div>
 	</div>
+	
+	
+<div class="toast-container position-fixed p-3 bottom-0 end-0" id="toastPlacement" style="z-index: 11">
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='undo'>
+    <div class="toast-header">
+      <strong class="me-auto" id="notiftitle">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="undotext"></p>
+      <button class="btn btn-secondary" id="undobtn">Undo</button>
+    </div>
+ </div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id='toaster'>
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="text"></p>
+    </div>
+ </div>
+</div>
+	
 	<div class="d-flex" id="wrapper">
 
 		<!----Sidebar STARTS here---->
@@ -268,7 +283,10 @@
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a><a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a> <a
 					th:href="@{/perform-logout}"
@@ -366,10 +384,16 @@
 									<div class="text-left w-100">
 										<h3 class="m-3 text-left">Tasks</h3>
 									</div>
-									<div class="text-end w-100">
+									<div class="text-end w-100 m-0">
 										<button type="button" id="framebtn" data-bs-target="#multitask" data-bs-toggle="modal" class="btnadd border m-2">
-											<i class="fa fa-plus-circle" style="color: #009d63"></i> Add Task
+											<i class="fa fa-plus-circle" style="color: #009d63"></i> New Task
 										</button>
+										
+									</div>
+									<div class="text-end  w-100 m-0">
+										<a th:href="@{/department/{department}/trash(department=${department.deptname})}" type="button" id="framebtn" class="btnadd border m-2 text-danger" style="text-decoration: none;">
+											<i class="fa-solid fa-trash-can text-danger"></i> Trash
+										</a>
 									</div>
 										
 									</div>
@@ -382,9 +406,7 @@
 										<div
 											th:styleappend="${'background-color:' + user.user.companycolor()}">
 											<h5 class="m-2 p-2 text-white">
-												<a th:text="${user.user.fullname()}" class="text-white" th:href="@{/profile/{id}(id=${user.user.id})}"></a><span class="text-end float-end" 
-												>Tasks
-													:  <span th:uid="${user.user.id}" th:id="${'count' + user.user.id}"> [[${user.user.currentDaily()}]]</span></span>
+												<a th:text="${user.user.fullname()}" class="text-white" th:href="@{/profile/{id}(id=${user.user.id})}"></a>
 											</h5>
 
 										</div>
@@ -399,7 +421,7 @@
 											</thead>
 											<tbody>
 												<tr th:each="daily : ${user.user.dailies}"
-													th:if="${!daily.done}" th:id="${'row' + daily.id}" th:rid="${daily.id}"
+													th:if="${!daily.done && !daily.deleted && daily.department.id == department.id}" th:id="${'row' + daily.id}" th:rid="${daily.id}"
 													th:classappend="${daily.until < today ? 'bg-danger text-white' : ''}">
 													<td th:text="${daily.description}"></td>
 													<td
@@ -412,7 +434,7 @@
 														<button class="btn btn-warning btn-sm editbtn" th:id="${'edittask' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}" data-bs-toggle="modal" data-bs-target="#editdetail">
 															<i class="fa-solid fa-pen-to-square"></i>
 														</button>
-														<button class="btn btn-danger btn-sm deletebtn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter2" th:id="${'task' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}">
+														<button class="btn btn-danger btn-sm deletebtn" th:id="${'task' + daily.id}" th:uid="${user.user.id}" th:did="${daily.id}">
 															<i class="fa-solid fa-xmark"></i>
 														</button>
 													</td>
@@ -424,7 +446,6 @@
 										</table>
 									</div>
 								</div>
-
 							</div>
 						</div>
 
@@ -478,7 +499,7 @@
 							</tbody>
 
 						</table>
-
+								
 					</div>
 				</div>
 			</div>

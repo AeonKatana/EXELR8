@@ -33,7 +33,8 @@ public class SchedulerService {
 		System.out.println("Calling cron service...");
 		System.out.println("-------------------Tardy Users----------------");
 		for(User u : tardyusers) {
-			System.out.println(u.fullname());
+			u.setViolationcount(u.getViolationcount() + 1); // Increase violation count if tardy
+			repo.save(u);
 		}
 		
 	}

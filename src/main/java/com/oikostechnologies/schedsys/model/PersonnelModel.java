@@ -16,5 +16,6 @@ public class PersonnelModel {
 	private String role;
 	private String email;
 	private long contactno;
+	private String companyname;
 	
 }

@@ -1,6 +1,7 @@
 package com.oikostechnologies.schedsys.controller;
 
 import java.time.Instant;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -22,7 +23,6 @@ import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.NotificationRepo;
-import com.oikostechnologies.schedsys.repo.QuickViewRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.CompanyService;
@@ -39,9 +39,6 @@ public class DashController {
 	
 	@Autowired
 	private CompanyService comservice;
-	
-	@Autowired
-	private QuickViewRepo qrepo;
 	
 	@Autowired
 	private DailyTaskService dailyservice;
@@ -135,7 +132,7 @@ public class DashController {
 		model.addAttribute("totalelement", masteradmins.getTotalElements());
 		model.addAttribute("totalpage", masteradmins.getTotalPages());;
 		model.addAttribute("comppersonnel" , userservice.getAllByCompany(user));
-		
+		model.addAttribute("companies", comservice.findAll());
 		System.out.println("-------------------------------");
 		for(User u : userservice.findAllUsers()) {
 			System.out.println(u.companyname());
@@ -182,6 +179,11 @@ public class DashController {
 		return "notifications";
 	}
 	
+	@GetMapping("/dashboard/leaderboard")
+	public String leaderboard(Model model) {
+		model.addAttribute("yearmonth", YearMonth.now(ZoneId.of("Asia/Manila")));
+		return "leaderboard";
+	}
 	
 	
 }

@@ -12,12 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.CompanyDna;
 import com.oikostechnologies.schedsys.model.CompanyModel;
+import com.oikostechnologies.schedsys.model.CoreValueList;
+import com.oikostechnologies.schedsys.model.CoreValueModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.CompanyService;
@@ -65,6 +68,14 @@ public class CompanyController {
 	@ResponseBody
 	public String addDna(@AuthenticationPrincipal MyUserDetails user,CompanyDna dna) {
 		return companyService.addDna(dna, dna.getCompanyid());
+	}
+	
+	@PostMapping("/addCoreValue")
+	@ResponseBody
+	public String addCoreValue(CoreValueModel model, @AuthenticationPrincipal MyUserDetails user){
+		
+		return companyService.addCoreValue(model, user.getUser());
+		
 	}
 	
 	

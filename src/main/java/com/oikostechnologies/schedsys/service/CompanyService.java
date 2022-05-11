@@ -12,7 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.CompanyDna;
+import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.model.CompanyModel;
+import com.oikostechnologies.schedsys.model.CoreValueModel;
 import com.oikostechnologies.schedsys.model.UserModel;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 
@@ -27,4 +29,5 @@ public interface CompanyService {
 	public Company getCompany(String name);
 	public String addDna(CompanyDna dna, long id);
 	public List<Company> findAll();
+	public String addCoreValue(CoreValueModel model, User user);
 }

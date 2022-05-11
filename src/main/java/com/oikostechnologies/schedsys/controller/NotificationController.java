@@ -40,14 +40,15 @@ public class NotificationController {
 			if(to != null && to.getId() != current.getId()) {
 				message.setContent(current.fullname() + " has completed a daily task you've assigned");
 				template.convertAndSendToUser(to.getEmail(), "/queue/message", message);
+				Notification notification = new Notification();
+				notification.setAction("has completed a daily task you've assigned");
+				notification.setActiontarget(current.fullname());
+				notification.setUser(to);
+				notification.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+				notification.setTargetlink("#");
+				notifrepo.save(notification);
 			}
-			Notification notification = new Notification();
-			notification.setAction("has completed a daily task you've assigned");
-			notification.setActiontarget(current.fullname());
-			notification.setUser(to);
-			notification.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
-			notification.setTargetlink("#");
-			notifrepo.save(notification);
+			
 	}
 	
 }

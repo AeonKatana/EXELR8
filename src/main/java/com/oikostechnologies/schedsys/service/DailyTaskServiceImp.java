@@ -11,16 +11,19 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.DailyTask;
+import com.oikostechnologies.schedsys.entity.Department;
 import com.oikostechnologies.schedsys.entity.NotifyUser;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.model.DailyTaskModel;
 import com.oikostechnologies.schedsys.model.PeopleModel;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DailyTaskRepo;
+import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.NotifyUserRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 
@@ -40,6 +43,8 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	private ActlogRepo actrepo;
 	
 	
+	@Autowired
+	private DepartmentRepo departmentRepo;
 	
 	@Override
 	@Transactional
@@ -60,6 +65,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 						task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
 						task.setUser(person);
 						task.setAssignedby(assign);
+						task.setDepartment(departmentRepo.findById(model.getDeptid()).orElse(null));
 						dailyrepo.save(task);
 						
 						User sa = userrepo.findSuperAdmin();
@@ -92,6 +98,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 				task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
 				task.setUser(assign);
 				task.setAssignedby(assign);
+				task.setDepartment(departmentRepo.findById(model.getDeptid()).orElse(null));
 				dailyrepo.save(task);
 				
 				User sa = userrepo.findSuperAdmin();
@@ -197,13 +204,16 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	@Override
 	public String markAsDone(User user,boolean status, long id) {
 		DailyTask task = dailyrepo.findById(id).orElse(null);
+		
+		
+		
 		if(task == null) {
 			return "An Error Occured, (This task is non-existent)";
 		}
-		else {
+		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
 			ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
 			compcreate.setTarget(task.getDescription());
-			compcreate.setTargetlink("#");
+			compcreate.setTargetlink("/department/" + task.getDepartment().getDeptname() + "/trash");
 			compcreate.setUser(user);
 			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 			
@@ -221,6 +231,13 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			}
 			
 		}
+		else if(user.getId() != task.getUser().getId()) {
+			throw new AccessDeniedException("Only SUPERADMIN and MASTERADMIN can only control other's tasks");
+		}
+		
+		else {
+			return "Nothing happened";
+		}
 		
 		
 	}
@@ -232,8 +249,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		if(task == null) {
 			return "An Error Occured, (This task is non-existent)";
 		}
-		else {
-			
+		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
 			ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
 			compcreate.setAction(" has deleted a task");
 			compcreate.setTarget(task.getDescription());
@@ -242,8 +258,11 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 			actrepo.save(compcreate);
 			dailyrepo.delete(task);
-			
 		}
+		else if(user.getId() != task.getUser().getId()) {
+			throw new AccessDeniedException("Only SUPERADMIN and MASTERADMIN can only control other's tasks");
+		}
+		
 		
 		
 		return "Task Deleted!";
@@ -352,6 +371,96 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	public List<DailyTask> getAllDailyByCompany(String company) {
 		// TODO Auto-generated method stub
 		return dailyrepo.getAllDailyByCompany(Date.valueOf( ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate()), company);
+	}
+
+	@Override
+	public String undoTask(User user, long id) {
+		DailyTask task = dailyrepo.findById(id).orElse(null);
+		if(task == null) {
+			return "This task doesn't exist. Reloading...";
+		}
+		
+		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
+			task.setDone(false);
+			dailyrepo.save(task);
+			
+			ActivityLog actlog = new ActivityLog();
+			actlog.setAction("has undid a task completion");
+			actlog.setTarget(task.getDescription());
+			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname());
+			actlog.setUser(user);
+			actrepo.save(actlog);
+		}
+		else if(user.getId() != task.getUser().getId()) {
+			throw new AccessDeniedException("Only SUPERADMIN and MASTERADMIN can only control other's tasks");
+		}
+		
+		return "Task undid";
+	}
+
+	@Override
+	public String softDeleteTask(User user, long id) {
+		DailyTask task = dailyrepo.findById(id).orElse(null);
+		if(task == null) {
+			return "This task doesn't exist. Reloading...";
+		}
+		
+		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
+			task.setDeleted(true);
+			dailyrepo.save(task);
+			
+			
+			ActivityLog actlog = new ActivityLog();
+			actlog.setAction("has deleted a task temporarily");
+			actlog.setTarget(task.getDescription());
+			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname() + "/trash");
+			actlog.setUser(user);
+			actrepo.save(actlog);
+		}
+		else if(user.getId() != task.getUser().getId()) {
+			throw new AccessDeniedException("Only SUPERADMIN and MASTERADMIN can only control other's tasks");
+		}
+		return "Task deleted";
+	}
+
+	@Override
+	public String undoDelete(User user, long id) {
+		DailyTask task = dailyrepo.findById(id).orElse(null);
+		if(task == null) {
+			return "This task doesn't exist. Reloading...";
+		}
+		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
+			task.setDeleted(false);
+			dailyrepo.save(task);
+			
+			ActivityLog actlog = new ActivityLog();
+			actlog.setAction("has undid a task deletion");
+			actlog.setTarget(task.getDescription());
+			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname());
+			actlog.setUser(user);
+			actrepo.save(actlog);
+		}
+		else if(user.getId() != task.getUser().getId()) {
+			throw new AccessDeniedException("Only SUPERADMIN and MASTERADMIN can only control other's tasks");
+		}
+		
+		return "Task undid";
+		
+	}
+
+	@Override
+	public List<DailyTask> findAllDeletedTaskByDepartment(Department d) {
+	
+		return dailyrepo.findByDoneFalseAndDeletedTrueAndDepartment(d);
+	}
+
+	@Override
+	public List<DailyTask> findAllDoneTaskByDepartment(Department d) {
+		
+		return dailyrepo.findByDoneTrueAndDeletedFalseAndDepartment(d);
 	}
 	
 

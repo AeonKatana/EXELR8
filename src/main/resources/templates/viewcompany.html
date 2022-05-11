@@ -50,34 +50,26 @@ table.dataTable thead {
 <!--End View DNA Modal -->
 
 <!-- Company Profile Edit -->
-<div class="modal" id="addDNA">
-  <div class="modal-dialog modal-xl">
+<div class="modal" id="addCoreValue" sec:authorize="hasAuthority('SUPERADMIN')">
+  <div class="modal-dialog">
     <div class="modal-content">
 
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-		<form th:action="@{/companies/addDNA}" id="dnaform" method="POST">
+		<form th:action="@{/companies/addCoreValue}" id="coreform" method="POST">
       <!-- Modal body -->
       <div class="modal-body">
-      
-            <div class="input-group">
-                
+            <div class="row m-2">
                 <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
-                   <h4 style="text-align: center">Purpose</h4>
-                   <textarea name="history" class="px-5 form-control"id="history" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
-                </div>
-                <input name="companyid" th:value="${company.id}" type="hidden" th:if="${company != null}">
-                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
-                   <h4 style="text-align: center">CORE VALUES</h4>
-                   <textarea name="corevalue" class="px-5 form-control"id="corevalue" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
-                </div>
-                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
-                   <h4 style="text-align: center">PHILOSOPHY</h4>
-                   <textarea name="philosophy" class="px-5 form-control"id="philosophy" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
-                </div>
-            </div>
+                   <h4 style="text-align: center">Core Value</h4>
+                   <input name="title" class="form-control"id="coretitleedit"style="text-align : justify;" placeholder="Enter title here" required>
+                	<textarea class="form-control" rows="3" cols="5" name="description" id="descedit" placeholder="Enter description"></textarea>
+                	<input type="hidden" id="coreid" name="id" value="0">
+                	 <input type="hidden" th:value="${company.id}" name="companyid">
+                </div>  
+             </div>    
       </div>
       <!-- Modal footer -->
       <div class="modal-footer">
@@ -88,7 +80,35 @@ table.dataTable thead {
     </div>
   </div>
 </div>
+<div class="modal" id="addDNA" sec:authorize="hasAuthority('SUPERADMIN')">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
 
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+		<form th:action="@{/companies/addDNA}" id="dnaform" method="POST">
+      <!-- Modal body -->
+      <div class="modal-body">
+            <div class="row m-2">
+                <div class="col-xs-2" style="margin-right: auto; margin-left: auto;">
+                   <h4 style="text-align: center">PURPOSE</h4>
+                   <textarea name="history" class="px-5 form-control"id="purpose" rows="10" cols="100" style="text-align : justify;" placeholder="Enter text here" required></textarea>
+                </div>
+                <input type="hidden" th:value="${company.id}" name="companyid">
+                
+             </div>    
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      <button type="submit" id="dnasubmit" class="btn btn-success">Save</button>
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+	</form>
+    </div>
+  </div>
+</div>
 
 
 	<div class="d-flex" id="wrapper">
@@ -112,7 +132,10 @@ table.dataTable thead {
 					class="fas fa-user-group me-2"></i>Personnel</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a><a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -161,11 +184,6 @@ table.dataTable thead {
 			
 <div class="container text-center" th:if="${company != null}">
 			
-			 <a class="text-center" href="#" sec:authorize="hasAuthority('SUPERADMIN')">
-                <button th:if="${company.dna == null}" id="addna"type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
-            	 <button th:unless="${company.dna == null}" id="addna" type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Edit DNA</button>
-            	
-            </a>
 <div class="accordion mx-5" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header text-center" id="panelsStayOpen-headingOne">
@@ -175,16 +193,13 @@ table.dataTable thead {
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body text-center">
-			<p class="m-2 bg-success text-white rounded p-4" id="histval" th:if="${company.dna != null}" th:text="${company.dna.history}"></p>
-			<h3 class="m-2 text-danger" th:unless="${company.dna != null}">This company has no purpose</h3>
+			<h3 th:text="${company.dna.history}" id="purposeval"></h3>
+			<button sec:authorize="hasAuthority('SUPERADMIN')" type="button" class="btn btn-primary m-2 text-end" id="editbtn" data-bs-target="#addDNA" data-bs-toggle="modal">Edit</button>
       </div>
     </div>
   </div>
 </div>
-
-<div class="d-flex mx-5">
-
-<div class="accordion w-100" id="accordionPanelsStayOpenExample">
+<div class="accordion mx-5" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
@@ -193,17 +208,29 @@ table.dataTable thead {
     </h2>
     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse " aria-labelledby="panelsStayOpen-headingThree">
       <div class="accordion-body">
-			<p class="m-2  text-white bg-primary rounded p-4" id="coreval" th:if="${company.dna != null}" th:text="${company.dna.corevalue}"></p>
-			<p class="m-2 text-white bg-danger rounded p-2" th:unless="${company.dna != null}">This company has no core values</p>       </div>
+			<div class="d-flex text-left flex-wrap justify-content-center">
+      		<div class="card text-left p-3 m-2" style="width: 18rem;" th:each="core : ${company.dna.corevalue}">	
+      			<h2 class="float-left" th:text="${core.name}"></h2>
+      			<div sec:authorize="hasAuthority('SUPERADMIN')">
+      				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
+      			</div>
+      			
+      		</div>
+      	</div>
+      	<button sec:authorize="hasAuthority('SUPERADMIN')" class="btn btn-primary" data-bs-target="#addCoreValue" data-bs-toggle="modal"> Add Core Value</button>
     </div>
   </div>
 </div>
 </div>
 
-	<div class="m-5">
+<div class="d-flex ">
+
+
+
+	<div class="m-5 w-100">
 		
-		<div class="col" th:if="${comppersonnel != null}">
-						<table class="table bg-white rounded shadow-sm  table-hover" id="cptable">
+		<div th:if="${comppersonnel != null}">
+						<table class="table bg-white rounded shadow-sm w-100 table-hover" id="cptable">
 							<thead>
 								<tr>
 									<th scope="col" width="50">ID</th>

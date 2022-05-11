@@ -1,8 +1,5 @@
 $(document).ready(function() {
-		let taskid = 0;
-		$(".taskbtn").click(function() {
-			taskid = $(this).attr("tid");
-		});
+	
 						$('textarea.mention3').mentionsInput({
 							 minChars : 1,
 										onDataRequest : function(mode,query, callback) {
@@ -60,7 +57,7 @@ $(document).ready(function() {
 									task['who'] = data;
 									task['taskdetail'] = $("#verb3").val() + " " + $("#number3").val() + " " + $("#what3").val();
 									task['until'] = $("#date3").val();
-									
+									task['deptid'] = $("#deptid2").val();
 									$.ajax({
 										type : "POST",
 										url : "/task/multiAdd",
@@ -175,46 +172,78 @@ $(document).ready(function() {
 
 							});
 							
+							let undotype = "";
+							let taskid = 0;
 							$(".donebtn").click(function(){
-								let doneid = $(this).attr("did");
+								taskid = $(this).attr("did");
 								let userid = $(this).attr("uid");
-								
+								undotype = "done";
 								$.ajax({
 									type : "POST",
 									url : "/task/markasdone",
 									data : {
 										status : true,
-										id : doneid
+										id : taskid
 									},
 									success : function(result){
-										$("#row" + doneid).fadeOut();
+										$("#row" + taskid).fadeOut();
 										let count = parseInt($("#count" + userid).text());
 										count--;
 										$("#count" + userid).text(count);
+											$("#undotext").text("Task completed!");
+											$("#undo").toast({delay:5000});
+											$("#undo").toast("show");	
 										
 									},
-									error : function(){
-										alert("An error has occured. Please try again later");
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
 										window.location.reload();
 									}
 								})
 							});
 							
-							let deleteid = 0;
+							
 							let userid3 = 0;
 							$(".deletebtn").click(function() {
-								 deleteid = $(this).attr("did");
+								 taskid = $(this).attr("did");
 								 userid3 = $(this).attr("uid");
+								 undotype = "delete";
+								 
+								 $.ajax({
+									type : "PUT",
+									url : "/task/softdelete/" + taskid,
+									success : function(){
+										$("#row" + taskid).fadeOut();
+										let count = parseInt($("#count" + userid3).text());
+										count--;
+										$("#count" + userid3).text(count);
+											$("#undotext").text("Task deleted!");
+											$("#undo").toast({delay:5000});
+											$("#undo").toast("show");	
+									},
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
+										else if(response.status == 500){
+											alert('An error occured. Reloading the page...');
+										}
+										window.location.reload();
+									}
+								})
+								 
 							});
-							$("#deletetask").click(function(){
+						/*	$("#deletetask").click(function(){
 								$.ajax({
 									type : "DELETE",
 									url : "/task/deleteTask",
 									data : {
-										id : deleteid
+										id : taskid
 									},
 									success : function(result) {
-										$("#row" + deleteid).fadeOut();
+										$("#row" + taskid).fadeOut();
 										let count = parseInt($("#count" + userid3).text());
 										count--;
 										$("#count" + userid3).text(count);
@@ -226,6 +255,7 @@ $(document).ready(function() {
 									}
 								});
 							})
+							 */
 							$("#confirmdelete").click(function() {
 								$.ajax({
 									type : "DELETE",
@@ -242,4 +272,48 @@ $(document).ready(function() {
 									}
 								});
 							});
+							
+							
+							$("#undobtn").click(function(){
+							
+								if(undotype === "done"){
+									$.ajax({
+									type : "PUT",
+									url : "/task/undocheck/" + taskid,
+									success : function(){
+										window.location.reload();
+									},
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
+										else if(response.status == 500){
+											alert('An error occured. Reloading the page...');
+										}
+										window.location.reload();
+									}
+								})
+							}
+								else if (undotype === "delete"){
+								$.ajax({
+									type : "PUT",
+									url : "/task/undodelete/" + taskid,
+									success : function(){
+										window.location.reload();
+									},
+									error : function(response){
+										if(response.status == 403){
+											alert('Only SUPERADMIN and MASTERADMIN can only control others tasks')
+										}
+										else if(response.status == 500){
+											alert('An error occured. Reloading the page...');
+										}
+										window.location.reload();
+									}
+								})
+								}
+								
+							});
+							
+							
 						});

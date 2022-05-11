@@ -55,28 +55,63 @@ table.dataTable thead {
 	<!-- Button trigger modal -->
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div sec:authorize="hasAuthority('SUPERADMIN')" class="modal fade" id="addpnlsuper" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Personnel View</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Personnel</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           
         </button>
       </div>
-      <div class="modal-body">
-        	<p id="fullname">Full Name :</p>
-        	<p id="role">Role : </p>
-        	<p id="company">Company :</p>
-        	<p id="">Score Cards : </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
+      <form th:action="@{/personnel/addPersonnel}" id="addPersonnel" method="POST">
+        <div class="modal-body">
+            
+                <div class="mb-3">
+                  <label for="InputFistName" class="form-label fw-bold">Firstname</label>
+                  <input required type="text" name="firstname" class="form-control" id="" placeholder="Enter first name">
+                </div>
+                <div class="mb-3" >
+                    <label for="InputLastName" class="form-label fw-bold">Lastname</label>
+                    <input required type="text" name="lastname" class="form-control" id="" placeholder="Enter last name">
+                  </div>
+                 <div class="mb-3">
+                    <label for="InputLastName" class="form-label fw-bold">Company</label>
+                    <select name="companyname" class="form-select" required>
+                    	<option value="">Select Company</option>
+                    	<option th:each="company : ${companies}" th:text="${company.compname}" th:value="${company.compname}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="InputLastName" class="form-label fw-bold">Role</label>
+                    <select name="role" class="form-select">
+                    	<option value="EXECUTIVE">EXECUTIVE</option>
+                    	<option value="PROJLEAD">PROJECT LEADER</option>
+                    	<option value="SUPERVISOR">SUPERVISOR</option>
+                    	<option value="MANAGER">MANAGER</option>
+                    	<option value="ASSOCIATE" selected>ASSOCIATE</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                	<label>Contact No</label>
+                	<input type="tel" class="form-control" id="contact" name="contactno" placeholder="639123456789" pattern="[63]{2}[0-9]{10}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="InputLastName" class="form-label fw-bold">Email address</label>
+                    <input required type="text" name="email" class="form-control" id="" placeholder="Enter email address">
+                </div>
+           
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="submit" class="btn btn-success">Add</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+         </form>
+     
     </div>
   </div>
 </div>
-	<div class="modal fade" id="addpnl" tabindex="-1" aria-labelledby="addcompanyModal" aria-hidden="true">
+	<div sec:authorize="hasAuthority('MASTERADMIN')" class="modal fade" id="addpnl" tabindex="-1" aria-labelledby="addcompanyModal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -145,13 +180,13 @@ table.dataTable thead {
                 <tr>
                 <th scope="col">ROLE:</th>
                     <td >
-                        <input class="scard form-control" type="text" style="font-weight: bold;">
+                        <input class="scard form-control" type="text" id="role" style="font-weight: bold;">
                     </td>
                 </tr>
                 <tr>
                 <th scope="col">TEAM:</th>
                     <td>
-                        <input class="scard form-control" type="text" >
+                        <input class="scard form-control" type="text" id="team">
                     </td>
                 </tr>
                 <tr>
@@ -247,67 +282,8 @@ table.dataTable thead {
                     <th >BEHAVIORAL INDICATORS</th>
                 </tr> 
             </thead>
-            <tbody>
-                <tr colspan="3">
-                        <th class="p-5" style="text-align:center">LEARNER'S MIND</th>
-                        <th>
-                            <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
-                            </textarea>
-                        </th>
-                        <th>
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">  
-                        </th>      
-                    </tr>
-                    <tr colspan="3">
-                        <th class="p-5" style="text-align:center">OWNERSHIP</th>
-                        <th>
-                            <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
-                            </textarea>
-                        </th>
-                        <th>
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">  
-                        </th>      
-                    </tr>
-                <tr colspan="3">
-                        <th class="p-5" style="text-align:center">GRIT</th>
-                        <th>
-                            <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
-                            </textarea>
-                        </th>
-                        <th>
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">  
-                        </th>      
-                    </tr>
-                    <tr colspan="3">
-                        <th class="p-5" style="text-align:center">INTEGRITY</th>
-                        <th>
-                            <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
-                            </textarea>
-                        </th>
-                        <th>
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">
-                        <input class="bi-form form-control" type="text">  
-                        </th>      
-                    </tr>
-                <tr colspan="3">
-                    <th class="p-5" style="text-align:center">CANDOR</th>
-                    <th>
-                        <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
-                        </textarea>
-                    </th>
-                    <th>
-                    <input class="bi-form form-control" type="text">
-                    <input class="bi-form form-control" type="text">
-                    <input class="bi-form form-control" type="text">  
-                    </th>      
-                </tr>
+            <tbody id="cores">
+            
             </tbody>
             </table>
       </div>
@@ -343,7 +319,10 @@ table.dataTable thead {
 					class="fas fa-user-group me-2"></i>Personnel</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-box me-2"></i>Activity log</a> <a th:href="@{/dashboard/notification}"
+					class="fas fa-box me-2"></i>Activity log</a><a
+					th:href="@{/dashboard/leaderboard}"
+					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
+					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-bell me-2"></i>Notification</a>  <a
 					th:href="@{/perform-logout}"
@@ -393,7 +372,9 @@ table.dataTable thead {
 
 			<div class="container-fluid px-3 p-2">
 			<div class="text-end">
-			
+			<button type="button" class="btn btn-success btn text-end" sec:authorize="hasAuthority('SUPERADMIN')"
+						data-bs-toggle="modal" data-bs-target="#addpnlsuper">Add
+						Personnel</button>
 			<button type="button" class="btn btn-success btn text-end" sec:authorize="hasAuthority('MASTERADMIN')"
 						data-bs-toggle="modal" data-bs-target="#addpnl">Add
 						Personnel</button>
