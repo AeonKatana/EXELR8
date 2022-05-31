@@ -44,7 +44,7 @@ public class LeaderboardController {
 	@GetMapping("/company/overdue")
 	@ResponseBody
 	public List<LeadDTO> getOverdueCompanyLead(){
-		return companyRepo.overlead(LocalDate.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+		return companyRepo.overlead(LocalDate.now(ZoneId.of("Asia/Manila")));
 	}
 	
 	@GetMapping("/company")
