@@ -73,7 +73,7 @@
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -81,7 +81,7 @@
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
 					class="fas fa-box me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}" id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span></a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -124,7 +124,10 @@
         </nav>
 
        	  <div class="container py-2 px-5">
-               <h2 class="text-primary text-center">Company</h2>
+       	  		<a class="btn btn-success" th:href="@{/dashboard/leaderboard}">Completed</a>
+       	  	<a class="btn btn-danger" th:href="@{/leaderboard/overdue}">Overdue</a>
+       	  	<div sec:authorize="hasAuthority('SUPERADMIN')">
+       	  		<h2 class="text-primary text-center">Company</h2>
               
                <label for="yearmonth" class="">Month and Year :</label>
                 <input type="month" class="" id="yearmonth" th:value="${yearmonth}">
@@ -140,7 +143,9 @@
                			
                		</tbody>
                </table>
-                <h2 class="text-primary text-center">Associates</h2>
+       	  	</div>
+              <div>
+              	<h2 class="text-primary text-center">Associates</h2>
               
                <label for="yearmonth" class="">Month and Year :</label>
                 <input type="month" class="" id="yearmonthuser" th:value="${yearmonth}">
@@ -157,6 +162,9 @@
                			
                		</tbody>
                </table>
+              
+              </div> 
+                
                
  		 </div>
     

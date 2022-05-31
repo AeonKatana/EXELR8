@@ -10,5 +10,5 @@ import com.oikostechnologies.schedsys.entity.User;
 public interface NotificationRepo extends JpaRepository<Notification, Long>{
 
 	Page<Notification> findAllByUser(User user, Pageable page); 
-	
+	long countBySeenFalseAndUser(User user);
 }

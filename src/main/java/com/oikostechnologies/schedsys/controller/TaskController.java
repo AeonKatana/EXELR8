@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.model.DailyTaskModel;
-import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
 
@@ -32,11 +30,6 @@ public class TaskController {
 
 	@Autowired
 	private DailyTaskService dailyservice;
-	
-	
-	
-	@Autowired
-	private UserRepo userRepo;
 	
 	@GetMapping("/mytask/addtask")
 	public String addMyTask(Model model) {

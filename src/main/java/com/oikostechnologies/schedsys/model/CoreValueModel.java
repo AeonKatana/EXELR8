@@ -10,5 +10,6 @@ public class CoreValueModel {
 	private long id;
 	private String title;
 	private String description;
+	private String indicator;
 	private long companyid;
 }

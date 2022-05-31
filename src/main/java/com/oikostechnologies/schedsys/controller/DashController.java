@@ -1,6 +1,8 @@
 package com.oikostechnologies.schedsys.controller;
 
+import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -14,16 +16,20 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.DailyTask;
+import com.oikostechnologies.schedsys.entity.Notification;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
 import com.oikostechnologies.schedsys.repo.NotificationRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
+import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.CompanyService;
 import com.oikostechnologies.schedsys.service.DailyTaskService;
@@ -56,6 +62,9 @@ public class DashController {
 	private SchedulerService schedservice;
 	
 	@Autowired
+	private UserRepo repo;
+	
+	@Autowired
 	private NotificationRepo notifrepo;
 	
 	@RequestMapping("/")
@@ -74,8 +83,8 @@ public class DashController {
 		model.addAttribute("myoverdue", dailyservice.countOverdueByUser(userdetail.getUser().getId()));
 		model.addAttribute("companyoverdue", dailyservice.countOverdueByCompany(userdetail.getUser().companyname()));
 		model.addAttribute("assignedtome", dailyservice.countDailyAssignedToMeBySomeoneElse(userdetail.getUser().getId()));
-		model.addAttribute("tardyuser", schedservice.getTardyusers());
-		
+		model.addAttribute("tardyuser", schedservice.getTardyUsers());
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(userdetail.getUser()));
 		System.out.println(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 		
 		
@@ -86,7 +95,8 @@ public class DashController {
 	@GetMapping("/dashboard/tardy")
 	@ResponseBody
 	public List<User> tardyUsers(){
-		return schedservice.getTardyusers();
+		return schedservice.getTardyUsers();
+
 	}
 	
 	@GetMapping("/dashboard/overdue")
@@ -115,17 +125,20 @@ public class DashController {
 	
 	@GetMapping("/dashboard/department")
 	public String departments(@AuthenticationPrincipal MyUserDetails user,Model model) {
-		
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(user.getUser()));
 		model.addAttribute("department", deptrepo.findAll());
 		model.addAttribute("mydept", deptrepo.getAllByUser(user.getUser()));
+		model.addAttribute("companies", comservice.findAll());
+		model.addAttribute("mycomp", comservice.getCompany(user.getUser().companyname()));
 		return "department";
 	}
 	
 	
 	@GetMapping("/dashboard/personnel")
 	public String personel(Model model , @AuthenticationPrincipal MyUserDetails user) {
-		
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(user.getUser()));
 		Page<User> masteradmins = userservice.findAllUsers(0);
+		model.addAttribute("userrole", user.getUser().role());
 		model.addAttribute("parameter", null);
 		model.addAttribute("currentPage" , 1);
 		model.addAttribute("masteradmins", masteradmins);
@@ -143,6 +156,7 @@ public class DashController {
 	
 	@GetMapping("/dashboard/companies")
 	public String companylist( @AuthenticationPrincipal MyUserDetails user,Model model) {
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(user.getUser()));
 		Page<Company> mastercomp = comservice.getCompanies();
 		model.addAttribute("masteradmincomp", mastercomp);
 		model.addAttribute("totalelement", mastercomp.getTotalElements());
@@ -166,21 +180,77 @@ public class DashController {
 //	}
 		
 	@GetMapping("/dashboard/activitylog")
-	public String activity(Model model) {
+	public String activity(@AuthenticationPrincipal MyUserDetails user,Model model) {
+		Page<ActivityLog> actlog;
+		if(user.getUser().role().equals("SUPERADMIN")) {
+			actlog = actrepo.findAllByOrderByDateDesc(PageRequest.of(0, 10));
+			model.addAttribute("activity", actlog);
+		}
+		else if(user.getUser().role().equals("MASTERADMIN")) {
+			actlog = actrepo.findAllByCompanyOrderByDateDesc(user.getUser().getCompany(),PageRequest.of(0, 10));
+			model.addAttribute("companyact", actlog);
+		}
+		else {
+			actlog = actrepo.findByUserOrderByDateDesc(user.getUser(), PageRequest.of(0, 10));
+			model.addAttribute("useractivity", actlog);		
+		}
+		model.addAttribute("totalpage", actlog.getTotalPages());
+		model.addAttribute("currentPage", 1);
 		
-		model.addAttribute("activity", actrepo.findAllByOrderByDateDesc());
+		return "activitylog";
+	}
+	
+	@GetMapping("/dashboard/activitylog/page/{page}")
+	public String activity(@AuthenticationPrincipal MyUserDetails user, Model model, @PathVariable("page") int page) {
+		Page<ActivityLog> actlog;
+		if(user.getUser().role().equals("SUPERADMIN")) {
+			actlog = actrepo.findAllByOrderByDateDesc(PageRequest.of(page - 1, 10));
+			model.addAttribute("activity", actlog);
+		}
+		else if(user.getUser().role().equals("MASTERADMIN")) {
+			actlog = actrepo.findAllByCompanyOrderByDateDesc(user.getUser().getCompany(),PageRequest.of(page - 1, 10));
+			model.addAttribute("companyact", actlog);
+		}
+		else {
+			actlog = actrepo.findByUserOrderByDateDesc(user.getUser(), PageRequest.of(page - 1, 10));
+			model.addAttribute("useractivity", actlog);		
+		}
+		model.addAttribute("totalpage", actlog.getTotalPages());
+		model.addAttribute("currentPage", page);
 		
 		return "activitylog";
 	}
 	
 	@GetMapping("/dashboard/notification")
 	public String notifications(@AuthenticationPrincipal MyUserDetails user,Model model) {
-		model.addAttribute("notifications", notifrepo.findAllByUser(user.getUser(), PageRequest.of(0, 10 , Sort.by("Id").descending())));
+		Page<Notification> notifs = notifrepo.findAllByUser(user.getUser(), PageRequest.of(0, 10 , Sort.by("Id").descending()));
+		model.addAttribute("notifications", notifs);
+		model.addAttribute("totalpage", notifs.getTotalPages());
+		model.addAttribute("currentPage", 1);
+		for(Notification n : notifs) {
+			n.setSeen(true);
+			notifrepo.save(n);
+		}
+		
+		return "notifications";
+	}
+	
+	@GetMapping("/dashboard/notification/page/{page}")
+	public String notifications(@AuthenticationPrincipal MyUserDetails user, Model model,@PathVariable("page") int page) {
+		Page<Notification> notifs = notifrepo.findAllByUser(user.getUser(), PageRequest.of(page - 1, 10 , Sort.by("Id").descending()));
+		model.addAttribute("notifications", notifs);
+		model.addAttribute("totalpage", notifs.getTotalPages());
+		model.addAttribute("currentPage", page);
+		for(Notification n : notifs) {
+			n.setSeen(true);
+			notifrepo.save(n);
+		}
 		return "notifications";
 	}
 	
 	@GetMapping("/dashboard/leaderboard")
-	public String leaderboard(Model model) {
+	public String leaderboard(Model model, @AuthenticationPrincipal MyUserDetails userdetail) {
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(userdetail.getUser()));
 		model.addAttribute("yearmonth", YearMonth.now(ZoneId.of("Asia/Manila")));
 		return "leaderboard";
 	}

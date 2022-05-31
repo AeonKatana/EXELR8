@@ -192,12 +192,14 @@ public class CompanyServiceImp implements CompanyService {
 			value.setName(model.getTitle());
 			value.setDescription(model.getDescription());
 			value.setDna(company.getDna());
+			value.setIndicator(model.getIndicator());
 			corerepo.save(value);
 			return "Core Value Successfully Added!";
 		}
 		value.setName(model.getTitle());
 		value.setDna(company.getDna());
 		value.setDescription(model.getDescription());
+		value.setIndicator(model.getIndicator());
 		corerepo.save(value);
 		return "Core Value Updated";
 	}

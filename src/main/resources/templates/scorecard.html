@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" media="all">
+    <style>
+    body {
+  -webkit-print-color-adjust: exact !important;
+}
+    	@media print {
+    * {
+        color: inherit !important;
+        background-color: inherit !important;
+    }
+}
+    </style>
+    <title>Scorecard</title>
+</head>
+<body>
+ <div class="" id="addscorecard">
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="firstpage">
+            <h4 class="p-2" style="text-align:center">PERFORMANCE SCORECARD</h4>
+            <table id="scTable1" class="table table-bordered">
+            <thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="2">POSITION INFORMATION</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="col">ROLE:</th>
+                    <td >
+                     	<input type="text" class="form-control border-0" th:value="${user.role()}" disabled="disabled">
+                    </td>
+                </tr>
+                <tr>
+                <th scope="col">TEAM:</th>
+                    <td>
+                    	<input type="text" class="form-control border-0" th:value="${user.companyname()}" disabled="disabled">
+                    </td>
+                </tr>
+                <tr>
+               <!-- 
+               <th scope="col">CUSTOMERS:</th>
+                    <td>
+                        <input class="scard form-control" type="text" >
+                    </td>
+               
+                --> 
+                </tr>
+                <thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="2">ROLE DESCRIPTION</th>
+                </tr> 
+                    <th colspan="2" > 
+                        <input class="scard form-control border-0"type="text" name="roledesc" th:value="${user.scorecard != null ? user.scorecard.roledesc : ''}"  id="roledesc" disabled="disabled">
+                    </th>
+            </thead>
+            <thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="2">MAIN SCORECARD</th>
+                </tr> 
+                    <th colspan="2" ><br>
+                        
+                        <textarea th:text="${user.scorecard != null ? user.scorecard.mainscorecard : ''}" disabled="disabled" class="myTextArea border-0" name="mainscorecard" id="mainscorecard" rows="6" style="font-size:16px; width:100%;">
+
+                        </textarea>
+                    </th>
+
+            </thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="2">PERFORMANCE ACCELARATOR</th>
+                </tr> 
+                    <th colspan="2" ><br>
+                            
+                            <textarea th:text="${user.scorecard != null ? user.scorecard.perforaccel : ''}" disabled="disabled" class="myTextArea border-0" name="perforaccel" id="perforaccel" rows="6" style="font-size:14px; width:100%;">
+                            </textarea>
+                    </th>
+            </tbody>
+            </table>
+        </div>
+
+            <div class="secondpage">
+            <table id="scTable2" class="table table-bordered">
+            <thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="4">ROLE FUNDAMENTALS:</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="">EDUCATIONAL BACKGROUND:</th>
+                    <td colspan="4"> 
+                        <input th:value="${user.scorecard != null ? user.scorecard.educationalbg : ''}" class="scard form-control border-0" disabled="disabled" type="text" style="font-weight: bold;" name="educationalbg" id="educationalbg">
+                    </td>
+                </tr>
+                <thead>
+                    <tr class="bg-dark text-white">
+                        <td style="text-align:center">METRICS</td>
+                        <td style="text-align:center">CORE COMPETENCIES</td>
+                        <td style="text-align:center">DEFINITION</td>
+                        <td style="text-align:center">BEHAVIORAL INDICATORS</td>
+                    </tr> 
+                </thead>
+                <tr colspan="4">
+                    <th rowspan="1">
+                        <textarea th:text="${user.scorecard != null ? user.scorecard.metrics : ''}" class="textareaMetrics border-0" disabled="disabled" name="metrics" id="metrics" rows="4" style="font-size:14px; width:100%; border: none; text-align:center;">
+                         </textarea>
+                    </th>
+                    <th>
+                        <textarea th:text="${user.scorecard != null ? user.scorecard.corecompetencies : ''}" class="textareacorecomp border-0" disabled="disabled" name="corecompetencies" id="corecompetencies" rows="4" style="font-size:14px; width:100%;border: none; text-align:center;">
+                        </textarea>
+                    </th>
+                    <th>
+                        <textarea th:text="${user.scorecard != null ? user.scorecard.definition : ''}" class="textareadef border-0" disabled="disabled" name="definition" id="definition" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
+                        </textarea>
+                    </th>
+                    <th>
+                    <textarea th:text="${user.scorecard != null ? user.scorecard.indicators : ''}" class="bi-form form-control border-0" disabled="disabled" name="indicators" id="indicators" rows="4"  style="font-size:14px; width:100%;border: none;text-align:center;"> </textarea>
+                    </th>      
+                </tr>
+            </tbody>
+            </table>
+            </div>
+
+            <table id="scTable3" class="table table-bordered">
+            <thead >
+                <tr class="bg-dark text-white text-center">
+                    <th >CORE VALUES</th>
+                    <th >DEFINITION</th>
+                    <th >BEHAVIORAL INDICATORS</th>
+                </tr> 
+            </thead>
+            <tbody id="cores">
+            	<tr th:each="corevalue : ${user.company.dna.corevalue}" colspan="3">
+            		<th th:text="${corevalue.name}" class="p-5 text-center"></th>
+            		<th><textarea th:text="${corevalue.description}" class='textareadef' rows='4' style='font-size:14px; width:100%;border: none;text-align:center;' disabled></textarea></th>
+            		<th><textarea th:text="${corevalue.indicator}" class='textareadef' rows='4' style='font-size:14px; width:100%;border: none;text-align:center;' disabled></textarea></th>
+            	</tr>
+            </tbody>
+            </table>
+      </div>
+
+      <!-- Modal footer -->
+    
+</div>
+</body>
+</html>

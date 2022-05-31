@@ -36,6 +36,7 @@ $(document).ready(function(){
 		$("#coretitleedit").val($(this).attr('title'));
 		$("#descedit").val($(this).attr('desc'));
 		$("#coreid").val($(this).attr('cid'));
+		$("#indicator").val($(this).attr('ind'));
 	})
 	
 	
@@ -55,25 +56,38 @@ $(document).ready(function(){
 	$("#coreform").submit(function(e){
 		$.post($(this).attr('action'),$(this).serialize(),function(result){
 			alert(result);
+			window.location.reload();
 		});
 		return false;
 	})
 
-
-	function getTardy(){
-		$.ajax({
-			type : 'GET',
-			url : '/companies/datatable',
-			success : function(result){
-				console.log(result);
-			}
-		})
-	}
-	
-	getTardy();
-
 	// Show Companies in the Table
-			
+	$('#depttable').DataTable({
+				"scrollY":        "380px",
+		        "scrollCollapse": true,
+			    'ajax' : { url : '/department/comdept/' + company , type : "GET", dataSrc : "" },
+			    "pageLength": 3,
+				"lengthChange": false,
+				"columnDefs": [{
+				targets: -1,
+				className: 'dt-right'
+				}],
+			    columns : [{
+				  data : 'deptname'				
+				},{
+			      data : 'companyname',
+			      render : function(data, type , row){
+					return "<p style='color :"+ row.color +" '> "+ data + "</p>";
+			      }
+			    }, {
+			      data : 'userdepartment.length'
+			    },{
+			    	data : null,
+			    	render : function(data, type ,row){
+			    		return "<a class='btn btn-primary' href='/department/"+ row.id +"'>Visit</a>";
+			    	}
+		}]
+});			
 	var table = $('#mytable').DataTable({
 				"createdRow": function( row, data, dataIndex ) {
     	

@@ -96,6 +96,7 @@ table.dataTable thead {
                    <h4 style="text-align: center">Core Value</h4>
                    <input name="title" class="form-control"id="coretitleedit"style="text-align : justify;" placeholder="Enter title here" required>
                 	<textarea class="form-control" rows="3" cols="5" name="description" id="descedit" placeholder="Enter description"></textarea>
+                	<textarea type="text" class="form-control" id="indicator" name="indicator" placeholder="Behavioral Indicator"></textarea>
                 	<input type="hidden" id="coreid" name="id" value="0">
                 	 <input type="hidden" th:value="${company.id}" name="companyid">
                 </div>  
@@ -175,7 +176,7 @@ table.dataTable thead {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a>  <a
+					class="fas fa-user-group me-2"></i>Team</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -183,7 +184,7 @@ table.dataTable thead {
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}" id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span></a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -260,14 +261,7 @@ table.dataTable thead {
 					</div>
 				</div>
 			</div>
-			<div class="container-fluid text-center px-3 p-2" sec:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','ASSOCIATE','SUPERVIOR','PROJLEAD')">
-			<!-- 
-				 <a class="text-center" href="#" sec:authorize="hasAuthority('MASTERADMIN')">
-                <button th:if="${company.dna == null}" id="addna"type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Add DNA</button>
-            	 <button th:unless="${company.dna == null}" id="addna" type="button" class="btnadd m-3" data-bs-toggle="modal" data-bs-target="#addDNA"><i class="fa fa-plus-circle" style="color: #009d63"></i> Edit DNA</button>
-            	
-            </a>
-			 -->	
+			<div class="container-fluid text-center px-3 p-2" sec:authorize="hasAnyAuthority('MASTERADMIN','MANAGER','EXECUTIVE','ASSOCIATE','SUPERVISOR','PROJLEAD')">
 			
 <div>			
 <div class="accordion mx-5" id="accordionPanelsStayOpenExample">
@@ -297,8 +291,9 @@ table.dataTable thead {
       	<div class="d-flex text-left flex-wrap justify-content-center">
       		<div class="card text-left p-3 m-2" style="width: 18rem;" th:each="core : ${company.dna.corevalue}">	
       			<h2 class="float-left" th:text="${core.name}"></h2>
+      			<p class="" th:text="${core.description}"></p>
       			<div>
-      				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
+      				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:ind="${core.indicator}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
       			</div>
       			
       		</div>
@@ -314,26 +309,22 @@ table.dataTable thead {
 
 	<div class="container ">
 		<h2 class="m-4">Departments</h2>
-		<div class="d-flex flex-wrap justify-content-center m-4">
-			<div class="m-2" th:each="dept : ${company.departments}" th:if="${#lists.size(company.departments) > 0}">
-						<div class="card" style="width: 25rem;height:230px;">
-							<div class="card-body text-center">
-							<h4 class="card-title text-center m-2" th:text="${dept.deptname}">Marketing Department</h4>
-							<p class="card-text my-2 mx-2">Company : <span class="badge bg-info text-dark" th:text="${dept.companyname}"></span></p>	
-							<p class="card-text m-2">Supervisor/s : <th:block th:each="member, num : ${dept.supervisor}" th:if="${num.index} < 1"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
-								<span th:if="${num.index == 0 && #lists.size(dept.supervisor) > 2}" th:text="${'+' + (#lists.size(dept.supervisor) - 2)}" class="badge bg-success text-light rounded-pill"></span>
-								</th:block>
-							</p>							
-								<p class="card-text m-2">Members : <th:block th:each="member, num : ${dept.userdepartment}" th:if="${num.index} < 2"> <span class="badge bg-success text-light rounded-pill" th:text="${member.user.fullname()}"></span>
-								<span th:if="${num.index == 1 && dept.usercount > 2}" th:text="${'+' + (dept.usercount - 2)}" class="badge bg-success text-light rounded-pill"></span>
-								</th:block>
-								</p>
-							
-							<a th:href="@{/department/{department}(department=${dept.deptname})}" class="btn btn-primary m-2 text-center">View Department</a>
-							</div>
-						</div>
-			</div>
-		</div>
+		 <div class="p-2">
+            	
+            	<table class="table table-striped" id="depttable">
+            		<thead>
+            			<tr>
+            				<th>Name</th>
+            				<th>Company</th>
+            				<th>Team Members</th>
+            				<th>Action</th>
+            			</tr>
+            		</thead>
+            		<tbody>
+            		
+            		</tbody>
+            	</table>
+            </div>    
 		
 	</div>
 
@@ -355,6 +346,10 @@ table.dataTable thead {
 			el.classList.toggle("toggled");
 		};
 	</script>
+	<script type="text/javascript" th:inline="javascript" sec:authorize="!hasAuthority('SUPERADMIN')">
+const company = /*[[${company.compname}]]*/"";
+console.log(company);
+</script>
 	<script th:src="@{/js/company.js}"></script>
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>

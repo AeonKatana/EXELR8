@@ -11,6 +11,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/simplePagination.css}">
     <title>EXELR8</title>
 <style type="text/css">
 
@@ -242,7 +243,7 @@ tl-item.active .tl-dot:before {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -297,18 +298,28 @@ tl-item.active .tl-dot:before {
 			<div class="page-content page-container" id="page-content">
 	    <div class="padding">
 	        <div class="row justify-content-left" style="overflow-y:auto; height:450px;">
-	            <div class="card w-100 p-3" th:each="notif : ${notifications}">
-	            	<div class="card-body">
-	            		<div class=""><a href="#" style="text-decoration:none;">[[${notif.actiontarget}]]</a>
-						<span class="">[[${notif.action}]]</span>
+	            <ul class="w-100 p-3" style="list-style-type: none;"  th:if="${totalpage > 0}">
+	            	<li class="border p-2 m-2" th:each="notif : ${notifications}">
+	            		<div class=""><a th:href="@{/profile/{id}(id=${notif.actionuser.id})}" style="text-decoration:none;" th:text="${notif.actionuser.fullname()}"></a>
+						<span class="">[[${notif.action}]] <a th:href="${notif.targetlink}" th:text="${notif.actiontarget}"></a></span>
 					  </div>
 					  <div class="tl-date text-muted mt-1" th:text="${#temporals.monthNameShort(notif.date) + ' ' + #temporals.day(notif.date) + ' ' + #temporals.year(notif.date) }"></div>
 	                        	<div class="tl-date text-muted mt-1" th:text="${(#temporals.hour(notif.date) - 12) + ':' + #temporals.minute(notif.date) + ' PM'}" th:if="${#temporals.hour(notif.date) >= 12}"> </div>
 	                        	<div class="tl-date text-muted mt-1" th:text="${#temporals.hour(notif.date) + ':' + #temporals.minute(notif.date) + ' AM'}" th:if="${#temporals.hour(notif.date) < 12}"> </div>
-	            	</div>
+	            	</li>
+	            </ul>
+	            <div th:unless="${totalpage > 0}" class="text-center p-5">
+	            	<h3>You have no notifications</h3>
+	            	<p class="text-muted">Notifications such as task completion you've assigned to someone or was assigned to you and if you were added to a new department will be shown here</p>
 	            </div>
 	        </div>
+	        
 	    </div>
+	    
+	    <div class="text-end justify-content-end" th:if="${totalpage > 0}">
+	    	 <nav id="pagination" class=""></nav>
+	    </div>
+	   
 </div>
 
 
@@ -344,6 +355,20 @@ tl-item.active .tl-dot:before {
 	  	});
 	});
 </script>
+<script th:src="@{/js/jquery.simplePagination.js}"></script>
+<script th:inline="javascript">
+$(document).ready(function(){
+	
+	$("#pagination").pagination({
+        pages : "[[${totalpage}]]",
+        currentPage : "[[${currentPage}]]",
+        selectOnClick : false,
+        hrefTextPrefix : "/dashboard/notification/page/",
+        cssStyle: 'light-theme'
+    });
+})
+	
 
+</script>
 </body>
 </html>

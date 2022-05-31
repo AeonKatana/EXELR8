@@ -17,14 +17,16 @@ import org.springframework.stereotype.Service;
 import com.oikostechnologies.schedsys.entity.ActivityLog;
 import com.oikostechnologies.schedsys.entity.DailyTask;
 import com.oikostechnologies.schedsys.entity.Department;
-import com.oikostechnologies.schedsys.entity.NotifyUser;
+import com.oikostechnologies.schedsys.entity.Notification;
 import com.oikostechnologies.schedsys.entity.User;
+import com.oikostechnologies.schedsys.entity.UserDepartment;
 import com.oikostechnologies.schedsys.model.DailyTaskModel;
 import com.oikostechnologies.schedsys.model.PeopleModel;
 import com.oikostechnologies.schedsys.repo.ActlogRepo;
 import com.oikostechnologies.schedsys.repo.DailyTaskRepo;
 import com.oikostechnologies.schedsys.repo.DepartmentRepo;
-import com.oikostechnologies.schedsys.repo.NotifyUserRepo;
+import com.oikostechnologies.schedsys.repo.NotificationRepo;
+import com.oikostechnologies.schedsys.repo.UserDepartmentRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 
 @Service
@@ -36,23 +38,28 @@ public class DailyTaskServiceImp implements DailyTaskService {
 	@Autowired
 	private UserRepo userrepo;
 	
-	@Autowired
-	private NotifyUserRepo notifrepo;
 	
 	@Autowired
 	private ActlogRepo actrepo;
+	
+	@Autowired
+	private UserDepartmentRepo udrepo;
 	
 	
 	@Autowired
 	private DepartmentRepo departmentRepo;
 	
+	@Autowired
+	private NotificationRepo notifrepo;
+	
 	@Override
 	@Transactional
 	public DailyTaskModel addMultiTask(DailyTaskModel model, User user) {
 		User assign = user;
-		
-			
-			if(model.getWho().size() > 0) {
+		Department d = departmentRepo.findById(model.getDeptid()).orElse(null);
+		UserDepartment ud = udrepo.findByUserAndDepartment(user,d);
+	if(ud != null || assign.role().equals("SUPERADMIN")) {	
+		 if(model.getWho().size() > 0) {
 				for(PeopleModel pm : model.getWho()) {
 					
 					User person = userrepo.findById(pm.getId()).orElse(null); 
@@ -65,15 +72,17 @@ public class DailyTaskServiceImp implements DailyTaskService {
 						task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
 						task.setUser(person);
 						task.setAssignedby(assign);
-						task.setDepartment(departmentRepo.findById(model.getDeptid()).orElse(null));
+						task.setDepartment(d);
 						dailyrepo.save(task);
 						
-						User sa = userrepo.findSuperAdmin();
-						NotifyUser superadmin = new NotifyUser();
-						superadmin.setUserid(sa.getId());
-						superadmin.setUsername(sa.fullname());
-						superadmin.setDaily(task);
-						notifrepo.save(superadmin);
+						Notification notification = new Notification();
+						notification.setActionuser(assign);
+						notification.setAction("has assigned you a daily task");
+						notification.setActiontarget(task.getDescription());
+						notification.setUser(person);
+						notification.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+						notification.setTargetlink("/department/" + d.getId());
+						notifrepo.save(notification);
 					}
 										
 				}
@@ -98,24 +107,20 @@ public class DailyTaskServiceImp implements DailyTaskService {
 				task.setStarteddate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
 				task.setUser(assign);
 				task.setAssignedby(assign);
-				task.setDepartment(departmentRepo.findById(model.getDeptid()).orElse(null));
+				task.setDepartment(d);
 				dailyrepo.save(task);
 				
-				User sa = userrepo.findSuperAdmin();
-				NotifyUser superadmin = new NotifyUser();
-				superadmin.setUserid(sa.getId());
-				superadmin.setUsername(sa.fullname());
-				superadmin.setDaily(task);
 				ActivityLog actlog = new ActivityLog();
 				actlog.setAction("has created a daily task");
 				actlog.setUser(assign);
 				actlog.setTarget(model.getTaskdetail());
-				actlog.setTargetlink("#");
+				actlog.setTargetlink("/department/" + task.getDepartment().getId());
 				actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
 				actrepo.save(actlog);
 			}
 			
-		
+	}else
+		throw new AccessDeniedException("You don't belong in this department");
 		return null;
 	}
 
@@ -131,12 +136,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		task.setUser(assign);
 		task.setAssignedby(user);
 		dailyrepo.save(task);
-		User sa = userrepo.findSuperAdmin();  // Add Superadmin to be notified on default
-		NotifyUser superadmin = new NotifyUser();
-		superadmin.setUserid(sa.getId());
-		superadmin.setUsername(sa.fullname());
-		superadmin.setDaily(task);
-		notifrepo.save(superadmin);
+		
 		ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
 		if(model.getUserid() != user.getId()) {
 			compcreate.setAction("has assigned a daily task for " + assign.fullname());
@@ -213,12 +213,27 @@ public class DailyTaskServiceImp implements DailyTaskService {
 		else if(user.getId() == task.getUser().getId() || user.role().equalsIgnoreCase("SUPERADMIN") || ((user.companyname().equals(task.getDepartment().companyname()) &&  user.role().equalsIgnoreCase("MASTERADMIN")))){
 			ActivityLog compcreate = new ActivityLog(); // Create an activity log for this event
 			compcreate.setTarget(task.getDescription());
-			compcreate.setTargetlink("/department/" + task.getDepartment().getDeptname() + "/trash");
+			compcreate.setTargetlink("/department/" + task.getDepartment().getId() + "/trash");
 			compcreate.setUser(user);
 			compcreate.setDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDateTime());
 			
 			task.setDone(status);
 			dailyrepo.save(task);
+			
+			if(user.getId() != task.getAssignedby().getId()) {
+				Notification notification = new Notification();
+				notification.setAction("has completed a daily task you've assigned");
+				notification.setActionuser(user);
+				notification.setActiontarget(task.getDescription());
+				notification.setUser(task.getAssignedby());
+				notification.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
+				notification.setTargetlink("/department/" + task.getDepartment().getId() + "/trash");
+				notifrepo.save(notification);	
+			}
+			
+			
+			
+			
 			if(task.getUntil().isBefore(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate())){
 				compcreate.setAction(" has completed a task but late");
 				actrepo.save(compcreate);
@@ -300,7 +315,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 				editlog.setAction("has edited a task");
 				editlog.setTarget(task.getDescription());
 				editlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
-				editlog.setTargetlink("#");
+				editlog.setTargetlink("/department/" + task.getDepartment().getId() );
 				editlog.setUser(user);
 				actrepo.save(editlog);
 				}
@@ -388,7 +403,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			actlog.setAction("has undid a task completion");
 			actlog.setTarget(task.getDescription());
 			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
-			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname());
+			actlog.setTargetlink("/department/" + task.getDepartment().getId());
 			actlog.setUser(user);
 			actrepo.save(actlog);
 		}
@@ -415,7 +430,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			actlog.setAction("has deleted a task temporarily");
 			actlog.setTarget(task.getDescription());
 			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
-			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname() + "/trash");
+			actlog.setTargetlink("/department/" + task.getDepartment().getId() + "/trash");
 			actlog.setUser(user);
 			actrepo.save(actlog);
 		}
@@ -439,7 +454,7 @@ public class DailyTaskServiceImp implements DailyTaskService {
 			actlog.setAction("has undid a task deletion");
 			actlog.setTarget(task.getDescription());
 			actlog.setDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")));
-			actlog.setTargetlink("/department/" + task.getDepartment().getDeptname());
+			actlog.setTargetlink("/department/" + task.getDepartment().getId());
 			actlog.setUser(user);
 			actrepo.save(actlog);
 		}

@@ -7,21 +7,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.Department;
+import com.oikostechnologies.schedsys.entity.Role;
+import com.oikostechnologies.schedsys.entity.Scorecard;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.entity.UserDepartment;
+import com.oikostechnologies.schedsys.entity.UserRole;
 import com.oikostechnologies.schedsys.model.PeopleModel;
 import com.oikostechnologies.schedsys.model.PersonnelModel;
+import com.oikostechnologies.schedsys.model.ScoreCardModel;
+import com.oikostechnologies.schedsys.repo.CompanyRepo;
+import com.oikostechnologies.schedsys.repo.RoleRepo;
+import com.oikostechnologies.schedsys.repo.ScoreCardRepo;
 import com.oikostechnologies.schedsys.repo.UserDepartmentRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
+import com.oikostechnologies.schedsys.repo.UserRoleRepo;
 import com.oikostechnologies.schedsys.security.MyUserDetails;
 import com.oikostechnologies.schedsys.service.UserService;
 
@@ -33,6 +45,8 @@ public class PersonnelController {
 	private UserService userservice;
 	
 	
+	@Autowired
+	private ScoreCardRepo scorerepo;
 	
 	@Autowired
 	private UserDepartmentRepo repo;
@@ -40,6 +54,14 @@ public class PersonnelController {
 	@Autowired
 	private UserRepo userRepo;
 	
+	@Autowired
+	private UserRoleRepo userRoleRepo;
+	
+	@Autowired
+	private RoleRepo roleRepo;
+	
+	@Autowired
+	private CompanyRepo companyRepo;
 /**	
  * Manual Pagination and Search functionality
  *  
@@ -114,84 +136,146 @@ public class PersonnelController {
 		
 	}
 	
-	@GetMapping("/allProjleader")
+	
+
+	@GetMapping("/allProjleader/{company}")
 	@ResponseBody
-	public List<PeopleModel> getAllProjlead(@AuthenticationPrincipal MyUserDetails userdetail){
+	public ResponseEntity<List<PeopleModel>> getAllProjlead(@AuthenticationPrincipal MyUserDetails userdetail,@PathVariable("company") String company){
 		List<PeopleModel> mention = new ArrayList<>();
-		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
-			for(User u : userRepo.getAllProjectLeader()) {
-				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+		if(userdetail.getRolename().equals("SUPERADMIN")) {
+			
+			Company comp = companyRepo.findByCompname(company);
+			if(comp == null) {
+				return new ResponseEntity<List<PeopleModel>>(HttpStatus.NOT_FOUND);
+			}
+			else {
+				for(User u : userRepo.getAllProjectLeaderByCompany(comp.getCompname())) {
+					mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+				}
 			}
 		}
+		
 		else {
 			for(User u : userRepo.getAllProjectLeaderByCompany(userdetail.getUser().companyname())) {
 				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
 			}
 		}
-		return mention;
+			
+		return new ResponseEntity<List<PeopleModel>>(mention,HttpStatus.OK);
 	}
 	
 	
-	@GetMapping("/allSupervisor")
+	@GetMapping("/allSupervisor/{company}")
 	@ResponseBody
-	public List<PeopleModel> getAllSupervisor(@AuthenticationPrincipal MyUserDetails userdetail){
+	public ResponseEntity<List<PeopleModel>> getAllSupervisor(@AuthenticationPrincipal MyUserDetails userdetail,@PathVariable("company") String company){
 		List<PeopleModel> mention = new ArrayList<>();
-		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
-			for(User u : userRepo.getAllSupervisor()) {
-				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+		if(userdetail.getRolename().equals("SUPERADMIN")) {
+			
+			Company comp = companyRepo.findByCompname(company);
+			if(comp == null) {
+				return new ResponseEntity<List<PeopleModel>>(HttpStatus.NOT_FOUND);
+			}
+			else {
+				for(User u : userRepo.getAllSupervisorByCompany(comp.getCompname())) {
+					mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+				}
 			}
 		}
+		
 		else {
 			for(User u : userRepo.getAllSupervisorByCompany(userdetail.getUser().companyname())) {
 				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
 			}
 		}
-		return mention;
+			
+		return new ResponseEntity<List<PeopleModel>>(mention,HttpStatus.OK);
 	}
 	
-	@GetMapping("/allAssociate")
+	@GetMapping("/allAssociate/{company}")
 	@ResponseBody
-	public List<PeopleModel> getAllAssociate(@AuthenticationPrincipal MyUserDetails userdetail){
+	public ResponseEntity<List<PeopleModel>> getAllAssociate(@AuthenticationPrincipal MyUserDetails userdetail, @PathVariable("company") String company){
+		
 		List<PeopleModel> mention = new ArrayList<>();
-		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
-			for(User u : userRepo.getAllAssociate()) {
-				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+		if(userdetail.getRolename().equals("SUPERADMIN")) {
+			
+			Company comp = companyRepo.findByCompname(company);
+			if(comp == null) {
+				return new ResponseEntity<List<PeopleModel>>(HttpStatus.NOT_FOUND);
+			}
+			else {
+				for(User u : userRepo.getAllAssociateByCompany(comp.getCompname())) {
+					mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
+				}
 			}
 		}
+		
 		else {
 			for(User u : userRepo.getAllAssociateByCompany(userdetail.getUser().companyname())) {
 				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
 			}
 		}
-		return mention;
+			
+		return new ResponseEntity<List<PeopleModel>>(mention,HttpStatus.OK);
 	}
-	
-	
-	@GetMapping("/people")
+
+	@GetMapping("/people/{company}")
 	@ResponseBody
-	public List<PeopleModel> getMention(@AuthenticationPrincipal MyUserDetails userdetail){
+	public ResponseEntity<List<PeopleModel>> getMention(@AuthenticationPrincipal MyUserDetails userdetail, @PathVariable("company") String company){
 		List<PeopleModel> mention = new ArrayList<>();
-		if(userdetail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
-			for(User u : userservice.findAllUsers()) {
-				mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
-			}
-		}
 		
-		else {
-		for(User u : userservice.getAllByCompany(userdetail)) {
+		for(User u : userservice.getAllByCompany(company)) {
 			mention.add(new PeopleModel(u.getId(),u.fullname(),"people"));
 		}
-		}
-		return mention;
+		return new ResponseEntity<List<PeopleModel>>(mention,HttpStatus.OK);
 	}
 	
-	@PostMapping("/savecard") // Just a demo how to handle forbidden actions 
+	@PostMapping("/savecard") // Just a demo how to handle forbidden actions .....(not anymore)
 	@ResponseBody
-	public String saveCard(@AuthenticationPrincipal MyUserDetails detail) {
+	public ResponseEntity<String> saveCard(@AuthenticationPrincipal MyUserDetails detail, ScoreCardModel model) {
 		if(!detail.getUser().role().equalsIgnoreCase("MASTERADMIN") && !detail.getUser().role().equalsIgnoreCase("SUPERADMIN")) {
-			return "You're not powerful enough to use this. Please consult your boss";
+			return new ResponseEntity<String>("You dont have the power", HttpStatus.FORBIDDEN);
 		}
-		return "Scorecard Added!";
+		System.out.println("User ID :" + model.getUserid());
+		System.out.println("Role :" + model.getRole());
+		
+		User user = userRepo.findById(model.getUserid()).orElse(null);
+		Scorecard card = scorerepo.findByUser(user);
+		Role r = roleRepo.findByRolename(model.getRole());
+		
+		if(r == null || user == null) {
+		   return new ResponseEntity<String>("User Not found",HttpStatus.NOT_FOUND);
+		}
+		UserRole ur = userRoleRepo.findByUser(user);
+		if(card == null) {
+			card = new Scorecard();
+			card.setMainscorecard(model.getMainscorecard());
+			card.setCorecompetencies(model.getCorecompetencies());
+			card.setDefinition(model.getDefinition());
+			card.setEducationalbg(model.getEducationalbg());
+			card.setIndicators(model.getIndicators());
+			card.setMetrics(model.getMetrics());
+			card.setPerforaccel(model.getPerforaccel());
+			card.setRoledesc(model.getRoledesc());
+			ur.setRole(r);
+			userRoleRepo.save(ur);
+			card.setUser(user);
+			scorerepo.save(card);
+		}else {
+			card.setMainscorecard(model.getMainscorecard());
+			card.setCorecompetencies(model.getCorecompetencies());
+			card.setDefinition(model.getDefinition());
+			card.setEducationalbg(model.getEducationalbg());
+			card.setIndicators(model.getIndicators());
+			card.setMetrics(model.getMetrics());
+			card.setPerforaccel(model.getPerforaccel());
+			card.setRoledesc(model.getRoledesc());
+			ur.setRole(r);
+			userRoleRepo.save(ur);
+			card.setUser(user);
+			scorerepo.save(card);
+		}
+		
+		return new ResponseEntity<String>("Success",HttpStatus.OK);
 	}
 	
 	@PostMapping("/addPersonnel")

@@ -48,7 +48,7 @@
 		</div>
 	</div>
 	<!-- Remove Member Modal -->
-	<div class="modal fade" id="exampleModalCenter2" tabindex="-1"
+	<div class="modal fade" id="exampleModalCenter3" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -280,7 +280,7 @@
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -288,7 +288,7 @@
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a> <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}" id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span></a> <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -374,7 +374,7 @@
 						
 					
 											
-						<div id="tasks" class="d-flex  flex-wrap my-2 mx-4 float-left"
+						<div id="tasks" class="d-flex  flex-wrap my-2 mx-2 float-left"
 							>
 							<div class="card w-100">
 							
@@ -384,15 +384,15 @@
 									<div class="text-left w-100">
 										<h3 class="m-3 text-left">Tasks</h3>
 									</div>
-									<div class="text-end w-100 m-0">
+									<div class="text-end w-100 m-0" th:if="${deptuser != null || currUser.role() == 'SUPERADMIN'}">
 										<button type="button" id="framebtn" data-bs-target="#multitask" data-bs-toggle="modal" class="btnadd border m-2">
 											<i class="fa fa-plus-circle" style="color: #009d63"></i> New Task
 										</button>
 										
 									</div>
-									<div class="text-end  w-100 m-0">
-										<a th:href="@{/department/{department}/trash(department=${department.deptname})}" type="button" id="framebtn" class="btnadd border m-2 text-danger" style="text-decoration: none;">
-											<i class="fa-solid fa-trash-can text-danger"></i> Trash
+									<div class="text-end  w-100 m-0" th:if="${deptuser != null || currUser.role() == 'SUPERADMIN'}">
+										<a th:href="@{/department/{department}/trash(department=${department.id})}" type="button" id="framebtn" class="btnadd border m-2 text-danger" style="text-decoration: none;">
+											<i class="fa-solid fa-trash-can text-danger"></i> Archives
 										</a>
 									</div>
 										
@@ -402,7 +402,7 @@
 								</div>
 								
 								<div class="" style="display: block; height: 350px; overflow-y: auto;">
-									<div class=" m-2" th:each="user : ${users}">
+									<div class=" m-1" th:each="user : ${users}">
 										<div
 											th:styleappend="${'background-color:' + user.user.companycolor()}">
 											<h5 class="m-2 p-2 text-white">
@@ -475,14 +475,14 @@
 												th:id="${'kick' + users.user.id}" th:dep="${department.id}"
 												th:kid="${users.user.id}"
 												
-												data-bs-toggle="modal" data-bs-target="#exampleModalCenter2">
+												data-bs-toggle="modal" data-bs-target="#exampleModalCenter3">
 												<i class="fa-solid fa-xmark"></i>
 											</button>
 										</td>
 										<td
 											sec:authorize="!hasAnyAuthority('MASTERADMIN','SUPERADMIN')">
 											<button class="btn btn-danger disabled" 
-												data-bs-toggle="modal" data-bs-target="#exampleModalCenter2">
+												data-bs-toggle="modal">
 												<i class="fa-solid fa-xmark"></i>
 											</button>
 										</td>
@@ -524,15 +524,28 @@
 			el.classList.toggle("toggled");
 		};
 	</script>
+	<script type="text/javascript" th:inline="javascript">
+const company = /*[[${department.companyname}]]*/"";
+console.log(company);
+</script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 	<script th:src="@{/js/jquery.mentionsInput.js}"></script>
 	<script th:src="@{/js/jquery.elastic.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery.events.input.js}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
-	<script th:src="@{/js/notif.js}"></script>
+	
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script th:src="@{/js/viewdepartment.js}"></script>
-	
+	<script>
+	let kickid = 0;
+	let deptid = 0;
+	$(".kickbtn").click(function() {
+		kickid = $(this).attr("kid");
+		deptid = $(this).attr("dep");
+
+	});
+	</script>
+	<script th:src="@{/js/notif.js}"></script>
 </body>
 </html>

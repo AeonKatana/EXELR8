@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oikostechnologies.schedsys.entity.User;
@@ -39,6 +41,29 @@ public class ProfileController {
 	private DailyTaskRepo dailyrepo;
 	
 	
+	@GetMapping("/profile/scorecard")
+	public String myScoreCard(Model model, @AuthenticationPrincipal MyUserDetails user) {
+		
+		if(user.getRolename().equals("SUPERADMIN")) {
+			ResponseStatusException ex =  new ResponseStatusException(HttpStatus.NOT_FOUND, "SUPERADMIN does not possess a scorecard");
+			throw ex;
+		}
+		
+		model.addAttribute("user", user.getUser());
+		return "scorecard";
+	}
+	
+	@GetMapping("/profile/{id}/scorecard")
+	public String scorecard(@PathVariable("id") long id, Model model) {
+		
+		User user = userepo.findById(id).orElse(null);
+		if(user == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+		model.addAttribute("user", user);
+		return "scorecard";
+	}
+	
 	
 	@GetMapping("/profile/{id}")
 	public String viewProfile(@AuthenticationPrincipal MyUserDetails user, Model model, @PathVariable("id") long id) {
@@ -49,6 +74,10 @@ public class ProfileController {
 		}
 		
 		User viewuser = userepo.findById(id).orElse(null);
+		
+		if(viewuser == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 		
 		model.addAttribute("viewuser", viewuser);
 		model.addAttribute("activity", actrepo.findByUserOrderByDateDesc(viewuser));

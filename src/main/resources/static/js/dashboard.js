@@ -13,13 +13,13 @@ $(document).ready(function() {
 				return "<a href='/profile/" + row.id + "'>"+ data + "</a>";
 			}
 		}, {
-			data: "company.compname",
+			data: "companyname",
 			render: function(data, type, row) {
 				if (data == null) {
 					return "Does not belong to any company";
 				}
 				else {
-					return "<a href='/companies/"+ data +"' style='color :" + row.company.color + " '> " + data + "</a>";
+					return "<a href='/companies/"+ data +"' style='color :" + row.companycolor + " '> " + data + "</a>";
 				}
 			}
 		}]
@@ -43,9 +43,11 @@ $(document).ready(function() {
 				return "<a href='/profile/" + row.user.id + "'>"+ data + "</a>";
 			}
 		}, {
+			data : 'user.role'
+		} ,{
 			data: "description",
 			render : function(data,type,row){
-				return "<a href='/department/" + row.department.deptname + "'>" + data + "</a>"; 
+				return "<a href='/department/" + row.department.id + "'>" + data + "</a>"; 
 			}
 		},{
 			data : "until"
@@ -55,7 +57,10 @@ $(document).ready(function() {
 	var dailytable = $('#dailytable').DataTable({
 		'ajax': { url: '/dashboard/daily', type: "GET" , dataSrc: ""},
 		columns: [{
-			data: 'id'
+			data: 'department.deptname',
+			render : function(data,type,row){
+			return "<a href='/department/" + row.department.id + "'>" + data + "</a>"; 
+			}
 		}, {
 			data: 'user.fullname',
 			render : function(data,type,row){
@@ -63,6 +68,9 @@ $(document).ready(function() {
 			}
 		}, {
 			data: "description",
+			render : function(data,type,row){
+				return "<a href='/department/" + row.department.id + "'>" + data + "</a>"; 
+			}
 		}]
 	});
 	

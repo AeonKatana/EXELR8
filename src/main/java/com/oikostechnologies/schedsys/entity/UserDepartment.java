@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,11 +28,11 @@ public class UserDepartment {
 	private long id;
 	
 	@ManyToOne
-	@JsonBackReference
+	@JsonIgnore
 	private User user;
 	
 	@ManyToOne
-	@JsonBackReference
+	@JsonIgnore
 	private Department department;
 	
 	private String deptrole;

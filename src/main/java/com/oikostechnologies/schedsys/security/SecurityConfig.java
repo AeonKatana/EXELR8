@@ -23,20 +23,20 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	public PasswordEncoder passwordEncoder() { // Responsible for Hashing
 		return new BCryptPasswordEncoder(10);
 	}
 	
 	@Autowired
-	private UserDetailsService service;
+	private UserDetailsService service; // Setting up the user before and after login
 	
 	
-
+     // Perform Authentication using Database 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setPasswordEncoder(passwordEncoder());
-		provider.setUserDetailsService(service);
+		provider.setUserDetailsService(service); // Perform login logic 
 		auth.authenticationProvider(provider);
 	}
 
@@ -52,9 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/resources/**","/forgot-pass/**", "/resetPass").permitAll()
 			.antMatchers("/","/dashboard/**","/task/**","/task/mytask/**", "/task/assignedtask/**", 
 					     "/task/savemytask","/personnel/**","/companies/**", "/personnel/mycompanypeople"
-					     ,"/personnel/savecard", "/task/searchtask", "/profile/**","/settings/**", "/department/**").authenticated()
+					     ,"/personnel/savecard", "/task/searchtask", "/profile/","/profile/{id}","/profile/scorecard","/profile/updatePassword","/settings/**", "/department/**"
+					     ,"/leaderboard/**").authenticated() // URLs for authenticated users only
+			.antMatchers("/profile/{id}/scorecard").hasAnyAuthority("SUPERADMIN","MASTERADMIN","EXECUTIVE","MANAGER")
 			.and()
-			.formLogin().loginPage("/login-page").usernameParameter("email").passwordParameter("pass")
+			.formLogin().loginPage("/login-page").usernameParameter("email").passwordParameter("pass") 
 			.loginProcessingUrl("/perform-login")
 			.failureHandler(new AuthenticationFailureHandler() {
 				
@@ -67,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			}).failureUrl("/login-page?error")
 			.and()
 			.logout().logoutUrl("/perform-logout")
-			.invalidateHttpSession(true)
+			.invalidateHttpSession(true) // Remove user session after logout
 			.deleteCookies("JSESSIONID")
 			.logoutSuccessUrl("/login-page");
 		

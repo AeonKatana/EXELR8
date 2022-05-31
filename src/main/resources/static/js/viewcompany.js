@@ -18,8 +18,36 @@ $(document).ready(function(){
 		$("#coretitleedit").val($(this).attr('title'));
 		$("#descedit").val($(this).attr('desc'));
 		$("#coreid").val($(this).attr('cid'));
+		$("#indicator").val($(this).attr('ind'));
 	})
 	
+	
+	$('#depttable').DataTable({
+				"scrollY":        "380px",
+		        "scrollCollapse": true,
+			    'ajax' : { url : '/department/comdept/' + company , type : "GET", dataSrc : "" },
+			    "pageLength": 3,
+				"lengthChange": false,
+				"columnDefs": [{
+				targets: -1,
+				className: 'dt-right'
+				}],
+			    columns : [{
+				  data : 'deptname'				
+				},{
+			      data : 'companyname',
+			      render : function(data, type , row){
+					return "<p style='color :"+ row.color +" '> "+ data + "</p>";
+			      }
+			    }, {
+			      data : 'userdepartment.length'
+			    },{
+			    	data : null,
+			    	render : function(data, type ,row){
+			    		return "<a class='btn btn-primary' href='/department/"+ row.id +"'>Visit</a>";
+			    	}
+		}]
+});			
 	
 	// Add Company DNA
 	
@@ -28,7 +56,6 @@ $(document).ready(function(){
 	
 	$("#dnaform").submit(function(){
 		$.post($(this).attr('action'),$(this).serialize(),function(result){
-			alert(result);
 			window.location.reload();
 		});
 		return false;
@@ -36,7 +63,7 @@ $(document).ready(function(){
 
 	$("#coreform").submit(function(e){
 		$.post($(this).attr('action'),$(this).serialize(),function(result){
-			alert(result);
+			window.location.reload();
 		});
 		return false;
 	})
@@ -56,9 +83,6 @@ $(document).ready(function(){
 		"pageLength": 5,
 		"lengthChange": false,
 		columns: [{
-			title: "Id",
-			data: 'id'
-		}, {
 			title: "Full Name",
 			data: null,
 			render: function(data, type, row) {
@@ -69,14 +93,8 @@ $(document).ready(function(){
 					return "<p style='opacity : 0.3'>" + row.firstname + ' ' + row.lastname + "</p>";
 			}
 		}, {
-			data: "userrole",
-			render: function(data, type, row) {
-				if (row.enabled)
-					return data[0].role.rolename;
-				else {
-					return "<p style='opacity : 0.3'>" + data[0].role.rolename + "</p>";
-				}
-			}
+			data: "role",
+			
 		}]
 	});
 });

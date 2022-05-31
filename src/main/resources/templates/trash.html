@@ -73,7 +73,7 @@
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -81,7 +81,7 @@
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					 class="fa-solid fa-trophy me-2">	</i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}"  id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span> </a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -174,7 +174,7 @@
   
 </script>
 <script type="text/javascript" th:inline="javascript">
-var department = /*[[${department.deptname}]]*/"";
+const department = /*[[${department.id}]]*/"";
 console.log(department);
 </script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

@@ -1,19 +1,12 @@
 package com.oikostechnologies.schedsys.entity;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,12 +30,10 @@ public class Scorecard {
 	private String corecompetencies;
 	private String definition;
 	private String indicators;
+	private String customer;
+	private String roledesc;
 	
 	@OneToOne
-	@JsonIgnoreProperties("scorecard")
+	@JsonIgnore
 	private User user;
-	
-	@OneToMany(mappedBy = "card",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
-	@JsonManagedReference
-	private Set<ScoreCore> scorecore;
 }

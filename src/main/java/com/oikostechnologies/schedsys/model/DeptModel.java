@@ -16,5 +16,5 @@ public class DeptModel {
 	
 	private String deptname;
 	private List<PeopleModel> people;
-	
+	private String companyname;
 }

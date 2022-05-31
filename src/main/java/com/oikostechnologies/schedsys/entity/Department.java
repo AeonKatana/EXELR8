@@ -16,14 +16,16 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-;
+
 
 @Entity
 @AllArgsConstructor
@@ -40,11 +42,11 @@ public class Department {
 	
 	
 	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
-	@JsonManagedReference
+	@JsonIgnore
 	private Set<DailyTask> dailies;
 	
 	
-	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	@OrderBy("id ASC")
 	private Set<UserDepartment> userdepartment;
@@ -52,13 +54,22 @@ public class Department {
 	@ManyToOne
 	@JsonBackReference
 	private Company company;
-	
 	@Transient
+	@JsonSerialize
 	public String companyname() { 
 		try {
 			return company.getCompname();
 		}catch(Exception e) {
 			return "Non-Affiliated";
+		}
+	}
+	@Transient
+	@JsonSerialize
+	public String companycolor() {
+		try {
+			return company.getColor();
+		}catch(Exception e) {
+			return "black";
 		}
 	}
 	@Transient

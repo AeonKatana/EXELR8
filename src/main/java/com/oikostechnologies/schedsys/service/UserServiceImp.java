@@ -219,7 +219,7 @@ public class UserServiceImp implements UserService {
 	@Override
 	public List<User> findAll() {
 		// TODO Auto-generated method stub
-		return userrepo.findAll();
+		return userrepo.getAllExceptSuperadmin();
 	}
 
 	@Override

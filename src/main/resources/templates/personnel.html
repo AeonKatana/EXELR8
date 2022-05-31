@@ -59,7 +59,7 @@ table.dataTable thead {
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add Personnel</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Associate</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           
         </button>
@@ -115,7 +115,7 @@ table.dataTable thead {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-        <h5 class="modal-title">Add Personnel</h5>
+        <h5 class="modal-title">Add Associate</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form th:action="@{/personnel/addPersonnel}" id="addPersonnel" method="POST">
@@ -165,7 +165,7 @@ table.dataTable thead {
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-	<form id="viewscore">
+	<form id="viewscore" th:action="@{/personnel/savecard}" method="post">
       <!-- Modal body -->
       <div class="modal-body">
         <div class="firstpage">
@@ -180,27 +180,39 @@ table.dataTable thead {
                 <tr>
                 <th scope="col">ROLE:</th>
                     <td >
-                        <input class="scard form-control" type="text" id="role" style="font-weight: bold;">
+                     <select name="role" class="form-select" th:disabled="${userrole != 'MASTERADMIN' && userrole != 'SUPERADMIN'}">
+                        <option id="role" selected></option>
+                    	<option value="EXECUTIVE">EXECUTIVE</option>
+                    	<option value="PROJLEAD">PROJECT LEADER</option>
+                    	<option value="SUPERVISOR">SUPERVISOR</option>
+                    	<option value="MANAGER">MANAGER</option>
+                    	<option value="ASSOCIATE">ASSOCIATE</option>
+                    </select>
                     </td>
                 </tr>
                 <tr>
                 <th scope="col">TEAM:</th>
                     <td>
-                        <input class="scard form-control" type="text" id="team">
+                    	<input type="hidden" name="id" value="0" id="scoreid">
+                    	<input type="hidden" name="userid" value="0" id="userid">
+                        <input class="scard form-control" type="text" id="team" disabled>
                     </td>
                 </tr>
                 <tr>
-                <th scope="col">CUSTOMERS:</th>
+               <!-- 
+               <th scope="col">CUSTOMERS:</th>
                     <td>
                         <input class="scard form-control" type="text" >
                     </td>
+               
+                --> 
                 </tr>
                 <thead>
                 <tr style="background-color:black; color:white;">
                     <th colspan="2">ROLE DESCRIPTION</th>
                 </tr> 
                     <th colspan="2" > 
-                        <input class="scard form-control" type="text" >
+                        <input class="scard form-control" type="text" name="roledesc" id="roledesc">
                     </th>
             </thead>
             <thead>
@@ -208,9 +220,8 @@ table.dataTable thead {
                     <th colspan="2">MAIN SCORECARD</th>
                 </tr> 
                     <th colspan="2" ><br>
-                        <p style="padding: 0px; margin: 0px;">Enterprise partnerships</p>
-                        <p style="font-style: italic; padding: 0px; margin: 0px"> Onboard 5 enterprise partner every Month</p><br>
-                        <textarea class="myTextArea" rows="6" style="font-size:14px; width:100%;">
+                        
+                        <textarea class="myTextArea" name="mainscorecard" id="mainscorecard" rows="6" style="font-size:14px; width:100%;">
 
                         </textarea>
                     </th>
@@ -220,9 +231,8 @@ table.dataTable thead {
                     <th colspan="2">PERFORMANCE ACCELARATOR</th>
                 </tr> 
                     <th colspan="2" ><br>
-                            <p style="padding: 0px; margin: 0px;">Partnership Meetings</p>
-                            <p style="font-style: italic; padding: 0px; margin: 0px">Send 10 proposals every Month</p><br>
-                            <textarea class="myTextArea" rows="6" style="font-size:14px; width:100%;">
+                            
+                            <textarea class="myTextArea" name="perforaccel" id="perforaccel" rows="6" style="font-size:14px; width:100%;">
                             </textarea>
                     </th>
             </tbody>
@@ -240,7 +250,7 @@ table.dataTable thead {
                 <tr>
                 <th scope="">EDUCATIONAL BACKGROUND:</th>
                     <td colspan="4"> 
-                        <input class="scard form-control" type="text" style="font-weight: bold;">
+                        <input class="scard form-control" type="text" style="font-weight: bold;" name="educationalbg" id="educationalbg">
                     </td>
                 </tr>
                 <thead>
@@ -253,21 +263,19 @@ table.dataTable thead {
                 </thead>
                 <tr colspan="4">
                     <th rowspan="1">
-                        <textarea class="textareaMetrics" rows="4" style="font-size:14px; width:100%; border: none; text-align:center;">
+                        <textarea class="textareaMetrics" name="metrics" id="metrics" rows="4" style="font-size:14px; width:100%; border: none; text-align:center;">
                          </textarea>
                     </th>
                     <th>
-                        <textarea class="textareacorecomp" rows="4" style="font-size:14px; width:100%;border: none; text-align:center;">
+                        <textarea class="textareacorecomp" name="corecompetencies" id="corecompetencies" rows="4" style="font-size:14px; width:100%;border: none; text-align:center;">
                         </textarea>
                     </th>
                     <th>
-                        <textarea class="textareadef" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
+                        <textarea class="textareadef" name="definition" id="definition" rows="4" style="font-size:14px; width:100%;border: none;text-align:center;">
                         </textarea>
                     </th>
                     <th>
-                    <input class="bi-form form-control" type="text">
-                    <input class="bi-form form-control" type="text">
-                    <input class="bi-form form-control" type="text">  
+                    <textarea class="bi-form form-control" name="indicators" id="indicators" rows="4"  style="font-size:14px; width:100%;border: none;text-align:center;"> </textarea>
                     </th>      
                 </tr>
             </tbody>
@@ -290,7 +298,7 @@ table.dataTable thead {
 
       <!-- Modal footer -->
       <div class="modal-footer">
-      <button type="button" id="save" class="btn btn-success">Save as PDF</button>
+      <button type="submit" id="save" class="btn btn-success" th:classappend="${userrole != 'SUPERADMIN' && userrole != 'MASTERADMIN' ? 'disabled' : ''}">Save</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
 	</form>
@@ -316,7 +324,7 @@ table.dataTable thead {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -324,7 +332,7 @@ table.dataTable thead {
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}"  id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span></a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -341,7 +349,7 @@ table.dataTable thead {
 				<div class="d-flex align-items-center">
 					<i class="fas fa-align-left primary-text fs-4 me-3"
 						id="menu-toggle"></i>
-					<h2 class="fs-2 m-0">Personnel</h2>
+					<h2 class="fs-2 m-0">Associates</h2>
 				</div>
 
 				<button class="navbar-toggler" type="button"
@@ -374,10 +382,10 @@ table.dataTable thead {
 			<div class="text-end">
 			<button type="button" class="btn btn-success btn text-end" sec:authorize="hasAuthority('SUPERADMIN')"
 						data-bs-toggle="modal" data-bs-target="#addpnlsuper">Add
-						Personnel</button>
+						Associate</button>
 			<button type="button" class="btn btn-success btn text-end" sec:authorize="hasAuthority('MASTERADMIN')"
 						data-bs-toggle="modal" data-bs-target="#addpnl">Add
-						Personnel</button>
+						Associate</button>
 			</div>
 				
 				<div sec:authorize="hasAuthority('SUPERADMIN')"
@@ -400,7 +408,7 @@ table.dataTable thead {
 						</table>
 					</div>
 					<div class="" th:unless="${totalpage != 0}">
-						<h5 class="text-center m-5">No personnel found</h5>
+						<h5 class="text-center m-5">No Associates found</h5>
 					</div>
 			</div>
 			<div sec:authorize="hasAnyAuthority('MASTERADMIN','ASSOCIATE','MANAGER','EXECUTIVE','SUPERVISOR','PROJLEAD')"
@@ -422,7 +430,7 @@ table.dataTable thead {
 						</table>
 					</div>
 					<div class="col" th:unless="${comppersonnel != null}">
-						<h5 class="text-center m-5">No personnel found</h5>
+						<h5 class="text-center m-5">No Associates found</h5>
 					</div>
 			</div>
 

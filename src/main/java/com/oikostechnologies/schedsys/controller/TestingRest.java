@@ -52,10 +52,4 @@ public class TestingRest {
 	public void deleteCompany(@PathVariable("id") long id) {
 		comprepo.deleteById(id);
 	}
-	
-	@Transactional
-	@DeleteMapping("/deleteDepartment/{id}")
-	public void deleteDepartment(@PathVariable("id") long id) {
-		deptrepo.deleteById(id);
-	}
 }

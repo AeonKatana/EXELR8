@@ -15,6 +15,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -40,55 +43,60 @@ public class User {
 	private String firstname;
 	private String lastname;
 	private String email;
+	@JsonIgnore
 	private char[] password;
 	private boolean enabled;
 	private long contactno;
 	private long violationcount;
 	
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonManagedReference
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonIgnore
 	private Set<ActivityLog> actlog;
 	
 	
-	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserRole> userrole;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonIgnoreProperties("user")
-	private Company company;
-
 	
 	@OneToMany(mappedBy = "user" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
 	@JsonManagedReference
 	private Set<UserDepartment> userdepartment;
 	
 	
-	@OneToMany(mappedBy = "user" , fetch=FetchType.EAGER , cascade = CascadeType.REMOVE , orphanRemoval = true)
-	@JsonManagedReference
+	@OneToMany(mappedBy = "user" , fetch=FetchType.LAZY , cascade = CascadeType.REMOVE , orphanRemoval = true)
+	@Fetch(FetchMode.JOIN)
+	@JsonIgnore
 	@OrderBy("until DESC")
 	private Set<DailyTask> dailies;
 	
-	@OneToOne(mappedBy = "user",cascade =CascadeType.ALL)
+	@OneToOne(mappedBy = "user",cascade =CascadeType.REMOVE)
 	@JsonIgnore
 	private RegistrationToken token;
 	
-	@OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy ="user", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private PasswordToken passtoken;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Scorecard scorecard;
 	
-	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "assignedby" , fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonIgnore
 	@OrderBy("until DESC")
 	private Set<DailyTask> assigned;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE,orphanRemoval = true)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
 	@JsonIgnore
 	private Set<Notification> notification;
+	
+	@OneToMany(mappedBy = "actionuser", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
+	@JsonIgnore
+	private Set<Notification> actions;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("user")
+	private Company company;
 	
 	@Transient
 	private String role;

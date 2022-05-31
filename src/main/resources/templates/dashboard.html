@@ -66,7 +66,7 @@
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i><span>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}"  id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span> </span></a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -207,6 +207,7 @@
 									<th scope="col">Id</th>
 									<th scope="col">Full Name</th>
 									<th scope="col">Company</th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -230,8 +231,10 @@
 								<tr>
 									<th scope="col">Company</th>
 									<th scope="col">Full Name</th>
+									<th scope="col">Role</th>
 									<th scope="col">Task Name</th>
 									<th scope="col">Since</th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -252,6 +255,7 @@
 								<tr>
 									<th scope="col">Company</th>
 									<th scope="col">Full Name</th>
+									<th scope="col">Role</th>
 									<th scope="col">Task Name</th>
 									<th scope="col">Since</th>
 								</tr>
@@ -274,6 +278,7 @@
 								<tr>
 									<th scope="col">Company</th>
 									<th scope="col">Full Name</th>
+									<th scope="col">Role</th>
 									<th scope="col">Task Name</th>
 									<th scope="col">Since</th>
 								</tr>
@@ -287,6 +292,7 @@
 						>
 						<i class="fa-solid fa-4x my-5 fa-face-laugh text-center"></i>
 						<h5 class="text-center m-2">Yay! No Overdue Tasks</h5>
+						<p class="text-muted">Notice: SUPERADMIN checks if you created a task before 9am except Sundays	. Please make sure you create one everyday before 9am</p>
 					</div>
 					
 				
@@ -299,7 +305,7 @@
 							id="dailytable">
 							<thead>
 								<tr>
-									<th scope="col">Id</th>
+								    <th scope="col">Department</th>
 									<th scope="col">Full Name</th>
 									<th scope="col">Task Name</th>
 								</tr>
@@ -313,6 +319,8 @@
 						sec:authorize="!hasAuthority('MASTERADMIN')">
 						<i class="fa-solid fa-face-laugh-wink fa-4x"></i>
 						<h5 class="text-center my-5">Nice! No tasks! How about creating one?</h5>
+												<p class="text-muted">Notice: SUPERADMIN checks if you created a task before 9am except Sundays. Please make sure you create one everyday before 9am</p>
+						
 					</div>
 					<div class="col" th:if="${dailycomp > 0}"
 						sec:authorize="hasAuthority('MASTERADMIN')" >
@@ -334,7 +342,7 @@
 					<div class="col m-5 text-center" th:unless="${dailycomp > 0}"
 						sec:authorize="hasAuthority('MASTERADMIN')">
 						<i class="fa-solid fa-face-surprise fa-4x"></i>
-						<h5 class="text-center my-5">No tasks? Try assigning some to your subordinate</h5>
+						<h5 class="text-center my-5">No tasks? Try assigning some to your subordinate or yourself</h5>
 					</div>
 				</div>	
 					

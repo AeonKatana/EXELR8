@@ -1,5 +1,9 @@
 package com.oikostechnologies.schedsys;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,9 +17,13 @@ import com.oikostechnologies.schedsys.repo.CompanyRepo;
 import com.oikostechnologies.schedsys.repo.RoleRepo;
 import com.oikostechnologies.schedsys.repo.UserRepo;
 import com.oikostechnologies.schedsys.repo.UserRoleRepo;
+import com.oikostechnologies.schedsys.service.SchedulerService;
 
 @SpringBootTest
 class SchedSysApplicationTests {
+	
+	@Autowired
+	private SchedulerService service;
 	
 	@Autowired
 	private PasswordEncoder encoder;
@@ -93,7 +101,7 @@ class SchedSysApplicationTests {
 		userRoleRepo.save(ur);
 	}
 	
-	@Test
+	
 	void leaderboard() {
 		
 		for(LeadDTO c : companyRepo.leaderboard(5, 2022)) {
@@ -102,5 +110,11 @@ class SchedSysApplicationTests {
 		}
 		
 	}
+//	@Test
+//	void tardy() {
+//		for(User u : service.getTardyusers()) {
+//			System.out.println(u.fullname());
+//		}
+//	}
 	
 }

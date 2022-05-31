@@ -1,9 +1,8 @@
 $(document).ready(function() {
-	
 						$('textarea.mention3').mentionsInput({
 							 minChars : 1,
 										onDataRequest : function(mode,query, callback) {
-										$.getJSON('/personnel/people',function(responseData) {
+										$.getJSON('/personnel/people/' + company ,function(responseData) {
 												responseData = _.filter(responseData,function(item) {
 									           return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1});
 										        callback.call(this,responseData);
@@ -28,9 +27,8 @@ $(document).ready(function() {
 												success : function(result) {
 													
 														window.location.reload();
-												},error : function(){
-													alert("An error occured while adding members. Maybe the personnel doesn't exist anymore");
-													window.location.reload();
+												},error : function(response){
+													alert(response.responseText);
 												}
 										})
 
@@ -67,7 +65,10 @@ $(document).ready(function() {
 											window.location.reload();
 											
 										},
-										error : function(){
+										error : function(result){
+											if(result.status === 403){
+												alert("You don't belong to this department'")
+											}
 											alert("Task creation failed. Please reload and try again");
 											window.location.reload();
 										}
@@ -267,8 +268,8 @@ $(document).ready(function() {
 										
 										window.location.reload();
 										
-									},error : function(){
-										alert("Something went wrong.Reloading the page...");
+									},error : function(response){
+										alert(response.responseText);
 									}
 								});
 							});

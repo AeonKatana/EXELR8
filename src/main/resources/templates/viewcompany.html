@@ -66,6 +66,7 @@ table.dataTable thead {
                    <h4 style="text-align: center">Core Value</h4>
                    <input name="title" class="form-control"id="coretitleedit"style="text-align : justify;" placeholder="Enter title here" required>
                 	<textarea class="form-control" rows="3" cols="5" name="description" id="descedit" placeholder="Enter description"></textarea>
+                	<textarea type="text" class="form-control" id="indicator" name="indicator" placeholder="Behavioral Indicator"></textarea>
                 	<input type="hidden" id="coreid" name="id" value="0">
                 	 <input type="hidden" th:value="${company.id}" name="companyid">
                 </div>  
@@ -129,7 +130,7 @@ table.dataTable thead {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a>  <a
+					class="fas fa-user-group me-2"></i>Team</a>  <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -137,7 +138,7 @@ table.dataTable thead {
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a>  <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}"  id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span> </a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -211,8 +212,9 @@ table.dataTable thead {
 			<div class="d-flex text-left flex-wrap justify-content-center">
       		<div class="card text-left p-3 m-2" style="width: 18rem;" th:each="core : ${company.dna.corevalue}">	
       			<h2 class="float-left" th:text="${core.name}"></h2>
+      			<p class="" th:text="${core.description}"></p>
       			<div sec:authorize="hasAuthority('SUPERADMIN')">
-      				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
+      				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:ind="${core.indicator}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
       			</div>
       			
       		</div>
@@ -228,12 +230,28 @@ table.dataTable thead {
 
 
 	<div class="m-5 w-100">
-		
+		<h2 class="m-4">Departments</h2>
+		 <div class="p-2">
+            	
+            	<table class="table table-striped" id="depttable">
+            		<thead>
+            			<tr>
+            				<th>Name</th>
+            				<th>Company</th>
+            				<th>Team Members</th>
+            				<th>Action</th>
+            			</tr>
+            		</thead>
+            		<tbody>
+            		
+            		</tbody>
+            	</table>
+         </div>    
 		<div th:if="${comppersonnel != null}">
 						<table class="table bg-white rounded shadow-sm w-100 table-hover" id="cptable">
 							<thead>
 								<tr>
-									<th scope="col" width="50">ID</th>
+								
 									<th scope="col">Full Name</th>
 									<th scope="col">Role</th>
 
@@ -267,7 +285,10 @@ table.dataTable thead {
 			el.classList.toggle("toggled");
 		};
 	</script>
-	
+	<script type="text/javascript" th:inline="javascript">
+const company = /*[[${company.compname}]]*/"";
+console.log(company);
+</script>
 		<script th:src="@{/js/viewcompany.js}"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
 		<script type="text/javascript" th:src="@{/js/notif.js}"></script>

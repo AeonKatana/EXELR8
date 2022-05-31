@@ -310,6 +310,10 @@
 
         //Takes the input event when users write or delete something
         function onInputBoxInput(e) {
+	if( navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+            e.keyCode = e.target.value.charCodeAt(e.target.selectionStart-1);
+            onInputBoxKeyPress(e);
+        }
             updateValues();
             updateMentionsCollection();
 

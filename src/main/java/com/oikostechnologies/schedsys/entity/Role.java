@@ -2,13 +2,15 @@ package com.oikostechnologies.schedsys.entity;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +31,8 @@ public class Role {
 	private long id;
 	private String rolename;
 	
-	@OneToMany(mappedBy = "role")
-	@JsonIgnoreProperties("role")
+	@OneToMany(mappedBy = "role", fetch =  FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonManagedReference
 	private Set<UserRole> userrole;
 	
 		

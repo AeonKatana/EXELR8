@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +26,15 @@ public class Notification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@ManyToOne
+	@JsonBackReference
 	private User user;
 	
+	@ManyToOne
+	@JsonBackReference
+	private User actionuser;
 	private String action;
 	private String actiontarget;
 	private String targetlink;
 	private LocalDateTime date;
-	
+	private boolean seen;
 }

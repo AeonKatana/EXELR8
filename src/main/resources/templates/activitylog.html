@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,6 +12,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+     <link rel="stylesheet" th:href="@{/css/simplePagination.css}">
     <title>EXELR8</title>
 <style type="text/css">
 
@@ -242,7 +244,7 @@ tl-item.active .tl-dot:before {
 
         <div class="bg-dark text-dark" id="sidebar-wrapper">
 <div
-				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom"><img th:src="@{/favicon.ico}" width="30px;" style=""><br>EXELR8</div>
+				class="sidebar-heading text-center py-3 primary-text fs-4 fw-regular text-left border-bottom"><img th:src="@{/favicon.ico}" width="30px;"><br>EXELR8</div>
 		                <div class="list-group list-group-flush my-3">
 				<a th:href="@{/}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
@@ -254,7 +256,7 @@ tl-item.active .tl-dot:before {
 					class="fas fa-building me-2"></i>Department</a> <a
 					th:href="@{/dashboard/personnel}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-user-group me-2"></i>Personnel</a> <a
+					class="fas fa-user-group me-2"></i>Team</a> <a
 					th:href="@{/dashboard/activitylog}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold active"><i
 					class="fas fa-box me-2"></i>Activity log</a><a
@@ -262,7 +264,7 @@ tl-item.active .tl-dot:before {
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fas fa-trophy me-2"></i>Leaderboard</a> <a th:href="@{/dashboard/notification}"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
-					class="fas fa-bell me-2"></i>Notification</a>  <a
+					class="fas fa-bell me-2"></i>Notifications  <span th:styleappend="${notifcount < 1 ? 'display:none' : ''}"  id="notifcount" class="badge bg-danger border border-light rounded-circle p-1" th:text="${notifcount}"></span></a>  <a
 					th:href="@{/perform-logout}"
 					class="list-group-item list-group-item-action bg-transparent text-danger fw-bold"><i
 					class="fas fa-power-off me-2"></i>Logout</a>
@@ -311,7 +313,8 @@ tl-item.active .tl-dot:before {
 	        <div class="row justify-content-left" style="overflow-y:auto; height:450px;">
 	            <div class="col-lg-4 w-100">
 	                <div class="timeline p-2 block mb-2">
-	                    <div class="tl-item" th:each="act : ${activity}">
+	                	
+	                    <div class="tl-item" th:each="act : ${activity}" sec:authorize="hasAuthority('SUPERADMIN')">
 	                        <div class="tl-dot" th:style="${'border-color :' + act.user.company.color}" th:if="${act.user.company != null}"></div>
 	                        <div class="tl-dot" th:style="${'border-color : black' }" th:unless="${act.user.company != null}"></div>
 	                        <div class="tl-content">
@@ -321,15 +324,38 @@ tl-item.active .tl-dot:before {
 	                        	<div class="tl-date text-muted mt-1" th:text="${#temporals.hour(act.date) + ':' + #temporals.minute(act.date) + ' AM'}" th:if="${#temporals.hour(act.date) < 12}"> </div>
 	                        </div>
 	                    </div>
-
+						 <div class="tl-item" th:each="act : ${companyact}" sec:authorize="hasAuthority('MASTERADMIN')">
+	                        <div class="tl-dot" th:style="${'border-color :' + act.user.company.color}" th:if="${act.user.company != null}"></div>
+	                        <div class="tl-dot" th:style="${'border-color : black' }" th:unless="${act.user.company != null}"></div>
+	                        <div class="tl-content">
+	                            <div class=""><a th:href="@{/profile/{id}(id=${act.user.id})}" style="text-decoration:none;">[[${act.user.fullname()}]]</a> from <a th:href="@{/companies/{company}(company=${act.user.companyname()})}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.user.companyname()}]] </span></a> <span class="" th:classappend="${#strings.contains(act.action,'late') || #strings.contains(act.action,'deleted') ? 'text-danger' : ''}">[[${act.action}]]</span>  <a class="" th:href="${act.targetlink}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.target}]]</span></a></div>
+	                            <div class="tl-date text-muted mt-1" th:text="${#temporals.monthNameShort(act.date) + ' ' + #temporals.day(act.date) + ' ' + #temporals.year(act.date) }"></div>
+	                        	<div class="tl-date text-muted mt-1" th:text="${(#temporals.hour(act.date) - 12) + ':' + #temporals.minute(act.date) + ' PM'}" th:if="${#temporals.hour(act.date) >= 12}"> </div>
+	                        	<div class="tl-date text-muted mt-1" th:text="${#temporals.hour(act.date) + ':' + #temporals.minute(act.date) + ' AM'}" th:if="${#temporals.hour(act.date) < 12}"> </div>
+	                        </div>
+	                    </div>
+	                     <div class="tl-item" th:each="act : ${useractivity}" sec:authorize="!hasAnyAuthority('SUPERADMIN','MASTERADMIN')">
+	                        <div class="tl-dot" th:style="${'border-color :' + act.user.company.color}" th:if="${act.user.company != null}"></div>
+	                        <div class="tl-dot" th:style="${'border-color : black' }" th:unless="${act.user.company != null}"></div>
+	                        <div class="tl-content">
+	                            <div class=""><a th:href="@{/profile/{id}(id=${act.user.id})}" style="text-decoration:none;">[[${act.user.fullname()}]]</a> from <a th:href="@{/companies/{company}(company=${act.user.companyname()})}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.user.companyname()}]] </span></a> <span class="" th:classappend="${#strings.contains(act.action,'late') || #strings.contains(act.action,'deleted') ? 'text-danger' : ''}">[[${act.action}]]</span>  <a class="" th:href="${act.targetlink}"><span class="badge" th:style="${'background-color:' + act.user.companycolor()}"> [[${act.target}]]</span></a></div>
+	                            <div class="tl-date text-muted mt-1" th:text="${#temporals.monthNameShort(act.date) + ' ' + #temporals.day(act.date) + ' ' + #temporals.year(act.date) }"></div>
+	                        	<div class="tl-date text-muted mt-1" th:text="${(#temporals.hour(act.date) - 12) + ':' + #temporals.minute(act.date) + ' PM'}" th:if="${#temporals.hour(act.date) >= 12}"> </div>
+	                        	<div class="tl-date text-muted mt-1" th:text="${#temporals.hour(act.date) + ':' + #temporals.minute(act.date) + ' AM'}" th:if="${#temporals.hour(act.date) < 12}"> </div>
+	                        </div>
+	                    </div>
 	                </div>
 	            </div>
 	        </div>
 	    </div>
 </div>
 
-
+			
          </div>
+         <div class="text-end justify-content-end" th:if="${totalpage > 0}">
+	    	 <nav id="pagination" class=""></nav>
+	    </div>
+	   
       </div>
     
   </div>
@@ -365,6 +391,19 @@ tl-item.active .tl-dot:before {
 	  	});
 	});
 </script>
-
+<script th:src="@{/js/jquery.simplePagination.js}"></script>
+<script th:inline="javascript">
+$(document).ready(function(){
+	
+	$("#pagination").pagination({
+		displayedPages : 3,
+        pages : "[[${totalpage}]]",
+        currentPage : "[[${currentPage}]]",
+        selectOnClick : false,
+        hrefTextPrefix : "/dashboard/activitylog/page/",
+        cssStyle: 'light-theme'
+    });
+})
+</script>
 </body>
 </html>

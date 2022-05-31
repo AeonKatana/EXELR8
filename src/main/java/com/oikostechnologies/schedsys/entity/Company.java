@@ -12,11 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -39,15 +34,16 @@ public class Company {
 	private long id;
 	private String compname;
 	
-	@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<Department> departments;
 	
-	@OneToMany(mappedBy = "company" , fetch = FetchType.EAGER , cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnoreProperties("company")
+	
+	@OneToMany(mappedBy = "company" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonManagedReference
 	private Set<User> user;
 	
-	@OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "company", cascade = CascadeType.REMOVE)
 	private CompanyDna dna;
 	
 	private String color;

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.oikostechnologies.schedsys.entity.Company;
 import com.oikostechnologies.schedsys.entity.User;
 import com.oikostechnologies.schedsys.leadprojection.LeadUserDTO;
 
@@ -61,8 +62,22 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	List<User> getAllUserOverdue(@Param("today") LocalDate today);
 	
 	@Query("Select concat(u.firstname,' ',u.lastname) as fullname, count(case when dt.done = true and MONTH(dt.starteddate) =:month and YEAR(dt.starteddate) =:year then 1 end) as dailydone"
+			+ ", c.color as color, c.compname as compname from User u left join u.company c left join u.dailies dt where c =:company group by u.firstname order by count(dt.done) desc")
+	List<LeadUserDTO> leaderboard(@Param("month") int month, @Param("year") int year, @Param("company") Company company);
+	
+	@Query("Select concat(u.firstname,' ',u.lastname) as fullname, count(case when dt.done = true and MONTH(dt.starteddate) =:month and YEAR(dt.starteddate) =:year then 1 end) as dailydone"
 			+ ", c.color as color, c.compname as compname from User u left join u.company c left join u.dailies dt group by u.firstname order by count(dt.done) desc")
 	List<LeadUserDTO> leaderboard(@Param("month") int month, @Param("year") int year);
 	
+	@Query("Select concat(u.firstname,' ',u.lastname) as fullname, count(case when dt.done = false and dt.until <:today then 1 end) as dailydone"
+			+ ", c.color as color, c.compname as compname from User u left join u.company c left join u.dailies dt group by u.firstname order by count(dt.done) desc")
+	List<LeadUserDTO> overleaderboard(@Param("today") LocalDate today);
+	
+	@Query("Select concat(u.firstname,' ',u.lastname) as fullname, count(case when dt.done = false and dt.until <:today then 1 end) as dailydone"
+			+ ", c.color as color, c.compname as compname from User u left join u.company c left join u.dailies dt where c =:company group by u.firstname order by count(dt.done) desc")
+	List<LeadUserDTO> overleaderboard(@Param("today") LocalDate today, @Param("company") Company company);
+	
+	@Query("Select u from User u join u.userrole ur join ur.role r where r.rolename != 'SUPERADMIN'")
+	List<User> getAllExceptSuperadmin();
 }
 
