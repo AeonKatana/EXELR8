@@ -124,37 +124,21 @@
         </nav>
 
        	  <div class="container py-2 px-5">
-       	  	
-       	  	<a class="btn btn-success" th:href="@{/dashboard/leaderboard}">Completed</a>
+       	  		<a class="btn btn-success" th:href="@{/dashboard/leaderboard}">Completed</a>
        	  	<a class="btn btn-danger" th:href="@{/leaderboard/overdue}">Overdue</a>
        	  	       	  	<a class="btn btn-danger" th:href="@{/leaderboard/tardy}" sec:authorize="hasAuthority('SUPERADMIN')">Violation</a>
 
-       	  	<div sec:authorize="hasAuthority('SUPERADMIN')">
-       	  		<h2 class="text-primary text-center">Company</h2>
-               <table class="table my-2" id="companytbl">
-               		<thead>
-               			<tr>
-               				<th>Rank</th>
-               				<th>Company Name</th>
-               				<th>Overdue</th>
-                       	</tr>
-               		</thead>
-               		<tbody>
-               			
-               		</tbody>
-               </table>
-       	  	</div>
               <div>
               	<h2 class="text-primary text-center">Associates</h2>
               
-          
+               
                <table class="table my-2" id="usertbl">
                		<thead>
                			<tr>
                				<th>Rank</th>
                				<th>Company Name</th>
                				<th>Associate</th>
-               				<th>Overdue</th>
+               				<th>Tardy Count</th>
                        	</tr>
                		</thead>
                		<tbody>
@@ -193,6 +177,6 @@
 <script th:src="@{/js/jquery.mentionsInput.js}"></script>
 <script th:src="@{/js/jquery.elastic.js}"></script>
 <script type="text/javascript" th:src="@{/js/jquery.events.input.js}"></script>
-<script th:src="@{/js/overleadboard.js}"></script>
+<script th:src="@{/js/tardylead.js}"></script>
 </body>
 </html>

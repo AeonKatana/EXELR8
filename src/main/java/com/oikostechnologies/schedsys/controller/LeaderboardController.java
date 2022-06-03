@@ -41,6 +41,24 @@ public class LeaderboardController {
 		return "overleadboard";
 	}
 	
+	@GetMapping("/tardy")
+	public String tardy(Model model, @AuthenticationPrincipal MyUserDetails userdetail) {
+		model.addAttribute("notifcount", notifrepo.countBySeenFalseAndUser(userdetail.getUser()));
+		return "tardylead";
+	}
+	
+	@GetMapping("/company/tardy")
+	@ResponseBody
+	public List<LeadDTO> getCompanyTardy(){
+		return companyRepo.tardylead();
+	}
+	
+	@GetMapping("/user/tardy")
+	@ResponseBody
+	public List<LeadUserDTO> getUserTardy(){
+		return userRepo.tardylead();
+	}
+	
 	@GetMapping("/company/overdue")
 	@ResponseBody
 	public List<LeadDTO> getOverdueCompanyLead(){

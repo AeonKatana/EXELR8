@@ -30,4 +30,7 @@ public interface CompanyRepo extends JpaRepository<Company, Long> {
 	@Query("Select c.compname as compname, count(case when dt.done = false and dt.until <:today then 1 end) as dailydone, c.color as color from Company c left join c.user u left join u.dailies dt group by c.compname")
 	List<LeadDTO> overlead(@Param("today") LocalDate today);
 	
+	@Query("Select c.compname as compname, count(u.violationcount) as dailydone, c.color as color from Company c join c.user u group by c.compname")
+	List<LeadDTO> tardylead();
+	
 }

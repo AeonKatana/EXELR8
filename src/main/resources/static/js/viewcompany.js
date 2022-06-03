@@ -14,12 +14,19 @@ $(document).ready(function(){
 	})
 	
 	$(".corebtn").click(function(){
-		
+		//$("#coreform").reset();
 		$("#coretitleedit").val($(this).attr('title'));
 		$("#descedit").val($(this).attr('desc'));
 		$("#coreid").val($(this).attr('cid'));
 		$("#indicator").val($(this).attr('ind'));
 	})
+	
+	$("#addnewcore").click(function(){
+		$("#coretitleedit").val("");
+		$("#descedit").val("");
+		$("#coreid").val("0");
+		$("#indicator").val("");
+	});
 	
 	
 	$('#depttable').DataTable({

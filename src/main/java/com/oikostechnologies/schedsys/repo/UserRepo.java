@@ -25,6 +25,10 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	User findByEmail(String email);
 	
+	@Query("Select concat(u.firstname,' ',u.lastname) as fullname, count(u.violationcount) as dailydone"
+			+ ", c.color as color, c.compname as compname from User u left join u.company c left join u.dailies dt group by u.firstname order by count(dt.done) desc")
+	List<LeadUserDTO> tardylead();
+	
 	@Query("Select u from User u where not exists(select dt from u.dailies dt where DATE(dt.starteddate) =:today)")
 	List<User> getAllTardyUsers(@Param("today") Date today);
 	

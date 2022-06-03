@@ -28,7 +28,7 @@ public class SchedulerService {
 	 
 	private List<User> tardyusers = Collections.emptyList();
 	
-	@Scheduled(cron = "0 0 9 * * 1-6", zone = "Asia/Manila") // Run everyday at 9am except Sunday
+	@Scheduled(cron = "0 30 15 * * 1-6", zone = "Asia/Manila") // Run everyday at 9am except Sunday
 	public void checkTardy() {
 		LocalDate date = ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Manila")).toLocalDate(); // Get the date today
 		tardyusers = repo.getAllTardyUsers(Date.valueOf(date));

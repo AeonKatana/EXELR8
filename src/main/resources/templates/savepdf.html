@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <title>Save this to pdf</title>
+    
+</head>
+<body>
+
+	<div>
+		<p>Testing only</p>
+		<button id="save">Save to pdf</button>
+	</div>
+	
+    <script>
+    window.jsPDF = window.jspdf.jsPDF; 
+   
+    	 var doc = new jsPDF();
+
+         doc.text("Hello world!", 10, 10);
+         doc.save("a4.pdf");
+    
+   
+    
+    </script>
+</body>
+</html>

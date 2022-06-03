@@ -126,6 +126,7 @@
        	  <div class="container py-2 px-5">
        	  		<a class="btn btn-success" th:href="@{/dashboard/leaderboard}">Completed</a>
        	  	<a class="btn btn-danger" th:href="@{/leaderboard/overdue}">Overdue</a>
+       	  	<a class="btn btn-danger" th:href="@{/leaderboard/tardy}" sec:authorize="hasAuthority('SUPERADMIN')">Violation</a>
        	  	<div sec:authorize="hasAuthority('SUPERADMIN')">
        	  		<h2 class="text-primary text-center">Company</h2>
               

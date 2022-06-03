@@ -292,13 +292,13 @@ table.dataTable thead {
       		<div class="card text-left p-3 m-2" style="width: 18rem;" th:each="core : ${company.dna.corevalue}">	
       			<h2 class="float-left" th:text="${core.name}"></h2>
       			<p class="" th:text="${core.description}"></p>
-      			<div>
+      			<div sec:authorize="hasAnyAuthority('MASTERADMIN','SUPERADMIN')">
       				<button class="btn btn-success btn-sm corebtn" th:title="${core.name}" th:ind="${core.indicator}" th:desc="${core.description}" th:id="${'core' + core.id}" th:cid="${core.id}" data-bs-target="#addCoreValue" data-bs-toggle="modal"><i class="fa-solid fa-pen"></i></button>
       			</div>
       			
       		</div>
       	</div>
-      	<button class="btn btn-primary" data-bs-target="#addCoreValue" data-bs-toggle="modal"> Add Core Value</button>
+      	<button class="btn btn-primary" sec:authorize="hasAnyAuthority('MASTERADMIN','SUPERADMIN')" data-bs-target="#addCoreValue" data-bs-toggle="modal"> Add Core Value</button>
     </div>
   </div>
 </div>

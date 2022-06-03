@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" media="all">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
     <style>
     body {
   -webkit-print-color-adjust: exact !important;
@@ -18,8 +21,8 @@
     </style>
     <title>Scorecard</title>
 </head>
-<body>
- <div class="" id="addscorecard">
+<body id="body">
+ <div class="m-2" id="addscorecard">
       <!-- Modal body -->
       <div class="modal-body">
         <div class="firstpage">
@@ -148,5 +151,13 @@
       <!-- Modal footer -->
     
 </div>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+ <script>
+    window.jsPDF = window.jspdf.jsPDF; 
+   	
+    	
+    	 
+    window.print();
+    </script>
 </body>
 </html>

@@ -90,6 +90,11 @@ public class DashController {
 		
 		return "dashboard";
 	}
+	
+	@GetMapping("/savepdf")
+	public String pdffile() {
+		return "savepdf";
+	}
 	// --------------------------------------------- REST API
 	
 	@GetMapping("/dashboard/tardy")

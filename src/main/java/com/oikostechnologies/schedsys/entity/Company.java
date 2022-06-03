@@ -1,5 +1,6 @@
 package com.oikostechnologies.schedsys.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -74,15 +75,13 @@ public class Company {
 	@Transient
 	@JsonSerialize
 	public String masteradmin() {
-		
-		if(user.stream().filter(x -> x.role().equalsIgnoreCase("MASTERADMIN")).findFirst().get() == null) {
-		     return "No MASTERADMIN";
-		}
-		 masteradmin = user.stream().filter(x -> x.role().equalsIgnoreCase("MASTERADMIN")).findFirst().get().fullname();
-		if(masteradmin == null || masteradmin.isEmpty()) {
-			return "No MASTERADMIN";
-		}
-		return masteradmin;
+	User masteradmin = user.stream().filter(x -> x.role().equals("MASTERADMIN")).findFirst().orElse(null);
+	 if(masteradmin == null) {
+		 return "No MASTERADMIN";
+	 }
+	 else {
+		 return masteradmin.fullname();
+	 }
 	}
 	
 	@Transient
